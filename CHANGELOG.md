@@ -3,6 +3,17 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning is semantic.
 
+## [0.3.0] — 2026-09-14
+
+### Added
+
+- Phase 3 "Experience" skills: `polish` (anti-slop UI design with a
+  full audit checklist and Core Web Vitals awareness), `friction` (UX
+  audit — task walks, WCAG 2.2 anchors, severity-ranked findings),
+  `ditto` (UI recreation with a mandatory compare-correct loop and an
+  untrusted-content protocol for third-party pages).
+- Trigger cases for all three (74 total).
+
 ## [0.2.0] — 2026-09-14
 
 ### Added

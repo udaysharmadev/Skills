@@ -17,7 +17,7 @@ hotseat  scout, distill masterplan  pilot*  proof*, roadtest cleared*, runway* r
 | Foundation | validators, shared contracts, naming system | ✅ shipped |
 | Intelligence | `concierge` `hotseat` `spelunk` `scout` `distill` `masterplan` `recall` | ✅ shipped |
 | Building | `pilot` `backend` `blueprint` `headroom` | ✅ shipped |
-| Experience | `polish` `friction` `ditto` | 🚧 planned |
+| Experience | `polish` `friction` `ditto` | ✅ shipped |
 | Proof | `proof` `roadtest` `sleuth` `referee` `hotpath` `harden` | 🚧 planned |
 | Cleanup & public surface | `unslop` `janitor` `frontpage` `findable` `frugal` | 🚧 planned |
 | Shipping | `cleared` `runway` | 🚧 planned |
@@ -44,7 +44,7 @@ It inspects the project and explains what is available in under a minute of your
 npx skills add <owner>/<repo>          # interactive selection
 ```
 
-## The shipped eleven
+## The shipped fourteen
 
 | Skill | Job |
 | --- | --- |
@@ -58,6 +58,9 @@ npx skills add <owner>/<repo>          # interactive selection
 | `backend` | Server-side correctness in any stack: APIs, data, auth, jobs, webhooks |
 | `blueprint` | Architecture analysis + diagrams that render (Mermaid + navigable HTML) |
 | `headroom` | Scale design with proportionality — Now / Next / Scale, with trigger metrics |
+| `polish` | UI design that kills the AI-generated look — deliberate, anti-slop, state-complete |
+| `friction` | UX audits: can a real person complete the task? WCAG 2.2 + novice/expert walks |
+| `ditto` | Recreates UI from screenshot/URL/design with a screenshot-compare-correct loop |
 | `recall` | Persistent high-signal project memory with a strict context budget |
 
 Each skill is a self-contained folder under `skills/` — install one, or all of them.

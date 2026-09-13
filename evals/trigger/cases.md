@@ -74,6 +74,8 @@
 - "delete the unused imports in src/api.ts" => none
 - "why is the /api/orders endpoint slow" => none
 - "rename the settings page title" => none
+- "add a new column to the users table" => none
+- "write a migration plan for switching databases" => none
 
 ## pilot
 
@@ -102,3 +104,24 @@
 - "should we split this into microservices" => headroom
 - "design the system for the new notification service" => headroom
 - "sql or nosql for this workload" => headroom
+
+## polish
+
+- "make the landing page look professional" => polish
+- "this dashboard looks so generic, fix it" => polish
+- "improve the UI of the settings screen" => polish
+- "our app screams AI-generated, help" => polish
+
+## friction
+
+- "users keep abandoning the signup form" => friction
+- "the onboarding flow is confusing, audit it" => friction
+- "is our app accessible? check keyboard navigation too" => friction
+- "the error messages in our app are useless" => friction
+
+## ditto
+
+- "make it look like this [screenshot]" => ditto
+- "rebuild this page from the URL I sent" => ditto
+- "clone this dashboard design from the Figma export" => ditto
+- "recreate the UI in this image using our stack" => ditto
