@@ -26,9 +26,11 @@ writes another skill's files.
 | `docs/reports/roadtest-<slug>/` | `roadtest` | Evidence bundle: screenshots, console, network, per-path results |
 | `docs/reports/security-<slug>.md` | `harden` | Security findings report (when written to disk) |
 | `docs/reports/ux-<slug>.md` | `friction` | UX audit report (when written to disk) |
+| `docs/reports/detox-<slug>.md` | `unslop` | Detox findings + batch log (when written to disk) |
+| `README.md`, `docs/` documentation pages | `frontpage` | Project documentation (extracted pages, not code docs) |
 
-Planned owners (Phases 5–6): `frontpage` → README/docs, `unslop` →
-`docs/reports/detox-<slug>.md`.
+All 27 skills now have artifact ownership assigned — phases 6–7 add
+none.
 
 Exception: `pilot` checks off slice checkboxes inside `masterplan`'s plan
 files as work completes — status updates only, never plan content.

@@ -26,6 +26,11 @@ are not shipped yet — say so and proceed with the manual equivalent.
 | Architecture docs / diagrams | `blueprint` |
 | "Will it scale" / architecture choice | `headroom` |
 | Backend / API / data work | `backend` |
+| "My repo is a mess, help" | `unslop` |
+| Git / GitHub hygiene, commit messages | `janitor` |
+| README / docs for the project | `frontpage` |
+| SEO / discoverability / social previews | `findable` |
+| Token usage / context costs too high | `frugal` |
 | Before context reset / handoff | `recall` (session delta) |
 
 ## Rules

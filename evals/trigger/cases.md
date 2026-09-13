@@ -78,6 +78,8 @@
 - "write a migration plan for switching databases" => none
 - "what should our git commit message convention be" => none
 - "summarize this PR description for me" => none
+- "how do I center a div" => none
+- "what's the weather like" => none
 
 ## pilot
 
@@ -169,3 +171,38 @@
 - "we're handling payments now, check we're not doing anything stupid" => harden
 - "check for injection and XSS risks in the new API" => harden
 - "harden the auth flow, we store PII" => harden
+
+## unslop
+
+- "I vibe coded this for three weeks and I'm scared to touch it" => unslop
+- "clean up this repo, it's full of AI slop" => unslop
+- "there's so much duplicated garbage in this codebase" => unslop
+- "detox my project before I keep building on it" => unslop
+
+## janitor
+
+- "my git state is a disaster, help me clean it up" => janitor
+- "write a commit message for what I just staged" => janitor
+- "we have like 40 stale branches, deal with it" => janitor
+- "audit the repo hygiene before we open source it" => janitor
+
+## frontpage
+
+- "our README is embarrassing, rewrite it" => frontpage
+- "create a README that makes people actually try this" => frontpage
+- "the install instructions in the readme don't work" => frontpage
+- "write docs for this project before we launch" => frontpage
+
+## findable
+
+- "our site doesn't show up in google at all" => findable
+- "the link preview looks broken when we share on twitter" => findable
+- "add a sitemap and check our meta tags" => findable
+- "make the site SEO-ready before launch" => findable
+
+## frugal
+
+- "we're burning through the context window way too fast" => frugal
+- "reduce how many tokens our agent workflow uses" => frugal
+- "compact this session so we can keep working" => frugal
+- "token costs are getting stupid, optimize the pipeline" => frugal

@@ -19,7 +19,7 @@ hotseat  scout, distill masterplan  pilot*  proof*, roadtest cleared*, runway* r
 | Building | `pilot` `backend` `blueprint` `headroom` | ✅ shipped |
 | Experience | `polish` `friction` `ditto` | ✅ shipped |
 | Proof | `proof` `roadtest` `sleuth` `referee` `hotpath` `harden` | ✅ shipped |
-| Cleanup & public surface | `unslop` `janitor` `frontpage` `findable` `frugal` | 🚧 planned |
+| Cleanup & public surface | `unslop` `janitor` `frontpage` `findable` `frugal` | ✅ shipped |
 | Shipping | `cleared` `runway` | 🚧 planned |
 
 The 27-skill target, contracts and build order are specified in [PRD.md](PRD.md).
@@ -44,7 +44,7 @@ It inspects the project and explains what is available in under a minute of your
 npx skills add <owner>/<repo>          # interactive selection
 ```
 
-## The shipped twenty
+## The shipped twenty-five
 
 | Skill | Job |
 | --- | --- |
@@ -67,6 +67,11 @@ npx skills add <owner>/<repo>          # interactive selection
 | `referee` | Independent review on two axes — intent then quality; actionable findings only |
 | `hotpath` | Measured optimization: benchmark, one change, re-measure, report the delta or revert |
 | `harden` | Security audit per OWASP Top 10:2025 — severity + confidence, no destructive testing |
+| `unslop` | Rescues vibe-coded messes: baseline, de-slop in verified batches, never a big rewrite |
+| `janitor` | Git/GitHub hygiene — grounded in real git output, commit messages from real diffs |
+| `frontpage` | READMEs from research, not vibes — every claim provable, every snippet executed |
+| `findable` | SEO/discoverability verified on rendered HTML — no snake oil |
+| `frugal` | Token efficiency: save tokens, never save effort — savings reported honestly |
 | `recall` | Persistent high-signal project memory with a strict context budget |
 
 Each skill is a self-contained folder under `skills/` — install one, or all of them.

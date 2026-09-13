@@ -3,6 +3,19 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning is semantic.
 
+## [0.5.0] — 2026-09-14
+
+### Added
+
+- Phase 5 "Cleanup & public surface" skills: `unslop` (behavior-
+  baselined repo detox with a slop catalog and batch protocol), `janitor`
+  (git/GitHub hygiene with authorization-gated destructive ops),
+  `frontpage` (claims-audited README generation with executed
+  quickstarts), `findable` (rendered-HTML SEO verification, anti-snake-
+  oil stance), `frugal` (token efficiency with the measured/derived/
+  estimated/unknown honesty framework).
+- Artifact ownership complete for all 27 skills; trigger cases (120).
+
 ## [0.4.0] — 2026-09-14
 
 ### Added
