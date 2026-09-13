@@ -72,3 +72,33 @@
 - "why is this test flaky" => none
 - "add a logout link to the navbar" => none
 - "delete the unused imports in src/api.ts" => none
+- "why is the /api/orders endpoint slow" => none
+- "rename the settings page title" => none
+
+## pilot
+
+- "the plan is approved, start building" => pilot
+- "execute the plan slice by slice" => pilot
+- "implement slice 2 from docs/plans/dark-mode.md" => pilot
+- "keep going with the implementation from where we left off" => pilot
+
+## backend
+
+- "add a DELETE /api/projects/:id endpoint" => backend
+- "we need webhook handling for stripe events" => backend
+- "the orders table needs a migration to add a status column" => backend
+- "make sure users can only edit their own posts" => backend
+
+## blueprint
+
+- "document the architecture of this system" => blueprint
+- "I need diagrams showing how the services connect" => blueprint
+- "create onboarding docs explaining how the system works" => blueprint
+- "draw the request flow for checkout" => blueprint
+
+## headroom
+
+- "will this architecture handle 100k users" => headroom
+- "should we split this into microservices" => headroom
+- "design the system for the new notification service" => headroom
+- "sql or nosql for this workload" => headroom

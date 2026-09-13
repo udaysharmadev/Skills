@@ -21,10 +21,14 @@ writes another skill's files.
 | `docs/research/<topic>.md` | `scout` | Cited research note |
 | `docs/briefs/<slug>.md` | `distill` | Execution-grade task brief |
 | `docs/plans/<slug>.md` | `masterplan` | Implementation plan |
+| `docs/architecture/` (`README.md`, `*.mmd`, `architecture.html`) | `blueprint` | Architecture diagrams, index and HTML deliverable |
+| `docs/design/<slug>.md` | `headroom` | Scale/design analysis (Now/Next/Scale) |
 
-Planned owners (Phases 2–6): `blueprint` → `docs/architecture/`, `frontpage`
-→ README/docs, `unslop`/`harden`/`referee` → report files under
-`docs/reports/`.
+Planned owners (Phases 3–6): `frontpage` → README/docs, `unslop`/
+`harden`/`referee` → report files under `docs/reports/`.
+
+Exception: `pilot` checks off slice checkboxes inside `masterplan`'s plan
+files as work completes — status updates only, never plan content.
 
 ## Rules
 

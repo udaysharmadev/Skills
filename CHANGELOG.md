@@ -3,6 +3,18 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning is semantic.
 
+## [0.2.0] — 2026-09-14
+
+### Added
+
+- Phase 2 "Building" skills: `pilot` (slice-by-slice plan execution with a
+  completion gate), `backend` (universal server-side specialist),
+  `blueprint` (architecture analysis with Mermaid + HTML deliverable),
+  `headroom` (Now/Next/Scale design with trigger metrics).
+- `blueprint` ships an HTML template asset (`assets/template.html`) with
+  light/dark themes, zoomable diagrams and print support.
+- Trigger cases for all four new skills (60 total).
+
 ## [0.1.0] — 2026-09-14
 
 ### Added

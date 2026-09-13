@@ -16,7 +16,7 @@ hotseat  scout, distill masterplan  pilot*  proof*, roadtest cleared*, runway* r
 | --- | --- | --- |
 | Foundation | validators, shared contracts, naming system | ✅ shipped |
 | Intelligence | `concierge` `hotseat` `spelunk` `scout` `distill` `masterplan` `recall` | ✅ shipped |
-| Building | `pilot` `backend` `blueprint` `headroom` | 🚧 planned |
+| Building | `pilot` `backend` `blueprint` `headroom` | ✅ shipped |
 | Experience | `polish` `friction` `ditto` | 🚧 planned |
 | Proof | `proof` `roadtest` `sleuth` `referee` `hotpath` `harden` | 🚧 planned |
 | Cleanup & public surface | `unslop` `janitor` `frontpage` `findable` `frugal` | 🚧 planned |
@@ -44,7 +44,7 @@ It inspects the project and explains what is available in under a minute of your
 npx skills add <owner>/<repo>          # interactive selection
 ```
 
-## The shipped seven
+## The shipped eleven
 
 | Skill | Job |
 | --- | --- |
@@ -54,6 +54,10 @@ npx skills add <owner>/<repo>          # interactive selection
 | `scout` | Research before code: cited, version-pinned, primary-source-first |
 | `distill` | Turns "bro add dashboard make it good" into an execution-grade brief |
 | `masterplan` | A serious implementation plan with vertical slices, rollback and a definition of done |
+| `pilot` | Executes plans slice by slice — implement, verify, inspect diff, repeat |
+| `backend` | Server-side correctness in any stack: APIs, data, auth, jobs, webhooks |
+| `blueprint` | Architecture analysis + diagrams that render (Mermaid + navigable HTML) |
+| `headroom` | Scale design with proportionality — Now / Next / Scale, with trigger metrics |
 | `recall` | Persistent high-signal project memory with a strict context budget |
 
 Each skill is a self-contained folder under `skills/` — install one, or all of them.
