@@ -10,8 +10,8 @@ Report every applicable row as verified (with evidence) or unverified
 | Change touches | Required gates |
 | --- | --- |
 | Anything | full test suite · build · lint/types · diff self-review |
-| UI / user-visible behavior | browser walk of the changed flows (roadtest-style) · responsive check · console clean |
-| Auth, sessions, permissions, payments, PII | security review pass (harden-style: the changed surface, not the world) |
+| UI / user-visible behavior | browser walk of the changed flows (`roadtest`) · responsive check · console clean |
+| Auth, sessions, permissions, payments, PII | security review pass (`harden`, scoped to the changed surface) |
 | Data model / migrations | migration up **and** down tested · data-preservation check on a copy |
 | Public API contract | consumer check: existing callers updated or compatible · versioning/deprecation noted |
 | Performance-sensitive path | before/after benchmark with numbers, or an explicit "not measured" |

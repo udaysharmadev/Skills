@@ -80,13 +80,12 @@ Silent scope improvisation is the failure mode this exists to prevent.
 
 Before any "implementation complete" claim, run the gate checklist in
 `references/completion-gate.md` (read it every time — it maps change type
-to required gates). Minimum for everything: `proof`-style full test pass +
-a review pass (`referee` when shipped; fresh-context subagent review if
-available; disciplined self-review otherwise). Where relevant: browser
-verification for UI slices, security review for auth/data changes,
-performance checks for hot paths. Every gate result is reported as
-**verified** (with evidence) or **unverified** (with reason) — the word
-"unverified" is mandatory, not optional polish.
+to required gates). Minimum for everything: a `proof`-grade full test
+pass + a `referee` review (fresh-context subagent when available;
+disciplined self-review otherwise). Where relevant: `roadtest` for UI
+slices, `harden` for auth/data changes, `hotpath` for hot paths. Every
+gate result is reported as **verified** (with evidence) or **unverified**
+(with reason) — the word "unverified" is mandatory, not optional polish.
 
 ## Quality gates
 

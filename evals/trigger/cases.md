@@ -76,6 +76,8 @@
 - "rename the settings page title" => none
 - "add a new column to the users table" => none
 - "write a migration plan for switching databases" => none
+- "what should our git commit message convention be" => none
+- "summarize this PR description for me" => none
 
 ## pilot
 
@@ -125,3 +127,45 @@
 - "rebuild this page from the URL I sent" => ditto
 - "clone this dashboard design from the Figma export" => ditto
 - "recreate the UI in this image using our stack" => ditto
+
+## proof
+
+- "add tests for the checkout flow" => proof
+- "we need regression coverage for that bug you fixed" => proof
+- "should this be a unit test or an integration test" => proof
+- "improve our test suite, it misses real breakage" => proof
+
+## roadtest
+
+- "actually open the browser and test the signup flow" => roadtest
+- "check that checkout works end to end before release" => roadtest
+- "walk through the app like a user and screenshot everything" => roadtest
+- "verify the UI changes in a real browser" => roadtest
+
+## sleuth
+
+- "this bug keeps coming back, figure out the real cause" => sleuth
+- "the API randomly 500s about 1 in 20 times" => sleuth
+- "debug why the sync job duplicates records" => sleuth
+- "it works locally but breaks in production, why" => sleuth
+
+## referee
+
+- "review my diff before I merge" => referee
+- "can you do a code review on this PR" => referee
+- "check whether this change actually implements the spec" => referee
+- "act as a reviewer for the auth refactor" => referee
+
+## hotpath
+
+- "the dashboard takes 5 seconds to load, fix it" => hotpath
+- "profile and optimize the report generation" => hotpath
+- "our bundle is huge, find out why" => hotpath
+- "make the search endpoint faster, but measure it" => hotpath
+
+## harden
+
+- "audit our app for security issues before launch" => harden
+- "we're handling payments now, check we're not doing anything stupid" => harden
+- "check for injection and XSS risks in the new API" => harden
+- "harden the auth flow, we store PII" => harden

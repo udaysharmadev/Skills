@@ -23,9 +23,12 @@ writes another skill's files.
 | `docs/plans/<slug>.md` | `masterplan` | Implementation plan |
 | `docs/architecture/` (`README.md`, `*.mmd`, `architecture.html`) | `blueprint` | Architecture diagrams, index and HTML deliverable |
 | `docs/design/<slug>.md` | `headroom` | Scale/design analysis (Now/Next/Scale) |
+| `docs/reports/roadtest-<slug>/` | `roadtest` | Evidence bundle: screenshots, console, network, per-path results |
+| `docs/reports/security-<slug>.md` | `harden` | Security findings report (when written to disk) |
+| `docs/reports/ux-<slug>.md` | `friction` | UX audit report (when written to disk) |
 
-Planned owners (Phases 3–6): `frontpage` → README/docs, `unslop`/
-`harden`/`referee` → report files under `docs/reports/`.
+Planned owners (Phases 5–6): `frontpage` → README/docs, `unslop` →
+`docs/reports/detox-<slug>.md`.
 
 Exception: `pilot` checks off slice checkboxes inside `masterplan`'s plan
 files as work completes — status updates only, never plan content.

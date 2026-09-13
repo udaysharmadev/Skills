@@ -10,11 +10,22 @@ are not shipped yet — say so and proceed with the manual equivalent.
 | --- | --- |
 | New idea, wants opinions / validation | `hotseat` → `distill` |
 | Vague feature ask ("make it good") | `distill` → `masterplan` |
-| Clear feature, wants it built | `distill` (skip if spec is already tight) → `masterplan` → implement |
+| Clear feature, wants it built | `distill` (skip if spec is already tight) → `masterplan` → `pilot` |
 | "How does this repo work" / new to codebase | `spelunk` |
 | Library/API/framework question | `scout` |
 | "What did we decide" / "catch me up" | `recall` |
-| Bug report | `spelunk` (quick) → debug → `proof` (planned `sleuth`) |
+| Bug report | `spelunk` (quick) → `sleuth` → `proof` |
+| Something is slow | `hotpath` |
+| Security ask / handles auth, money, PII | `harden` |
+| Review this code / diff / PR | `referee` |
+| Add or improve tests | `proof` |
+| Verify it works in the browser | `roadtest` |
+| UI looks generic / "make it pretty" | `polish` → `friction` → `roadtest` |
+| Confusing flows / accessibility | `friction` |
+| Copy this design (screenshot/URL) | `ditto` |
+| Architecture docs / diagrams | `blueprint` |
+| "Will it scale" / architecture choice | `headroom` |
+| Backend / API / data work | `backend` |
 | Before context reset / handoff | `recall` (session delta) |
 
 ## Rules

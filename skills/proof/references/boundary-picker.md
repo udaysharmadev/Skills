@@ -1,0 +1,50 @@
+# Boundary picker — which layer, and why
+
+## The layers
+
+| Layer | Tests through | Catches | Costs |
+| --- | --- | --- | --- |
+| Unit | one function/class in isolation | logic errors, edge cases | pennies — write freely |
+| Component | one UI component rendered | rendering, props, interaction | cheap-moderate |
+| Integration | several real modules together | wiring mistakes, wrong assumptions between units | moderate |
+| Contract | consumer ↔ provider agreement | breaking API/schema changes | moderate |
+| API | real HTTP against the app | the actual contract: status, shape, auth | moderate — the workhorse |
+| Database | real migrations/queries vs real engine | SQL truth: constraints, transactions, locks | needs infra discipline |
+| End-to-end | the whole running app, UI included | only-the-user-would-notice breaks | expensive, flaky-prone — budget tightly |
+| Browser | real user flows | console errors, network failures, visual reality | most expensive — see roadtest |
+
+## Decision table
+
+| The behavior lives in… | Test at |
+| --- | --- |
+| Pure logic (parsing, calculation, state machines) | unit |
+| Business rule that touches the DB | integration or database (real engine, not mocked) |
+| An HTTP endpoint's contract | API level — status codes, shapes, auth, errors |
+| Schema changes / migrations | database — up **and** down, against the real engine |
+| Provider/consumer agreements (client libs, webhooks) | contract |
+| A user flow across pages | end-to-end — only for the few money paths |
+| Anything visual/console/network | browser (roadtest owns that evidence) |
+
+## The workhorse default
+
+**API-level tests against a running app** catch the most real regressions
+per unit of pain: they exercise routing, validation, auth, business
+logic and serialization together, without browser flakiness. When in
+doubt, start there and push down (unit) for logic corners, up (e2e) only
+for critical paths.
+
+## Anti-patterns
+
+1. **Mock theatre** — six mocks arranged so the test asserts its own
+   setup. If deleting the feature keeps the test green, the test is
+   decoration.
+2. **Implementation-coupled assertions** — asserting `getUser()` was
+   called twice instead of asserting the user sees their name.
+3. **The 70% hero suite** — e2e tests for everything; suite takes 40
+   minutes; everyone runs it "later". Few e2e, many API, plenty unit.
+4. **Snapshot as thought** — a giant snapshot nobody reviews just hides
+   regressions until the day someone blindly updates it.
+5. **Flake tolerance** — retry-until-green masks real races. Fix or
+   quarantine with an issue, visibly.
+6. **Coverage theater** — chasing a coverage percentage with trivial
+   tests. Coverage numbers describe the suite; they are not the goal.

@@ -3,6 +3,21 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning is semantic.
 
+## [0.4.0] — 2026-09-14
+
+### Added
+
+- Phase 4 "Proof" skills: `proof` (boundary-choice testing with the
+  boundary picker), `roadtest` (browser QA with evidence bundles and a
+  three-rung capability ladder), `sleuth` (root-cause discipline with
+  hypothesis playbook), `referee` (two-axis review, fresh-context
+  preferred, nit-never-blocks), `hotpath` (measure-change-measure with
+  per-layer tooling), `harden` (OWASP Top 10:2025 audit with
+  severity + confidence finding format, safe-adversarial rules).
+- `pilot`'s completion gate and `concierge`'s routing table now
+  reference the shipped Proof skills directly.
+- Artifact ownership for evidence/report bundles; trigger cases (100).
+
 ## [0.3.0] — 2026-09-14
 
 ### Added

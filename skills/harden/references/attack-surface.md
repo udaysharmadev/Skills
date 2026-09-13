@@ -1,0 +1,109 @@
+# Attack-surface checklist — OWASP Top 10:2025 baseline, ASVS-depth where needed
+
+Audit order follows the threat model, not this list's order. Each item:
+what to check, and how it's commonly broken.
+
+## A01 — Broken access control
+
+- Object-level checks per request (IDOR: change ids in URLs/bodies
+  against your own accounts — does 404/403 actually happen?).
+- Function-level: admin actions, bulk endpoints, internal-only routes
+  actually gated. Deny-by-default, not allow-by-omission.
+- CORS: no reflected arbitrary origins with credentials.
+- DB permissions/RLS: app's DB user scoped to what it needs; row-level
+  rules where multi-tenancy exists.
+- Webhook/admin callbacks: signature or secret verified before action.
+
+## A02 — Cryptographic failures
+
+- Passwords: argon2id/bcrypt, never MD5/SHA/plain, never reversible.
+- Secrets: no hardcoded keys/tokens (grep history too: `git log -p`,
+  tracked `.env`); rotation plan exists; keys not in client bundles.
+- TLS everywhere internal where sensitive; no self-signed-in-prod
+  surprises; secure cookie flags.
+- Sensitive data minimized: don't store what you don't need (the cheapest
+  protection for any leak).
+
+## A03 — Injection
+
+- SQL/NoSQL built from user input (string concatenation, raw query
+  fragments, unparameterized `IN (...)` lists).
+- Command execution: user input reaching `exec`/shell/eval — including
+  via file names and "safe" helpers.
+- Template/HTML injection; unsafe deserialization of user-controlled
+  blobs (pickle, untrusted YAML, PHP object injection).
+- XSS: user content rendered without sanitization, `dangerouslySetInnerHTML`,
+  `v-html`; DOM XSS via URL fragments into sinks.
+- AI surfaces: prompt-injection boundaries — user text and system
+  instructions separated; tool calls from model output validated like
+  any other untrusted input.
+
+## A04 — Insecure design
+
+- Missing rate limits on auth, password reset, expensive endpoints.
+- Business-logic abuse: negative quantities, self-referrals, double-submit,
+  race conditions on limited inventory (try them — safe adversarial
+  verification).
+- Trust placed in client-side validation alone; price/quantity/role
+  recalculated server-side.
+- File uploads: type/size/content validated server-side, stored outside
+  webroot, never executed, names sanitized (path traversal: `../` in
+  filenames).
+
+## A05 — Security misconfiguration
+
+- Debug/dev modes off in prod; verbose stack traces to clients off.
+- Security headers: CSP (no unsafe-inline), HSTS, X-Content-Type-Options,
+  frame-ancestors; cookies: Secure/HttpOnly/SameSite.
+- Default credentials, sample apps, directory listing, exposed `.git`,
+  `/.env`, admin panels with default passwords (check — it happens).
+- Dependencies: audit tools run, deprecated packages flagged, lockfile
+  committed; unknown transitive additions questioned (supply chain).
+
+## A06 — Authentication failures
+
+- Session handling: rotation on login, invalidation on logout, expiry on
+  idle + absolute; fixations tested.
+- Credential recovery flows: reset tokens single-use, short-lived,
+  unguessable; no user enumeration via differing responses/timing.
+- OAuth/OIDC: state (CSRF), PKCE for public clients, iss/aud/nonce
+  validated, redirect URIs exact.
+- MFA where the threat model says so; login endpoints rate-limited with
+  lockout/backoff that doesn't enable DoS on users.
+
+## A07 — Integrity failures
+
+- Updates/CI: pinned action versions, minimal token scopes, no
+  curl-pipe-bash in docs/CI, artifact provenance where the ecosystem
+  supports it.
+- Webhook payloads verified by signature before parsing; replay windows
+  enforced.
+- Unsigned auto-update paths, unpinned dependencies in deploy scripts.
+
+## A08 — Logging & monitoring failures (defenders' side)
+
+- Auth events, permission failures, and admin actions logged with
+  context — you can't respond to what you never recorded.
+- Logs contain no secrets/PII payloads; log injection (newlines from
+  input) handled.
+- Alerts exist for the failure patterns that matter (auth-failure spikes,
+  5xx rates) — listed as recommendations if absent.
+
+## SSRF & outbound (where the app fetches URLs)
+
+- User-supplied URLs fetched? Validate scheme/host, block internal
+  ranges (169.254.x, metadata endpoints, localhost), no redirect
+  following into internal space, response size/time caps.
+
+## Severity calibration
+
+| Sev | Meaning |
+| --- | --- |
+| Critical | Exploitable remotely without auth → data breach, RCE, or money loss |
+| High | Exploitable with modest conditions (an account, a crafted link) or serious impact |
+| Medium | Real weakness, limited reach/impact, or strong mitigations present |
+| Low | Hardening opportunity; exploitable only in contrived conditions |
+
+Confidence is separate and always stated: `confirmed` (reproduced) /
+`probable` (clear code path, not executed) / `speculative` (pattern
+smell). A confirmed medium beats a speculative critical in triage order.
