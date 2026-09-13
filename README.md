@@ -10,7 +10,7 @@ hotseat  scout, distill masterplan  pilot*  proof*, roadtest cleared*, runway* r
                                                               * planned — see table below
 ```
 
-## Status: v0.1 — under active development
+## Status: v0.6 — all 27 skills shipped
 
 | Phase | Skills | State |
 | --- | --- | --- |
@@ -20,7 +20,7 @@ hotseat  scout, distill masterplan  pilot*  proof*, roadtest cleared*, runway* r
 | Experience | `polish` `friction` `ditto` | ✅ shipped |
 | Proof | `proof` `roadtest` `sleuth` `referee` `hotpath` `harden` | ✅ shipped |
 | Cleanup & public surface | `unslop` `janitor` `frontpage` `findable` `frugal` | ✅ shipped |
-| Shipping | `cleared` `runway` | 🚧 planned |
+| Shipping | `cleared` `runway` | ✅ shipped |
 
 The 27-skill target, contracts and build order are specified in [PRD.md](PRD.md).
 
@@ -44,7 +44,7 @@ It inspects the project and explains what is available in under a minute of your
 npx skills add <owner>/<repo>          # interactive selection
 ```
 
-## The shipped twenty-five
+## All 27 skills
 
 | Skill | Job |
 | --- | --- |
@@ -72,6 +72,8 @@ npx skills add <owner>/<repo>          # interactive selection
 | `frontpage` | READMEs from research, not vibes — every claim provable, every snippet executed |
 | `findable` | SEO/discoverability verified on rendered HTML — no snake oil |
 | `frugal` | Token efficiency: save tokens, never save effort — savings reported honestly |
+| `cleared` | The final gate: READY / READY WITH WARNINGS / BLOCKED, every verdict from evidence |
+| `runway` | Deploy with verification: preflight → preview → prod → smoke → logs → rollback path |
 | `recall` | Persistent high-signal project memory with a strict context budget |
 
 Each skill is a self-contained folder under `skills/` — install one, or all of them.

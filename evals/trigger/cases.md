@@ -80,6 +80,8 @@
 - "summarize this PR description for me" => none
 - "how do I center a div" => none
 - "what's the weather like" => none
+- "delete the staging deployment" => none
+- "write a blog post announcing the release" => none
 
 ## pilot
 
@@ -206,3 +208,17 @@
 - "reduce how many tokens our agent workflow uses" => frugal
 - "compact this session so we can keep working" => frugal
 - "token costs are getting stupid, optimize the pipeline" => frugal
+
+## cleared
+
+- "are we ready to ship this" => cleared
+- "run a final go-live check before launch" => cleared
+- "is everything actually done for the v1 release" => cleared
+- "gate the release, I want a real verdict not vibes" => cleared
+
+## runway
+
+- "deploy this to production" => runway
+- "ship it to vercel" => runway
+- "launch the site and verify it works live" => runway
+- "put the new build on staging, then prod if it looks good" => runway

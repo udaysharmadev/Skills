@@ -3,6 +3,18 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning is semantic.
 
+## [0.6.0] — 2026-09-14
+
+### Added
+
+- Phase 6 "Shipping" skills — the suite is complete at 27:
+  `cleared` (evidence-based go-live gate — READY / READY WITH WARNINGS /
+  BLOCKED with per-dimension weights and remediation), `runway`
+  (platform-agnostic deployment — preflight, preview-first, version
+  fingerprint, smoke tests, logs, HTTPS checks and a named rollback
+  path; Vercel first-class, Docker/VPS/static/k8s/mobile in references).
+- `concierge` routing covers the full suite; trigger cases (132).
+
 ## [0.5.0] — 2026-09-14
 
 ### Added

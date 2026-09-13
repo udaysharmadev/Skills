@@ -31,6 +31,8 @@ are not shipped yet — say so and proceed with the manual equivalent.
 | README / docs for the project | `frontpage` |
 | SEO / discoverability / social previews | `findable` |
 | Token usage / context costs too high | `frugal` |
+| "Are we ready to ship / go live" | `cleared` |
+| Deploy this (any platform) | `runway` |
 | Before context reset / handoff | `recall` (session delta) |
 
 ## Rules
