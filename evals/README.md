@@ -1,17 +1,25 @@
 # evals/
 
-Evaluation assets. Nothing in this directory may be used to claim a number
-that was not actually measured (PRD §3.4, §13).
+Evaluation assets. Nothing here may claim a number that was not
+actually measured (PRD §3.4, §13).
 
 | Directory | Purpose | Status |
 | --- | --- | --- |
-| `trigger/` | Utterance → expected-skill cases (positive AND negative) | fixtures maintained; live runner not wired |
-| `workflow/` | Did the agent follow the skill's important phases | planned with Phase 2+ skills |
-| `regression/` | Bugs found in the field, captured as cases | populated as issues land |
-| `fixtures/` | Representative stack fixtures (TS/web, Python, Go/Rust, JVM, mobile) | planned (PRD §12) |
+| `trigger/` | 168 routing cases: positive/negative, sibling-confusion, router-stress | **runner live** — `scripts/eval-trigger` |
+| `adapters/` | per-agent invocation config + verification status | codex + opencode verified (live); claude unverified (headless hangs in dev env); cursor/antigravity UNAVAILABLE |
+| `workflow/` | per-skill scenario specs, deterministic assertions first | 21 scenarios authored (7 signature skills); execution wired 0.8 |
+| `regression/` | field bugs captured as cases before fixes merge | populated as issues land |
+| `fixtures/` | representative stack fixtures | superseded by `benchmarks/fixtures/` (kept for evals that want them) |
+| `results/` | runner output JSONs (gitignored) | curated release evidence may be committed separately |
 
-## Honesty contract
+## Running
 
-- `scripts/run-evals` currently validates fixture well-formedness only.
-- Until a live runner executes cases against real agents, **no trigger
-  precision/recall numbers may appear in any README or doc**.
+```bash
+scripts/eval-trigger --check                          # capability table
+scripts/eval-trigger --agent claude --tier smoke      # 12 measured cases
+scripts/eval-trigger --suite all --agent claude --tier standard
+```
+
+See `docs/evaluations.md` for methodology, budget tiers, and the honesty
+contract. Results without provenance (agent, commit, date, invocation
+status) may not be quoted anywhere.

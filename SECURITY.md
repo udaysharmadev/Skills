@@ -6,7 +6,7 @@ This repository ships prompt/methodology files and small helper scripts. Its
 supply-chain surface is intentionally tiny: no runtime dependencies, no
 telemetry, no network calls from the validator scripts.
 
-The `harden` skill (planned, Phase 4) audits *your* projects; it is not a
+The `harden` skill audits *your* projects; it is not a
 guarantee of security for this repository or any other.
 
 ## Reporting a vulnerability

@@ -56,7 +56,7 @@ established / legacy mess).
 | --- | --- | --- |
 | Shell | `git status` or trivial command | most skills |
 | Web research | one search/fetch attempt | `scout` |
-| Browser automation | navigate to `about:blank` | future QA skills |
+| Browser automation | navigate to `about:blank` | `roadtest` |
 | Subagents | spawn one trivial agent | `hotseat`, review |
 | GitHub CLI | `gh auth status` | repo-intelligence tasks |
 

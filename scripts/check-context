@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+"""check-context — static context-footprint audit for all skills.
+
+Reports per-skill SKILL.md bytes + approximate tokens (bytes/4), plus
+reference/scripts/assets payload. Flags outliers: any SKILL.md whose
+token estimate exceeds 1.5x the suite median (investigate, don't
+auto-trim). Progressive disclosure is real only if the main file stays
+small and depth lives in references loaded on demand.
+
+Machine output: --json (stdout). Human table: default. Errors: stderr.
+"""
+import json, re, sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+LIMIT = 500  # line budget per the skill-file contract (PRD §8)
+
+
+def audit():
+    rows = []
+    for d in sorted((ROOT / "skills").iterdir()):
+        f = d / "SKILL.md"
+        if not f.is_file():
+            continue
+        text = f.read_text()
+        dm = re.search(r"^description:\s*(.+)$", text[:2000], re.M)
+        desc_tokens = len(dm.group(1).encode()) // 4 if dm else 0
+        ref_bytes = ref_count = script_bytes = asset_bytes = 0
+        for sub, bucket in (("references", "ref"), ("scripts", "s"), ("assets", "a")):
+            for p in (d / sub).rglob("*") if (d / sub).is_dir() else []:
+                if p.is_file():
+                    n = p.stat().st_size
+                    if bucket == "ref":
+                        ref_bytes += n; ref_count += 1
+                    elif bucket == "s":
+                        script_bytes += n
+                    else:
+                        asset_bytes += n
+        rows.append({"skill": d.name, "description_tokens": desc_tokens,
+                     "skill_md_bytes": len(text.encode()),
+                     "skill_md_tokens_approx": len(text.encode()) // 4,
+                     "skill_md_lines": text.count("\n") + 1,
+                     "references": ref_count, "reference_bytes": ref_bytes,
+                     "script_bytes": script_bytes, "asset_bytes": asset_bytes})
+    return rows
+
+
+def main():
+    rows = audit()
+    med = sorted(r["skill_md_tokens_approx"] for r in rows)[len(rows) // 2]
+    for r in rows:
+        r["outlier"] = r["skill_md_tokens_approx"] > 1.5 * med
+        r["over_line_budget"] = r["skill_md_lines"] > LIMIT
+    total = {k: sum(r[k] for r in rows) for k in
+             ("skill_md_bytes", "reference_bytes", "script_bytes", "asset_bytes")}
+    total["description_tokens"] = sum(r["description_tokens"] for r in rows)
+    if "--json" in sys.argv:
+        print(json.dumps({"schema_version": "1.0", "median_tokens_approx": med,
+                          "totals": total, "skills": rows}, indent=2))
+        return 0
+    print(f"{'skill':<12} {'~tok':>6} {'lines':>6} {'refs':>5} {'refKB':>6} {'flags'}")
+    for r in rows:
+        flags = (" OUTLIER" if r["outlier"] else "") + \
+                (" OVER-500" if r["over_line_budget"] else "")
+        print(f"{r['skill']:<12} {r['skill_md_tokens_approx']:>6} "
+              f"{r['skill_md_lines']:>6} {r['references']:>5} "
+              f"{r['reference_bytes'] // 1024:>6}{flags}")
+    print(f"\nmedian ~{med} tok (derived byte estimate) · total SKILL.md "
+          f"{total['skill_md_bytes'] // 1024}KB · references "
+          f"{total['reference_bytes'] // 1024}KB · "
+          f"frontmatter descriptions ~{total['description_tokens']} tok always-on")
+    bad = [r for r in rows if r["outlier"] or r["over_line_budget"]]
+    if bad:
+        print(f"investigate: {', '.join(r['skill'] for r in bad)}", file=sys.stderr)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

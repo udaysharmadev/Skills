@@ -77,7 +77,8 @@ erDiagram
 
 ## HTML deliverable
 
-`assets/template.html` is the shell: sidebar nav, content sections,
+The bundled HTML template (in this skill's assets folder) is the shell:
+sidebar nav, content sections,
 light/dark toggle, zoom buttons per diagram, print CSS. Fill every
 placeholder (`{{TITLE}}`, nav items, sections); delete sections you don't
 use. Diagrams render via Mermaid from CDN — if the reader is offline the

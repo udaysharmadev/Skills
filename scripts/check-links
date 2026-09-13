@@ -7,7 +7,7 @@ cd "$(dirname "$0")/.."
 
 fail=0
 
-for f in skills/*/SKILL.md; do
+for f in skills/*/SKILL.md skills/*/references/*.md; do
   [ -f "$f" ] || continue
   dir=$(dirname "$f")
 
@@ -23,8 +23,8 @@ for f in skills/*/SKILL.md; do
 $refs
 EOF
 
-  # Markdown links relative to the skill folder
-  links=$(grep -oE '\]\([^)#ht][^)]*\)' "$f" | sed 's/^](//; s/)$//' | sort -u || true)
+  # Markdown links relative to the containing folder (skip http(s)/anchors)
+  links=$(grep -oE '\]\([^)]+\)' "$f" | sed 's/^](//; s/)$//' | grep -vE '^(https?:|#)' | sort -u || true)
   while IFS= read -r p; do
     [ -n "$p" ] || continue
     if [ ! -e "$dir/$p" ]; then

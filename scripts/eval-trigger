@@ -1,0 +1,304 @@
+#!/usr/bin/env python3
+"""eval-trigger — measured trigger/routing evaluation for the skill suite.
+
+Invokes available agent CLIs with routing prompts built from the suite's
+own skill metadata (name + description, exactly what runtimes surface),
+compares the observed route against the expected one, and emits measured
+metrics. Agents that are not installed report UNAVAILABLE; flags not yet
+exercised on a live agent report UNVERIFIED. Never fabricates results.
+
+Usage:
+  scripts/eval-trigger --check                  # capability table
+  scripts/eval-trigger --tier smoke --agent claude
+  scripts/eval-trigger --suite all --agent claude --runs 1 --max-cases 12
+  scripts/eval-trigger --dry-run                # no invocation
+
+Machine results: evals/results/<ts>-<agent>.json
+"""
+import argparse, json, os, re, shutil, subprocess, sys, tempfile, time
+from datetime import datetime, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+SUITE_DIR = ROOT / "evals" / "trigger"
+RESULTS = ROOT / "evals" / "results"
+SKILLS = ROOT / "skills"
+
+# Invocation templates. VERIFIED = flag shape executed against a live
+# agent at least once (see evals/adapters/README.md). Others are the
+# documented headless modes from vendor docs, marked unverified until
+# first successful run — the runner records invocation:"unverified".
+AGENTS = {
+    "claude": {
+        "bin": "claude",
+        "cmd": lambda p: ["claude", "-p", p, "--output-format", "json"],
+        "verified": False,  # flags per official docs; execution hangs in the
+        # dev environment (hang reproduced with/without sandbox, stdin closed)
+        "parse": lambda out: json.loads(out).get("result", ""),
+    },
+    "codex": {
+        "bin": "codex",
+        # --skip-git-repo-check: named by codex itself when cwd is not a
+        # trusted repo; the neutral eval workdir is not the user's repo
+        "cmd": lambda p: ["codex", "exec", "--skip-git-repo-check", p],
+        "verified": True,
+        "parse": lambda out: out.strip(),
+    },
+    "opencode": {
+        "bin": "opencode",
+        "cmd": lambda p: ["opencode", "run", p],
+        "verified": True,
+        "parse": lambda out: out.strip(),
+    },
+    "cursor": {"bin": "cursor-agent", "verified": False, "unavailable": True},
+    "antigravity": {"bin": "antigravity", "verified": False, "unavailable": True},
+}
+
+
+def skill_metadata():
+    """name + description from frontmatter — the metadata runtimes see."""
+    skills = []
+    for d in sorted(SKILLS.iterdir()):
+        f = d / "SKILL.md"
+        if not f.is_file():
+            continue
+        text = f.read_text()
+        m = re.match(r"^---\n(.*?)\n---", text, re.S)
+        if not m:
+            continue
+        name = re.search(r"^name:\s*(\S+)", m.group(1), re.M)
+        desc = re.search(r"^description:\s*(.+)$", m.group(1), re.M)
+        if name and desc:
+            skills.append((name.group(1), desc.group(1).strip()))
+    return skills
+
+
+def load_cases(suites):
+    """Parse `- "utterance" => expectation` lines from suite files."""
+    cases = []
+    for path in sorted(SUITE_DIR.glob("*.md")):
+        suite = path.stem
+        if suites != ["all"] and suite not in suites:
+            continue
+        for line in path.read_text().splitlines():
+            line = line.strip()
+            m = re.match(r'^- "([^"]+)" => (.+)$', line)
+            if not m:
+                continue
+            cases.append({"suite": suite, "utterance": m.group(1),
+                          "expected": m.group(2).strip()})
+    return cases
+
+
+def routing_prompt(utterance, skills, chain):
+    meta = "\n".join(f"- {n}: {d}" for n, d in skills)
+    if chain:
+        ask = ("Which ordered workflow of skills should handle it? "
+               "Reply with ONLY the arrow-separated slugs (e.g. scout→proof) "
+               "or 'none'.")
+    else:
+        ask = ("Which single skill should handle this request? "
+               "Reply with ONLY the slug, or 'none' if no skill fits.")
+    return (f"You are the router for an installed agent-skills bundle.\n"
+            f"Installed skills:\n{meta}\n\n"
+            f'User request: "{utterance}"\n\n{ask}')
+
+
+def observe(agent, prompt, cfg, timeout):
+    t0 = time.time()
+    try:
+        workdir = tempfile.mkdtemp(prefix="eval-run-")
+        subprocess.run(["git", "init", "-q", workdir], capture_output=True)
+        proc = subprocess.run(cfg["cmd"](prompt), capture_output=True,
+                              text=True, timeout=timeout, cwd=workdir,
+                              stdin=subprocess.DEVNULL)
+    except subprocess.TimeoutExpired:
+        return {"status": "error", "error": "timeout", "duration": time.time() - t0}
+    except FileNotFoundError:
+        return {"status": "unavailable", "error": f"{cfg['bin']} not found"}
+    if proc.returncode != 0:
+        return {"status": "error", "error": f"exit {proc.returncode}: "
+                + (proc.stderr or proc.stdout)[:200], "duration": time.time() - t0}
+    raw = cfg["parse"](proc.stdout)
+    m = re.search(r"model:\s*(\S+)", proc.stderr or "")
+    return {"status": "ok", "raw": raw, "duration": time.time() - t0,
+            "model": m.group(1) if m else None}
+
+
+def normalize(observed):
+    """Extract slug / chain / none from a free-text answer."""
+    o = observed.strip().strip("\"'`* ").lower()
+    o = re.sub(r"\([^)]*\)", "", o).strip()  # drop annotations like (quick)
+    none_anchors = ("none", "no skill", "n/a", "null", "no skill fits",
+                    "none of these", "no single skill", "directly",
+                    "no skill should", "answer directly")
+    if any(o.startswith(a) or o == a for a in none_anchors):
+        return "none"
+    m = re.search(r"([a-z][a-z0-9]*(?:→|->|\s*→\s*)[a-z][a-z0-9→\-> ]*)", o)
+    if "→" in o or "->" in o:
+        parts = re.split(r"→|->", o)
+        return "→".join(p.strip() for p in parts if re.fullmatch(r"[a-z0-9]+", p.strip()))
+    m = re.search(r"\b(concierge|hotseat|spelunk|scout|distill|masterplan|pilot|"
+                  r"recall|blueprint|headroom|polish|friction|ditto|unslop|backend|"
+                  r"roadtest|harden|sleuth|proof|referee|hotpath|janitor|frontpage|"
+                  r"findable|frugal|cleared|runway)\b", o)
+    return m.group(1) if m else o[:60]
+
+
+def _group_by_skill(cases):
+    groups = {}
+    for c in cases:
+        groups.setdefault(c["expected"], []).append(c)
+    return groups
+
+
+def score(cases_results, skills):
+    names = {n for n, _ in skills} | {"none"}
+    tp, fp, fn = {}, {}, {}
+    confusion = {}
+    for r in cases_results:
+        exp, obs = r["expected"], r["observed"]
+        if "→" in exp:
+            r["pass"] = obs.replace(" ", "") == exp.replace(" ", "")
+            continue
+        e = exp if exp in names else "unparseable"
+        o = obs if obs in names else "other"
+        if o == e:
+            tp[e] = tp.get(e, 0) + 1
+        else:
+            fn[e] = fn.get(e, 0) + 1
+            fp[o] = fp.get(o, 0) + 1
+            confusion[(e, o)] = confusion.get((e, o), 0) + 1
+        r["pass"] = o == e
+    total_tp = sum(tp.values()); total_fp = sum(fp.values()); total_fn = sum(fn.values())
+    prec = total_tp / (total_tp + total_fp) if total_tp + total_fp else 0.0
+    rec = total_tp / (total_tp + total_fn) if total_tp + total_fn else 0.0
+    f1 = 2 * prec * rec / (prec + rec) if prec + rec else 0.0
+    return {"per_skill": {n: {"tp": tp.get(n, 0), "fp": fp.get(n, 0), "fn": fn.get(n, 0)}
+                          for n in sorted(names | set(fp) | set(fn)) if n != "other"},
+            "confusion": [{"expected": e, "observed": o, "count": c}
+                          for (e, o), c in sorted(confusion.items(), key=lambda x: -x[1])],
+            "precision": round(prec, 4), "recall": round(rec, 4), "f1": round(f1, 4),
+            "accuracy": round(total_tp / len(cases_results), 4) if cases_results else 0.0}
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--agent", default="claude", choices=list(AGENTS) + ["none"])
+    ap.add_argument("--suite", default="cases", help="suite name (cases, sibling-confusion, router-stress), comma-separated, or all")
+    ap.add_argument("--skill", help="filter: cases whose expected contains this slug")
+    ap.add_argument("--case", type=int, help="1-based case number within filtered set")
+    ap.add_argument("--max-cases", type=int)
+    ap.add_argument("--runs", type=int, default=1)
+    ap.add_argument("--timeout", type=int, default=180)
+    ap.add_argument("--tier", choices=["smoke", "standard", "release"], default="standard")
+    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--check", action="store_true")
+    ap.add_argument("--json", action="store_true", help="print result JSON to stdout")
+    a = ap.parse_args()
+
+    skills = skill_metadata()
+    if a.check:
+        print(f"{'agent':<12} {'installed':<10} {'invocation':<12} version")
+        for name, cfg in AGENTS.items():
+            installed = bool(shutil.which(cfg["bin"])) if "bin" in cfg else False
+            state = ("unavailable" if cfg.get("unavailable")
+                     else "verified" if installed and cfg["verified"]
+                     else "unverified" if installed else "—")
+            ver = ""
+            if installed:
+                try:
+                    ver = subprocess.run([cfg["bin"], "--version"], capture_output=True,
+                                         text=True, timeout=15).stdout.strip()[:40]
+                except Exception:
+                    ver = "?"
+            print(f"{name:<12} {str(installed):<10} {state:<12} {ver}")
+        return 0
+
+    tiers = {"smoke": 12, "standard": 40, "release": 10**6}
+    suites = a.suite.split(",")
+    cases = load_cases(suites)
+    if a.skill:
+        cases = [c for c in cases if a.skill in c["expected"]]
+    if a.case:
+        cases = [cases[a.case - 1]] if 0 < a.case <= len(cases) else []
+    # Stratified sampling: one case per expected skill per pass (none
+    # group first, so every tier includes a negative), chains last.
+    singles = [c for c in cases if "→" not in c["expected"]]
+    chains = [c for c in cases if "→" in c["expected"]]
+    groups = _group_by_skill(singles)
+    keys = sorted(groups, key=lambda k: (k != "none", k))
+    order, i = [], 0
+    while any(len(groups[k]) > i for k in keys):
+        for k in keys:
+            if len(groups[k]) > i:
+                order.append(groups[k][i])
+        i += 1
+    cases = order + chains
+    cap = min(a.max_cases or tiers[a.tier], tiers[a.tier])
+    if len(cases) > cap:
+        cases = cases[:cap]
+
+    if a.dry_run or a.agent == "none":
+        print(f"dry run: {len(cases)} case(s), agent={a.agent}")
+        for i, c in enumerate(cases, 1):
+            print(f"  {i}. [{c['suite']}] {c['utterance'][:60]} => {c['expected']}")
+        return 0
+
+    cfg = AGENTS[a.agent]
+    if not shutil.which(cfg.get("bin", "")):
+        print(f"UNAVAILABLE: {cfg['bin']} not installed — no results fabricated",
+              file=sys.stderr)
+        return 3
+
+    commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=str(ROOT),
+                            capture_output=True, text=True).stdout.strip()
+    try:
+        agent_version = subprocess.run([cfg["bin"], "--version"], capture_output=True,
+                                       text=True, timeout=15).stdout.strip()[:40]
+    except Exception:
+        agent_version = "?"
+    results = []
+    for run in range(1, a.runs + 1):
+        for i, c in enumerate(cases, 1):
+            chain = "→" in c["expected"]
+            obs = observe(a.agent, routing_prompt(c["utterance"], skills, chain),
+                          cfg, a.timeout)
+            normalized = normalize(obs["raw"]) if obs["status"] == "ok" else ""
+            results.append({**c, "run": run, "observed": normalized,
+                            "raw": obs.get("raw", "")[:300],
+                            "status": obs["status"], "model": obs.get("model"),
+                            "invocation": "verified" if cfg["verified"] else "unverified",
+                            "duration_s": round(obs.get("duration", 0), 1)})
+            print(f"  [{i}/{len(cases)} run{run}] {c['expected']:<22} -> "
+                  f"{normalized or obs['status']}", file=sys.stderr)
+
+    doc = {"schema_version": "1.1", "suite": a.suite, "timestamp":
+           datetime.now(timezone.utc).isoformat(), "git_commit": commit,
+           "agent": a.agent, "agent_version": agent_version,
+           "model": next((r["model"] for r in results if r.get("model")), None),
+           "invocation_flags": "verified" if cfg["verified"]
+           else "unverified", "runs": a.runs, "tier": a.tier,
+           "case_count": len(cases), "cases": results}
+    doc["metrics"] = score(results, skills)
+    RESULTS.mkdir(exist_ok=True)
+    out = RESULTS / f"{datetime.now().strftime('%Y%m%d-%H%M%S')}-{a.agent}.json"
+    out.write_text(json.dumps(doc, indent=2))
+    print(f"results: {out}", file=sys.stderr)
+    if a.json:
+        print(json.dumps(doc, indent=2))
+    else:
+        m = doc["metrics"]
+        print(f"\nagent={a.agent} (invocation {'verified' if cfg['verified'] else 'UNVERIFIED'})"
+              f" · cases={len(cases)} · runs={a.runs}")
+        print(f"precision={m['precision']} recall={m['recall']} f1={m['f1']} "
+              f"accuracy={m['accuracy']}")
+        if m["confusion"]:
+            print("top confusion:")
+            for c in m["confusion"][:5]:
+                print(f"  expected {c['expected']} -> observed {c['observed']} ×{c['count']}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

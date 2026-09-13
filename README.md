@@ -1,106 +1,96 @@
-# The Vibe Coding Skills OS
+# Skills
 
-**One install turns a general coding agent into something that behaves much closer to an experienced product, engineering, design, QA, security, DevOps and documentation team.**
+**27 specialist skills that turn a general coding agent into an experienced product, engineering, design, QA, security and DevOps team.**
 
-Works with every practical Agent Skills-compatible runtime: Claude Code, Codex, Cursor, Google Antigravity, OpenCode and friends.
-
-```text
-IDEA     THINK          PLAN        BUILD   PROVE            SHIP             REMEMBER
-hotseat  scout, distill masterplan  pilot*  proof*, roadtest cleared*, runway* recall
-                                                              * planned — see table below
-```
-
-## Status: v0.6 — all 27 skills shipped
-
-| Phase | Skills | State |
-| --- | --- | --- |
-| Foundation | validators, shared contracts, naming system | ✅ shipped |
-| Intelligence | `concierge` `hotseat` `spelunk` `scout` `distill` `masterplan` `recall` | ✅ shipped |
-| Building | `pilot` `backend` `blueprint` `headroom` | ✅ shipped |
-| Experience | `polish` `friction` `ditto` | ✅ shipped |
-| Proof | `proof` `roadtest` `sleuth` `referee` `hotpath` `harden` | ✅ shipped |
-| Cleanup & public surface | `unslop` `janitor` `frontpage` `findable` `frugal` | ✅ shipped |
-| Shipping | `cleared` `runway` | ✅ shipped |
-
-The 27-skill target, contracts and build order are specified in [PRD.md](PRD.md).
+One install covers the whole arc of real work — idea debate, research, planning, building, browser verification, security, performance, cleanup, docs, git, and shipping — with routing that picks the *smallest* sufficient workflow instead of running everything.
 
 ## Install
 
-> Repository brand is intentionally TBD until the final naming pass (PRD §16), so `<owner>/<repo>` is a placeholder.
+Verified with the public [skills CLI](https://skills.sh) on 2026-09-14 (all 27 skills discovered and installed into a clean directory):
 
 ```bash
-npx skills add <owner>/<repo> --all
+npx skills add udaysharmadev/Skills --all
 ```
 
-Then start every new project with:
+Interactive selection:
+
+```bash
+npx skills add udaysharmadev/Skills
+```
+
+Then start any new project with `/concierge` — it detects your stack and capabilities, and routes your request to the smallest workflow that solves it.
+
+## What changes after installation
+
+Before — you re-explain process to the agent every session: "research first", "don't claim it works, prove it", "make a plan before coding".
+
+After — 27 specialists carry that process, and a router keeps it lean:
 
 ```text
-/concierge
+IDEA      THINK           PLAN        BUILD    PROVE             SHIP              REMEMBER
+hotseat   scout, distill  masterplan  pilot    proof, roadtest   cleared, runway   recall
+                                               sleuth, referee, hotpath
 ```
 
-It inspects the project and explains what is available in under a minute of your attention. You can also install skills individually:
+| | | |
+| --- | --- | --- |
+| **`concierge`** — detect + route | **`hotseat`** — 7-persona idea debate | **`spelunk`** — map any codebase |
+| **`scout`** — cited research first | **`distill`** — vague ask → sharp brief | **`masterplan`** — vertical-slice plans |
+| **`pilot`** — execute plans, verify each slice | **`backend`** — server correctness, any stack | **`blueprint`** — architecture that renders |
+| **`headroom`** — scale with proportionality | **`polish`** — kill the AI-generated look | **`friction`** — can a human use it? |
+| **`ditto`** — recreate UI from a reference | **`proof`** — the right test at the right boundary | **`roadtest`** — real-browser evidence |
+| **`sleuth`** — root cause, not symptom | **`referee`** — independent review | **`hotpath`** — measured optimization |
+| **`harden`** — security audit, evidence-backed | **`unslop`** — detox the vibe-coded mess | **`janitor`** — git/GitHub hygiene |
+| **`frontpage`** — READMEs from verified facts | **`findable`** — SEO without snake oil | **`frugal`** — token efficiency, honestly measured |
+| **`cleared`** — go-live gate | **`runway`** — deploy + verify live | **`recall`** — memory with a context budget |
 
-```bash
-npx skills add <owner>/<repo>          # interactive selection
-```
+## Measured, not vibes
 
-## All 27 skills
+This repository is subject to its own rules — no benchmark number that was not run, no compatibility claim that was not tested, no claim of "works everywhere" that was not verified. Current evidence:
 
-| Skill | Job |
+| Claim | Status |
 | --- | --- |
-| `concierge` | Detects stack + runtime capabilities, routes your request to the smallest workflow |
-| `hotseat` | Seven specialists destroy and rebuild your idea before you build it |
-| `spelunk` | Maps any existing repository deeply — quick, deep or teach mode |
-| `scout` | Research before code: cited, version-pinned, primary-source-first |
-| `distill` | Turns "bro add dashboard make it good" into an execution-grade brief |
-| `masterplan` | A serious implementation plan with vertical slices, rollback and a definition of done |
-| `pilot` | Executes plans slice by slice — implement, verify, inspect diff, repeat |
-| `backend` | Server-side correctness in any stack: APIs, data, auth, jobs, webhooks |
-| `blueprint` | Architecture analysis + diagrams that render (Mermaid + navigable HTML) |
-| `headroom` | Scale design with proportionality — Now / Next / Scale, with trigger metrics |
-| `polish` | UI design that kills the AI-generated look — deliberate, anti-slop, state-complete |
-| `friction` | UX audits: can a real person complete the task? WCAG 2.2 + novice/expert walks |
-| `ditto` | Recreates UI from screenshot/URL/design with a screenshot-compare-correct loop |
-| `proof` | The right test at the right boundary — behavior-named, regression-locked, mock-disciplined |
-| `roadtest` | Real-browser QA with evidence bundles — screenshots, console, network, responsive |
-| `sleuth` | Root-cause debugging: reproduce, hypothesize, eliminate, fix the cause, lock it with a test |
-| `referee` | Independent review on two axes — intent then quality; actionable findings only |
-| `hotpath` | Measured optimization: benchmark, one change, re-measure, report the delta or revert |
-| `harden` | Security audit per OWASP Top 10:2025 — severity + confidence, no destructive testing |
-| `unslop` | Rescues vibe-coded messes: baseline, de-slop in verified batches, never a big rewrite |
-| `janitor` | Git/GitHub hygiene — grounded in real git output, commit messages from real diffs |
-| `frontpage` | READMEs from research, not vibes — every claim provable, every snippet executed |
-| `findable` | SEO/discoverability verified on rendered HTML — no snake oil |
-| `frugal` | Token efficiency: save tokens, never save effort — savings reported honestly |
-| `cleared` | The final gate: READY / READY WITH WARNINGS / BLOCKED, every verdict from evidence |
-| `runway` | Deploy with verification: preflight → preview → prod → smoke → logs → rollback path |
-| `recall` | Persistent high-signal project memory with a strict context budget |
+| Install: `npx skills add udaysharmadev/Skills --all` discovers and installs all 27 skills | **measured** 2026-09-14, skills CLI, clean directory |
+| 27/27 skills pass the bundle validators (frontmatter, naming, links, ≤500-line budget) | **measured**, runs on every commit via CI |
+| Routing eval, stratified smoke tier (12 cases, 12 distinct skills incl. 1 negative), Codex (gpt-5.6-sol): accuracy **0.917**, single run; sole miss: a trivial-styling request routed to `polish` | **measured** 2026-09-14, raw JSON committed under `evals/results/` |
+| Routing eval, same tier, OpenCode: accuracy **1.0** (12/12) | **measured** 2026-09-14, same protocol |
+| Routing eval, sibling-confusion suite (20 adjacency pairs), Codex | **measured** 2026-09-14, see `evals/results/` |
+| Context footprint: median ≈1,200 tokens per SKILL.md (derived byte estimate), zero outliers; always-on frontmatter descriptions ≈3,500 tokens total | **measured** by `scripts/check-context` |
+| Claude Code headless invocation | **unverified** — flags per official docs; execution hangs in the dev environment |
+| Cursor / Antigravity | **unavailable** locally — no results claimed |
 
-Each skill is a self-contained folder under `skills/` — install one, or all of them.
+Every result JSON records agent, version, commit, date, invocation status and raw outputs — see [docs/evaluations.md](docs/evaluations.md).
+
+## Compatibility
+
+Fill-by-evidence matrix per agent and capability: [docs/compatibility.md](docs/compatibility.md). Skills are Tier A/B portable by design (markdown + references, deterministic scripts, explicit capability fallbacks) — and portability is treated as a claim to prove, not assume.
+
+## Documentation
+
+- [Evaluations](docs/evaluations.md) · [Benchmarks](docs/benchmarks.md) · [Naming audit](docs/name-audit.md) · [Handoff contract](docs/handoff.md) · [Architecture](docs/architecture/README.md)
+- Product definition: [PRD.md](PRD.md)
 
 ## Principles
 
-1. **Evidence before confidence.** Never "everything works" because the code looks reasonable. Run what can be run; mark what can't as unverified.
-2. **Universal core, runtime enhancements.** No skill fundamentally requires one runtime, MCP server, framework or OS. Core workflow → capability detection → best available tool → fallback.
-3. **No AI slop.** No fake benchmarks, no decorative badges, no giant unverified rewrites, no hallucinated packages.
-4. **Save tokens, never save effort.**
-5. **Protect user control.** Autonomous for reversible actions; explicit gates for destructive ones.
+1. **Evidence before confidence** — verification replaces confidence language; what can't be verified is marked `unverified`.
+2. **Universal core, runtime enhancements** — core workflow → capability detection → best available tool → fallback.
+3. **No AI slop** — no invented numbers, decorative badges, or rewrites-for-activity.
+4. **Save tokens, never save effort** — the quality gate never moves.
+5. **Protect user control** — reversible actions autonomous; destructive ones explicitly gated.
 
-Full principles and the skill-file contract live in [PRD.md](PRD.md) and [shared/principles](shared/principles/).
+## FAQ
 
-## Repository layout
+**Why 27 skills instead of one big prompt?** A mega-prompt is always-on tax and forgets under pressure. Specialists carry deep checklists in `references/` loaded only when their workflow needs them; the router keeps small tasks cheap.
 
-```text
-skills/       one self-contained folder per skill
-shared/       canonical contracts (principles, terminology, capability map)
-evals/        trigger/workflow fixtures — wired to a real runner before any claims
-docs/         architecture and generated skill index
-scripts/      validate-skills, check-names, check-links, build-docs
-```
+**Why should I trust the names won't collide with existing skills?** Single-word system enforced by `scripts/check-names`, watchlist + pre-approved alternates in `shared/terminology/names.md`, and a fresh exact-name audit gated before any public announcement ([docs/name-audit.md](docs/name-audit.md) records status honestly).
+
+**Does this work outside Claude Code?** The install is verified once via the skills CLI into a clean directory; per-agent capability cells remain untested by policy and are tracked in [docs/compatibility.md](docs/compatibility.md) — cells stay `?` until tested, by policy.
+
+**Can I install just one skill?** Yes — `npx skills add udaysharmadev/Skills` for interactive selection. Each skill folder is self-contained by contract.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Every skill must pass `scripts/validate-skills` and `scripts/check-names`, and meet the "legendary skill" bar in PRD §19 before it ships.
+See [CONTRIBUTING.md](CONTRIBUTING.md). Every skill meets the "legendary" bar (PRD §19) before shipping: clear triggers, capability fallbacks, deterministic verification, token-conscious files, honest limitations. Deterministic CI runs on every PR; live evals are manual and budgeted.
 
 ## License
 

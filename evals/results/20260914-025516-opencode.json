@@ -1,0 +1,320 @@
+{
+  "schema_version": "1.1",
+  "suite": "cases",
+  "timestamp": "2026-09-13T21:25:16.392093+00:00",
+  "git_commit": "aa71fc8",
+  "agent": "opencode",
+  "agent_version": "1.18.30",
+  "model": null,
+  "invocation_flags": "verified",
+  "runs": 1,
+  "tier": "smoke",
+  "case_count": 12,
+  "cases": [
+    {
+      "suite": "cases",
+      "utterance": "make the button blue",
+      "expected": "none",
+      "run": 1,
+      "observed": "none",
+      "raw": "none",
+      "status": "ok",
+      "model": null,
+      "invocation": "verified",
+      "duration_s": 15.0,
+      "pass": true
+    },
+    {
+      "suite": "cases",
+      "utterance": "add a new column to the users table",
+      "expected": "backend",
+      "run": 1,
+      "observed": "backend",
+      "raw": "backend",
+      "status": "ok",
+      "model": null,
+      "invocation": "verified",
+      "duration_s": 6.3,
+      "pass": true
+    },
+    {
+      "suite": "cases",
+      "utterance": "document the architecture of this system",
+      "expected": "blueprint",
+      "run": 1,
+      "observed": "blueprint",
+      "raw": "blueprint",
+      "status": "ok",
+      "model": null,
+      "invocation": "verified",
+      "duration_s": 6.0,
+      "pass": true
+    },
+    {
+      "suite": "cases",
+      "utterance": "are we ready to ship this",
+      "expected": "cleared",
+      "run": 1,
+      "observed": "cleared",
+      "raw": "cleared",
+      "status": "ok",
+      "model": null,
+      "invocation": "verified",
+      "duration_s": 5.4,
+      "pass": true
+    },
+    {
+      "suite": "cases",
+      "utterance": "I just installed this skills bundle, what now",
+      "expected": "concierge",
+      "run": 1,
+      "observed": "concierge",
+      "raw": "concierge",
+      "status": "ok",
+      "model": null,
+      "invocation": "verified",
+      "duration_s": 4.6,
+      "pass": true
+    },
+    {
+      "suite": "cases",
+      "utterance": "bro add dashboard make it good",
+      "expected": "distill",
+      "run": 1,
+      "observed": "distill",
+      "raw": "distill",
+      "status": "ok",
+      "model": null,
+      "invocation": "verified",
+      "duration_s": 6.2,
+      "pass": true
+    },
+    {
+      "suite": "cases",
+      "utterance": "make it look like this [screenshot]",
+      "expected": "ditto",
+      "run": 1,
+      "observed": "ditto",
+      "raw": "ditto",
+      "status": "ok",
+      "model": null,
+      "invocation": "verified",
+      "duration_s": 4.9,
+      "pass": true
+    },
+    {
+      "suite": "cases",
+      "utterance": "our site doesn't show up in google at all",
+      "expected": "findable",
+      "run": 1,
+      "observed": "findable",
+      "raw": "findable",
+      "status": "ok",
+      "model": null,
+      "invocation": "verified",
+      "duration_s": 4.7,
+      "pass": true
+    },
+    {
+      "suite": "cases",
+      "utterance": "users keep abandoning the signup form",
+      "expected": "friction",
+      "run": 1,
+      "observed": "friction",
+      "raw": "friction",
+      "status": "ok",
+      "model": null,
+      "invocation": "verified",
+      "duration_s": 6.5,
+      "pass": true
+    },
+    {
+      "suite": "cases",
+      "utterance": "our README is embarrassing, rewrite it",
+      "expected": "frontpage",
+      "run": 1,
+      "observed": "frontpage",
+      "raw": "frontpage",
+      "status": "ok",
+      "model": null,
+      "invocation": "verified",
+      "duration_s": 5.1,
+      "pass": true
+    },
+    {
+      "suite": "cases",
+      "utterance": "we're burning through the context window way too fast",
+      "expected": "frugal",
+      "run": 1,
+      "observed": "frugal",
+      "raw": "frugal",
+      "status": "ok",
+      "model": null,
+      "invocation": "verified",
+      "duration_s": 5.2,
+      "pass": true
+    },
+    {
+      "suite": "cases",
+      "utterance": "audit our app for security issues before launch",
+      "expected": "harden",
+      "run": 1,
+      "observed": "harden",
+      "raw": "harden",
+      "status": "ok",
+      "model": null,
+      "invocation": "verified",
+      "duration_s": 6.2,
+      "pass": true
+    }
+  ],
+  "metrics": {
+    "per_skill": {
+      "backend": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      "blueprint": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      "cleared": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      "concierge": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      "distill": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      "ditto": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      "findable": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      "friction": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      "frontpage": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      "frugal": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      "harden": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      "headroom": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "hotpath": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "hotseat": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "janitor": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "masterplan": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "none": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      "pilot": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "polish": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "proof": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "recall": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "referee": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "roadtest": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "runway": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "scout": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "sleuth": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "spelunk": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "unslop": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      }
+    },
+    "confusion": [],
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+  }
+}

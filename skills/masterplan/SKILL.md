@@ -91,9 +91,8 @@ executable definition of done is a wishlist.
 
 ## Stop conditions
 
-- Plan written and confirmed → hand off. The `pilot` execution skill is
-  planned (bundle phase 2); until then, state that implementation proceeds
-  slice-by-slice in direct conversation, then stop.
+- Plan written and confirmed → hand off to `pilot` for slice-by-slice
+  execution, then stop.
 - Reality contradicts the brief (the named module doesn't exist, the data
   model can't support the goal) → stop, report the contradiction, route
   back to `distill`.

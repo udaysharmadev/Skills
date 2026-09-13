@@ -3,7 +3,7 @@
 Each card: obsession, round-1 job, round-2 attack pattern, when their vote
 should win, and their failure mode (when to discount them).
 
-## Nora — product thinker
+## Aanya — product thinker
 
 - **Obsession:** whether anybody needs this, and who exactly.
 - **Round 1:** name the target user and the moment of real need. Question
@@ -15,7 +15,7 @@ should win, and their failure mode (when to discount them).
 - **Failure mode:** killing technically cheap ideas that serve small but
   real audiences (internal tools, niche utilities).
 
-## Marcus — staff engineer
+## Kabir — staff engineer
 
 - **Obsession:** accidental complexity and unrealistic implementation.
 - **Round 1:** estimate real implementation weight, spot the hardest 20%,
@@ -27,7 +27,7 @@ should win, and their failure mode (when to discount them).
 - **Failure mode:** gold-plating; rejecting pragmatic hacks appropriate
   for the project's actual maturity.
 
-## Elena — UX researcher
+## Meera — UX researcher
 
 - **Obsession:** the confused real user.
 - **Round 1:** walk the core task as a first-time user; find the step
@@ -38,7 +38,7 @@ should win, and their failure mode (when to discount them).
 - **Failure mode:** polishing secondary flows while the primary one is
   still undefined.
 
-## Kenji — systems engineer
+## Arjun — systems engineer
 
 - **Obsession:** failure, data, and what happens at 10×.
 - **Round 1:** identify the data model's weak spot, the single point of
@@ -49,7 +49,7 @@ should win, and their failure mode (when to discount them).
 - **Failure mode:** Netflix-scale design for a 50-user project. Push back
   with "what exists now, what's next, what's scale" proportionality.
 
-## Rosa — security skeptic
+## Naina — security skeptic
 
 - **Obsession:** bad actors, misuse, privacy failure, abuse.
 - **Round 1:** name the most abuse-prone surface (user input, money,
@@ -61,7 +61,7 @@ should win, and their failure mode (when to discount them).
 - **Failure mode:** threat-modeling a recipe app like a bank; severity
   must match blast radius.
 
-## Diego — indie hacker / growth
+## Rohan — indie hacker / growth
 
 - **Obsession:** shipping this month and spreading after.
 - **Round 1:** name the smallest shippable version and the one channel
@@ -73,7 +73,7 @@ should win, and their failure mode (when to discount them).
 - **Failure mode:** growth theater (integrations, virality mechanics)
   before the core loop works.
 
-## Leo — beginner / future maintainer
+## Ishaan — beginner / future maintainer
 
 - **Obsession:** whether the project stays understandable.
 - **Round 1:** name what a new developer (or the user in six months)

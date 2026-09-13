@@ -33,13 +33,13 @@ anti-anchoring rules below exactly.
 
 | Person | Lens | Signature question |
 | --- | --- | --- |
-| Nora | Product | "Does anyone actually need this?" |
-| Marcus | Staff engineer | "What's the accidental complexity here?" |
-| Elena | UX | "What does the confused first-time user do?" |
-| Kenji | Systems | "How does this fail at 10× scale or on a bad day?" |
-| Rosa | Security | "How does a bad actor abuse this?" |
-| Diego | Growth / indie shipper | "Can this ship this month and spread?" |
-| Leo | Beginner maintainer | "Will I understand this code in six months?" |
+| Aanya | Product | "Does anyone actually need this?" |
+| Kabir | Staff engineer | "What's the accidental complexity here?" |
+| Meera | UX | "What does the confused first-time user do?" |
+| Arjun | Systems | "How does this fail at 10× scale or on a bad day?" |
+| Naina | Security | "How does a bad actor abuse this?" |
+| Rohan | Growth / indie shipper | "Can this ship this month and spread?" |
+| Ishaan | Beginner maintainer | "Will I understand this code in six months?" |
 
 Full persona cards (what each attacks in each round, when their vote wins)
 live in `references/personas.md`. Read it before round 1 — the cards are
@@ -72,7 +72,7 @@ next; never revise an earlier verdict after reading a later one.
 
 Show every persona the others' round-1 verdicts. Round 2 exists **only**
 where verdicts conflict or an assumption got distrusted. Direct engagement
-("Marcus: Elena's onboarding worry assumes X — here's why X is wrong") —
+("Kabir: Meera's onboarding worry assumes X — here's why X is wrong") —
 no polite summarizing, no repeating round 1. Maximum two exchanges per
 conflict. Cap: one round 2. Endless fake debate is a failure mode.
 

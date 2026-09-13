@@ -64,7 +64,7 @@ brief you'll verify against.
 - For web: check current Core Web Vitals (LCP, INP, CLS) where
   measurable — large unoptimized hero images and layout shift are design
   bugs too.
-- Then hand off: `friction` for usability, `roadtest` (planned phase 4)
+- Then hand off: `friction` for usability, `roadtest`
   for browser-flow evidence.
 
 ## The banned list

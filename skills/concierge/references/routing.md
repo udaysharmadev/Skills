@@ -1,8 +1,9 @@
 # Routing table
 
 Map the user's request to the smallest workflow. Chains read left to
-right; each step hands off when its part is done. Skills marked (planned)
-are not shipped yet — say so and proceed with the manual equivalent.
+right; each step hands off when its part is done. All 27 skills in
+this bundle are installed together; if a target skill is missing, the
+user installed a subset — say so and proceed with the manual equivalent.
 
 ## Request patterns
 

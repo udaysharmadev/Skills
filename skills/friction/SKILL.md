@@ -12,7 +12,7 @@ that loses people is a failed app.
 ## When NOT to use
 
 - Pure visual styling → `polish`.
-- Automated test coverage of flows → `roadtest` (planned phase 4); you
+- Automated test coverage of flows → `roadtest`; you
   may use browser tooling, but your product is the audit.
 - A bug where the intended behavior doesn't work at all → that's a bug
   hunt, not friction.

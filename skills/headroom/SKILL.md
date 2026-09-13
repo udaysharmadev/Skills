@@ -14,8 +14,7 @@ that follows carries the load level at which it becomes necessary. A
 ## When NOT to use
 
 - Documenting what exists → `blueprint`.
-- A specific endpoint is slow → that's diagnosis (hotpath, planned phase
-  4), not design.
+- A specific endpoint is slow → that's diagnosis (`hotpath`), not design.
 - Implementing backend behavior → `backend`.
 
 ## Prerequisites

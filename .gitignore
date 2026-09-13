@@ -13,3 +13,6 @@ Thumbs.db
 # Local scratch
 tmp/
 *.log
+
+# eval runner output
+evals/results/

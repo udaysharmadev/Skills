@@ -60,23 +60,26 @@
 - "save this lesson before we lose the context window" => recall
 - "write a handoff summary for tomorrow" => recall
 
-## Negative cases (must stay quiet)
+## Direct routes (small-sounding asks that a specialist owns)
 
-- "fix the login bug, it 500s on submit" => none
+- "fix the login bug, it 500s on submit" => sleuth
+- "write unit tests for utils/date.ts" => proof
+- "review my diff before I push" => referee
+- "deploy this to vercel" => runway
+- "make this UI pretty" => polish
+- "clean up this mess of a repo" => unslop
+- "why is this test flaky" => sleuth
+- "why is the /api/orders endpoint slow" => hotpath
+- "add a new column to the users table" => backend
+- "write a migration plan for switching databases" => masterplan
+- "what should our git commit message convention be" => janitor
+
+## Genuinely none (trivial or out of scope — no skill should steal)
+
 - "make the button blue" => none
-- "write unit tests for utils/date.ts" => none
-- "review my diff before I push" => none
-- "deploy this to vercel" => none
-- "make this UI pretty" => none
-- "clean up this mess of a repo" => none
-- "why is this test flaky" => none
 - "add a logout link to the navbar" => none
 - "delete the unused imports in src/api.ts" => none
-- "why is the /api/orders endpoint slow" => none
 - "rename the settings page title" => none
-- "add a new column to the users table" => none
-- "write a migration plan for switching databases" => none
-- "what should our git commit message convention be" => none
 - "summarize this PR description for me" => none
 - "how do I center a div" => none
 - "what's the weather like" => none

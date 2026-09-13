@@ -287,25 +287,25 @@ Instead of one LLM instantly agreeing with it, a seven-person virtual team puts 
 
 ### Core people
 
-**Nora — Product thinker**
+**Aanya — Product thinker**
 Obsessed with whether anybody needs the feature.
 
-**Marcus — Staff engineer**
+**Kabir — Staff engineer**
 Hates accidental complexity and unrealistic implementation.
 
-**Elena — UX researcher/designer**
+**Meera — UX researcher/designer**
 Represents the confused real user and questions flows.
 
-**Kenji — Systems engineer**
+**Arjun — Systems engineer**
 Looks at architecture, failure, data and future scale.
 
-**Rosa — Security skeptic**
+**Naina — Security skeptic**
 Assumes bad actors, misuse, privacy failures and abuse cases.
 
-**Diego — Indie hacker/growth brain**
+**Rohan — Indie hacker/growth brain**
 Asks whether it can ship, spread and create value quickly.
 
-**Leo — Student/new developer lens**
+**Ishaan — Student/new developer lens**
 Challenges complexity and asks whether the project remains understandable and maintainable.
 
 ### Discussion protocol

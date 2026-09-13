@@ -1,0 +1,17 @@
+{
+  "fixture": "ts-dashboard",
+  "note": "Answer key for benchmark graders only — never shown to the evaluated agent.",
+  "seeded_issues": [
+    {"id": "S1", "severity": "critical", "category": "secrets", "location": "src/App.tsx API_KEY + .env tracked with example placeholder keys (intentionally committed); .gitignore omits .env", "expected": "flag committed secret in code and tracked .env; recommend rotation + gitignore + history cleanup consideration"},
+    {"id": "S2", "severity": "high", "category": "swallowed-errors", "location": "src/App.tsx fetch .catch(() => setLoading(false)) and submitNewOrder catch returning false", "expected": "flag silently swallowed errors, no user feedback, no logging"},
+    {"id": "S3", "severity": "high", "category": "duplicated-schema", "location": "Order type in App.tsx vs OrderList.tsx (different field names!) vs api/orders.ts", "expected": "flag 3 drifting definitions of the same entity"},
+    {"id": "S4", "severity": "high", "category": "no-validation-server", "location": "api/orders.ts returns false from express handler; no real validation; client-supplied id/total trusted", "expected": "flag trust of client input, broken handler semantics (return false not res.status)"},
+    {"id": "S5", "severity": "medium", "category": "dead-code", "location": "formatDateV2 + oldFormatDate in utils.ts; cleanup comment in App.tsx", "expected": "flag dead duplicated helpers"},
+    {"id": "S6", "severity": "medium", "category": "unused-dependency", "location": "package.json: lodash never imported; moment imported twice (utils not, App/OrderList yes) — moment usage could be native", "expected": "flag lodash as unused; moment duplicated with own formatDate helpers"},
+    {"id": "S7", "severity": "medium", "category": "any-types", "location": "App.tsx useState<any>, payload: any, stats: any; OrderRow props: any", "expected": "flag type escape hatches"},
+    {"id": "S8", "severity": "medium", "category": "debug-leftovers", "location": "console.log in App.tsx fetch handler", "expected": "flag debug leftovers"},
+    {"id": "S9", "severity": "low", "category": "inconsistent-naming", "location": "formatDate vs formatDateV2 vs oldFormatDate", "expected": "flag naming drift"},
+    {"id": "S10", "severity": "low", "category": "mega-component", "location": "App.tsx holds tabs, data fetching, stats, CSV export, form logic", "expected": "flag multi-responsibility component; splitting is improvement, not required for pass"}
+  ],
+  "baseline": {"note": "recorded in fixtures/ts-dashboard/BASELINE.md before any run"}
+}

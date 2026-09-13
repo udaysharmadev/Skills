@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Dashboard</title>
+<style>
+  * { margin: 0; box-sizing: border-box; }
+  body { font-family: Arial; background: #f0f0f0; }
+  .header { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 60px; text-align: center; }
+  .header h1 { font-size: 42px; margin-bottom: 12px; }
+  .cards { display: flex; gap: 20px; padding: 30px; flex-wrap: wrap; justify-content: center; }
+  .card { background: white; border-radius: 12px; padding: 30px; width: 260px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .card h3 { color: #764ba2; }
+  .card p { font-size: 28px; font-weight: bold; }
+  .table { padding: 30px; }
+  table { width: 100%; border-collapse: collapse; background: white; }
+  td, th { padding: 8px; border-bottom: 1px solid #ddd; font-size: 13px; }
+  button { background: #667eea; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; }
+  .status { padding: 30px; color: #666; font-style: italic; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>✨ Super Dashboard Pro</h1>
+    <p>The modern SaaS solution for all your analytics needs</p>
+  </div>
+  <div class="cards">
+    <div class="card"><h3>Users</h3><p>1,204</p></div>
+    <div class="card"><h3>Revenue</h3><p>$8,210</p></div>
+    <div class="card"><h3>Growth</h3><p>+12%</p></div>
+    <div class="card"><h3>Churn</h3><p>2.1%</p></div>
+    <div class="card"><h3>NPS</h3><p>61</p></div>
+    <div class="card"><h3>Uptime</h3><p>99.9%</p></div>
+  </div>
+  <div class="table">
+    <h2>Recent Orders</h2>
+    <table>
+      <tr><th>Order</th><th>Customer</th><th>Total</th></tr>
+      <tr><td>#1024</td><td>A. Smith</td><td>$54.00</td></tr>
+      <tr><td>#1025</td><td>B. Jones</td><td>$12.50</td></tr>
+    </table>
+    <div class="status">Loading more orders...</div>
+    <div class="status">No data.</div>
+    <button onclick="alert('todo')">Export</button>
+    <input placeholder="Search..." style="padding:8px; margin-left:12px;">
+  </div>
+</body>
+</html>

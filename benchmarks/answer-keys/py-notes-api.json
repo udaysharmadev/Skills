@@ -1,0 +1,12 @@
+{
+  "fixture": "py-notes-api",
+  "note": "Answer key for graders only.",
+  "seeded_issues": [
+    {"id": "P1", "severity": "critical", "category": "sql-injection", "location": "app/main.py get_note: f-string SQL with URL-supplied note_id", "expected": "flag injection; parameterized query"},
+    {"id": "P2", "severity": "high", "category": "no-input-validation", "location": "create_note accepts raw dict, no model/schema", "expected": "flag missing pydantic model, missing required fields"},
+    {"id": "P3", "severity": "medium", "category": "shared-connection", "location": "module-level sqlite connection across requests", "expected": "flag concurrency/correctness concern"},
+    {"id": "P4", "severity": "low", "category": "unused-dependency", "location": "requirements.txt: requests and pytz unused", "expected": "flag unused deps; unpinned versions"},
+    {"id": "P5", "severity": "low", "category": "doc-gaps", "location": "README lacks setup/db-init/schema", "expected": "flag missing init instructions; no tests exist"}
+  ],
+  "baseline": {"note": "source-only fixture; graders evaluate detection + remediation quality"}
+}
