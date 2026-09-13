@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# validate-skills — check every skills/*/SKILL.md against the bundle contract
+# (PRD §8): frontmatter, name/dir match, description limits, body budget,
+# self-containment. Exits non-zero on any failure.
+set -u
+cd "$(dirname "$0")/.."
+
+fail=0
+count=0
+
+for dir in skills/*/; do
+  [ -d "$dir" ] || continue
+  count=$((count + 1))
+  name=$(basename "$dir")
+  f="$dir/SKILL.md"
+
+  if [ ! -f "$f" ]; then
+    echo "FAIL $name: missing SKILL.md"
+    fail=1
+    continue
+  fi
+
+  # Frontmatter delimiters
+  if [ "$(head -n 1 "$f")" != "---" ]; then
+    echo "FAIL $name: file must start with a '---' frontmatter delimiter"
+    fail=1
+    continue
+  fi
+  if [ "$(awk 'NR>1 && /^---$/{print; exit}' "$f")" != "---" ]; then
+    echo "FAIL $name: frontmatter is not closed by a second '---' line"
+    fail=1
+    continue
+  fi
+
+  fm_name=$(awk 'NR>1 && /^---$/{exit} /^name:/{print $2; exit}' "$f")
+  if [ "$fm_name" != "$name" ]; then
+    echo "FAIL $name: frontmatter name is '${fm_name:-<missing>}' but directory is '$name'"
+    fail=1
+  fi
+
+  desc=$(awk 'NR>1 && /^---$/{exit} /^description:/{sub(/^description: */,""); print; exit}' "$f")
+  if [ -z "$desc" ]; then
+    echo "FAIL $name: missing description (the primary trigger signal)"
+    fail=1
+  elif [ "${#desc}" -gt 1024 ]; then
+    echo "FAIL $name: description is ${#desc} chars (spec limit 1024)"
+    fail=1
+  fi
+
+  lines=$(wc -l < "$f" | tr -d ' ')
+  if [ "$lines" -gt 500 ]; then
+    echo "FAIL $name: SKILL.md is $lines lines (max 500 — move detail to references/)"
+    fail=1
+  fi
+
+  # Self-containment: no relative escapes out of the skill folder
+  if grep -qnE '\]\(\.\./|\]\(/' "$f"; then
+    echo "FAIL $name: SKILL.md links outside its own folder — skills must be self-contained"
+    fail=1
+  fi
+  if grep -qn 'shared/' "$f"; then
+    echo "FAIL $name: SKILL.md references shared/ — copy the needed contract inline instead"
+    fail=1
+  fi
+done
+
+if [ "$count" -eq 0 ]; then
+  echo "FAIL: no skills found under skills/"
+  exit 1
+fi
+
+if [ "$fail" -eq 0 ]; then
+  echo "OK: $count skill(s) valid"
+fi
+exit "$fail"

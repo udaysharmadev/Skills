@@ -1,0 +1,45 @@
+# Routing table
+
+Map the user's request to the smallest workflow. Chains read left to
+right; each step hands off when its part is done. Skills marked (planned)
+are not shipped yet — say so and proceed with the manual equivalent.
+
+## Request patterns
+
+| Request smells like | Route |
+| --- | --- |
+| New idea, wants opinions / validation | `hotseat` → `distill` |
+| Vague feature ask ("make it good") | `distill` → `masterplan` |
+| Clear feature, wants it built | `distill` (skip if spec is already tight) → `masterplan` → implement |
+| "How does this repo work" / new to codebase | `spelunk` |
+| Library/API/framework question | `scout` |
+| "What did we decide" / "catch me up" | `recall` |
+| Bug report | `spelunk` (quick) → debug → `proof` (planned `sleuth`) |
+| Before context reset / handoff | `recall` (session delta) |
+
+## Rules
+
+1. **Smallest sufficient chain.** Every extra link costs tokens and adds
+   failure surface. "Login is broken" never needs `hotseat`.
+2. **Specialists don't compose.** If a specialist seems to need another
+   specialist, that's a signal to come back here — or more often, to just
+   do the small extra step inline.
+3. **Two skills seem equally right** → pick by the user's *intent words*,
+   not the topic. "Should I…?" → `hotseat`. "How do I…?" → `scout`.
+   "Make X good" → `distill`. "Plan X" → `masterplan`.
+4. **Still ambiguous after intent words** → ask exactly one question
+   ("want a critique of the idea, or a plan to build it?"), then route.
+5. **Route to a skill that isn't installed** → name it, mark it (planned),
+   and state what you'll do instead. Never silently pretend a skill ran.
+
+## Handoff phrasing
+
+Announce, then get out of the way:
+
+```text
+route: scout → distill
+scout: researching current best practice for auth libraries (web available)
+```
+
+Do not restate the specialist's instructions, and do not shadow it — one
+announcer, one worker.

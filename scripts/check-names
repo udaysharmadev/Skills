@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# check-names — enforce the single-word lowercase naming system (PRD §16)
+# and make sure no retired compound names reappear.
+set -u
+cd "$(dirname "$0")/.."
+
+fail=0
+
+for dir in skills/*/; do
+  [ -d "$dir" ] || continue
+  name=$(basename "$dir")
+  if ! echo "$name" | grep -Eq '^[a-z][a-z0-9]+$'; then
+    echo "FAIL $name: must be a single lowercase word (^[a-z][a-z0-9]+$, no hyphens)"
+    fail=1
+  fi
+done
+
+# Retired working names from the pre-0.1 naming pass — none may reappear
+# inside any shipped skill.
+retired="vibe-chief idea-adda adda repo-lens source-scout prompt-smith plan-weaver build-pilot memory-thread arch-studio scale-brain ui-glow ux-radar pixel-copy repo-detox backend-brain browser-patrol security-fort bug-trace test-proof diff-judge speed-hunt git-pulse readme-studio search-ready token-trimmer go-live-guard deploy-runway"
+for r in $retired; do
+  if grep -rq -- "$r" skills/; then
+    echo "FAIL: retired name '$r' found under skills/"
+    fail=1
+  fi
+done
+
+# Names of already-popular external skills we explicitly refuse to clone
+taken="ponytail not-ai archify grill-me impeccable"
+for t in $taken; do
+  if [ -d "skills/$t" ]; then
+    echo "FAIL: '$t' is an established external skill name — steal the energy, never the words"
+    fail=1
+  fi
+done
+
+if [ "$fail" -eq 0 ]; then
+  echo "OK: names follow the single-word system"
+fi
+exit "$fail"

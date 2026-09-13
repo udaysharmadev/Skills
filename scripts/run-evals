@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# run-evals — validate trigger-eval fixtures (format + slugs exist).
+#
+# HONEST LIMITATION: this does not yet execute cases against live agents.
+# Trigger precision/recall claims are forbidden until a real runner is
+# wired (PRD §3.4 — no fake benchmark numbers). Today it guarantees the
+# fixtures themselves are well-formed and point at real skills.
+#
+# Fixture contract (evals/trigger/cases.md):
+#   - blank lines, `#` headings and `>` blockquote prose are skipped;
+#   - a case line is a bullet: - "utterance" => <slug>|none
+#   - any other line containing => is a malformed case (fail);
+#   - any other line is prose and ignored.
+set -u
+cd "$(dirname "$0")/.."
+
+cases_file="evals/trigger/cases.md"
+fail=0
+
+if [ ! -f "$cases_file" ]; then
+  echo "FAIL: missing $cases_file"
+  exit 1
+fi
+
+total=0
+while IFS= read -r line; do
+  case "$line" in
+    ''|'#'*|'>'*) continue ;;
+  esac
+
+  if [ "${line#- \"}" != "$line" ]; then
+    # Looks like a case bullet — it must match the full case format.
+    total=$((total + 1))
+    if ! echo "$line" | grep -qE '^- "[^"]+" => ([a-z][a-z0-9]+|none)$'; then
+      echo "FAIL: malformed case line: $line"
+      fail=1
+      continue
+    fi
+    slug=$(echo "$line" | sed 's/.*=> *//')
+    if [ "$slug" != "none" ] && [ ! -d "skills/$slug" ]; then
+      echo "FAIL: case targets unknown skill '$slug': $line"
+      fail=1
+    fi
+  elif echo "$line" | grep -q '=>'; then
+    echo "FAIL: stray => outside a case bullet: $line"
+    fail=1
+  fi
+done < "$cases_file"
+
+if [ "$total" -lt 10 ]; then
+  echo "FAIL: only $total cases — each skill needs positive AND negative trigger cases"
+  fail=1
+fi
+
+if [ "$fail" -eq 0 ]; then
+  echo "OK: $total trigger cases are well-formed (live runner: not wired — no claims allowed)"
+fi
+exit "$fail"

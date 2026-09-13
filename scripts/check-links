@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# check-links — verify that every references/, scripts/ and assets/ path a
+# SKILL.md points at actually exists inside that skill folder, and that
+# relative markdown links resolve.
+set -u
+cd "$(dirname "$0")/.."
+
+fail=0
+
+for f in skills/*/SKILL.md; do
+  [ -f "$f" ] || continue
+  dir=$(dirname "$f")
+
+  # Bundled-folder paths mentioned anywhere in the body
+  refs=$(grep -oE '(references|scripts|assets)/[A-Za-z0-9._/-]+' "$f" | sort -u || true)
+  while IFS= read -r p; do
+    [ -n "$p" ] || continue
+    if [ ! -e "$dir/$p" ]; then
+      echo "FAIL $f: points at '$p' which does not exist"
+      fail=1
+    fi
+  done <<EOF
+$refs
+EOF
+
+  # Markdown links relative to the skill folder
+  links=$(grep -oE '\]\([^)#ht][^)]*\)' "$f" | sed 's/^](//; s/)$//' | sort -u || true)
+  while IFS= read -r p; do
+    [ -n "$p" ] || continue
+    if [ ! -e "$dir/$p" ]; then
+      echo "FAIL $f: markdown link target '$p' does not exist"
+      fail=1
+    fi
+  done <<EOF
+$links
+EOF
+done
+
+if [ "$fail" -eq 0 ]; then
+  echo "OK: all referenced local files exist"
+fi
+exit "$fail"
