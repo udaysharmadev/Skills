@@ -72,6 +72,12 @@ you can't act on get deleted, not softened.
 Nits never affect the verdict. State which mode ran, the diff scope
 covered, and anything explicitly not reviewed ("docs/" skipped).
 
+## Anti-Patterns (The Banned List)
+
+- **Context Starvation (Isolation Review)** — reviewing a file in a vacuum without checking its callers. If a function signature changes, you must use codebase search tools to verify that all upstream callers were updated. A review that misses broken downstream systems is a failed review.
+- **LGTM Syndrome (Rubber-Stamping)** — approving AI-generated code just because it is syntactically clean and has no linter errors. AI code often looks perfect but solves the wrong problem. The Intent Pass must break this illusion of safety.
+- **Nit-Picking / AI Pedantry** — filling a review with 15 stylistic opinions that don't affect correctness or performance. Keep the noise down; nits are collapsed.
+
 ## Quality gates
 
 - Every finding: file:line location + why it matters + fix direction.

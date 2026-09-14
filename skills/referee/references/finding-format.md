@@ -73,14 +73,13 @@ halves or delete it.
 
 **API/DB surface changes**
 - Breaking changes flagged and versioned; migration has a down-path.
+- **Context Verification:** If a signature changed, were all upstream callers verified/updated? Reviewing the signature change without searching the repo for callers is an invalid review.
 
-## The empty review is a valid result
+## The empty review vs. LGTM Syndrome
 
 "No blocking findings" — stated with the review scope and mode — is a
 professional verdict, not a failure of effort. Manufacturing findings
-to look thorough is worse than an honest clean pass: it trains readers
-to ignore the review. Density of real findings varies with the diff;
-say so when a clean diff was genuinely clean.
+to look thorough is worse than an honest clean pass. However, beware **LGTM Syndrome**: do not approve a PR just because it lacks syntax errors. The code must actually solve the business intent. An honest clean pass means both syntax AND intent are verified clean. Density of real findings varies with the diff; say so when a clean diff was genuinely clean.
 
 ## Self-review discipline (when fresh-context is unavailable)
 
