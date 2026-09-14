@@ -54,17 +54,18 @@ evidence-first design follows current guidance from
 [Anthropic](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
 and the UK AI Security Institute's [Inspect log model](https://inspect.aisi.org.uk/eval-logs.html).
 
-## Outcome benchmarks (0.8)
+## Outcome benchmarks (deferred proof phase)
 
-Skill-vs-no-skill comparisons on seeded fixtures
-(`benchmarks/`) — see `docs/benchmarks.md`.
+Skill-vs-no-skill comparisons on seeded fixtures (`benchmarks/`) are
+intentionally postponed. See `docs/benchmarks.md`; no result is implied by the
+presence of the infrastructure.
 
 ## Budget controls
 
 `--tier smoke|standard|release` (12/40/all), `--max-cases`, `--runs`,
-`--timeout`, `--dry-run`. CI runs only the deterministic checks; live
-agent evals are manual dispatch (`workflow_dispatch`) with explicit
-secrets. Never unexpectedly spend token budgets.
+`--timeout`, `--dry-run`. CI runs only deterministic checks. Live agent evals
+require an explicitly installed and authenticated local CLI, and are never
+started by CI. Never unexpectedly spend token budgets.
 
 ## Regression process
 

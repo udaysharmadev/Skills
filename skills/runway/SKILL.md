@@ -87,7 +87,7 @@ fingerprint through the public URL, not the dashboard.
 
 ### 6. Rollback path — stated before it's needed
 
-Name the undo for every layer: previous deployment redploy (platform
+Name the undo for every layer: previous deployment redeploy (platform
 command, verified available), migration down-path (or forward-fix
 policy), DNS/cache TTLs if involved. A rollback that has never been
 stated is a hope, not a path.

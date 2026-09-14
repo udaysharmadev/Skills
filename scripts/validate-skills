@@ -1,18 +1,24 @@
 #!/usr/bin/env bash
-# validate-skills — check every skills/*/SKILL.md against the bundle contract
-# (PRD §8): frontmatter, name/dir match, description limits, body budget,
-# self-containment. Exits non-zero on any failure.
+# validate-skills — mechanically check each skill's identity, structural
+# completion markers, research/reference reachability, size, and
+# self-containment. Semantic PRD compliance remains a review responsibility.
 set -u
 cd "$(dirname "$0")/.."
 
 fail=0
 count=0
+expected="backend blueprint cleared concierge distill ditto findable friction frontpage frugal harden headroom hotpath hotseat janitor masterplan pilot polish proof recall referee roadtest runway scout sleuth spelunk unslop"
 
 for dir in skills/*/; do
   [ -d "$dir" ] || continue
   count=$((count + 1))
   name=$(basename "$dir")
   f="$dir/SKILL.md"
+
+  case " $expected " in
+    *" $name "*) ;;
+    *) echo "FAIL $name: not in the frozen 27-skill set"; fail=1 ;;
+  esac
 
   if [ ! -f "$f" ]; then
     echo "FAIL $name: missing SKILL.md"
@@ -62,11 +68,66 @@ for dir in skills/*/; do
     echo "FAIL $name: SKILL.md references shared/ — copy the needed contract inline instead"
     fail=1
   fi
+
+  # Completion contract: these sections are universal even when prerequisite
+  # and fallback details are embedded in the workflow rather than headings.
+  for heading in 'When NOT to use' 'Quality gates' 'Stop conditions' 'Output contract'; do
+    if ! grep -q "^## $heading" "$f"; then
+      echo "FAIL $name: missing required section '$heading'"
+      fail=1
+    fi
+  done
+
+  research="docs/research/$name.md"
+  if [ ! -f "$research" ]; then
+    echo "FAIL $name: missing research provenance at $research"
+    fail=1
+  elif ! grep -q 'Where encoded' "$research"; then
+    echo "FAIL $name: research provenance has no 'Where encoded' trace"
+    fail=1
+  fi
+
+  ref_count=0
+  for ref in "${dir}"references/*; do
+    [ -f "$ref" ] || continue
+    ref_count=$((ref_count + 1))
+    rel="references/$(basename "$ref")"
+    if ! grep -Fq "$rel" "$f"; then
+      echo "FAIL $name: $rel is not reachable from SKILL.md"
+      fail=1
+    fi
+  done
+  if [ "$ref_count" -eq 0 ]; then
+    echo "FAIL $name: no progressive-disclosure reference file"
+    fail=1
+  fi
+
+  for extra in "${dir}"scripts/* "${dir}"assets/*; do
+    [ -f "$extra" ] || continue
+    rel="${extra#"$dir"}"
+    if ! grep -RFq "$rel" "$f" "$dir"references/; then
+      echo "FAIL $name: $rel exists but is not reachable from skill instructions"
+      fail=1
+    fi
+    if [ "${rel#scripts/}" != "$rel" ] && [ ! -x "$extra" ]; then
+      echo "FAIL $name: helper $rel is not executable"
+      fail=1
+    fi
+  done
+
+  if grep -Rqi '(planned)' "$dir"; then
+    echo "FAIL $name: stale '(planned)' language remains in runtime package"
+    fail=1
+  fi
 done
 
 if [ "$count" -eq 0 ]; then
   echo "FAIL: no skills found under skills/"
   exit 1
+fi
+if [ "$count" -ne 27 ]; then
+  echo "FAIL: frozen skill set requires exactly 27 folders, found $count"
+  fail=1
 fi
 
 if [ "$fail" -eq 0 ]; then

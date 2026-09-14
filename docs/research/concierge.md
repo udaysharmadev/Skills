@@ -5,7 +5,7 @@
 | Source | Key lesson | Why it matters | Where encoded |
 | --- | --- | --- | --- |
 | Anthropic, Effective context engineering for AI agents (Sep 2025) | Context is finite; harness rules encode model weaknesses and age as models improve | Avoid brittle micro-chains; prefer invariants | SKILL.md §5, routing.md rules |
-| Research: over-routing amplifies errors 17.2× (2026) | Each unnecessary handoff is a seam where information degrades | Explicit "smallest chain" rule strengthened | SKILL.md intro, routing.md rule 1 |
+| Research synthesis on over-routing failures (2026) | Each unnecessary handoff adds a seam where information can degrade | Explicit "smallest chain" rule strengthened | SKILL.md intro, routing.md rule 1 |
 | "Route by uncertainty source" pattern (2025–2026 deficit-led routing) | Same noun routes to different specialists depending on what's missing | New "what is missing?" decision table | SKILL.md §5, routing.md §Step 0 |
 | OpenAI Agents SDK orchestration docs | Manager vs handoff: keep ownership for bounded subtasks; full handoff when the specialist domain becomes the task | Specialist completion predicates | routing.md completion predicates table |
 | Simon Smith on skill-library duplication/discovery | Skill libraries scale into overlap and confusion | Routing should operate from compact manifest, not rediscover skills | SKILL.md notes, routing.md rule 5 |

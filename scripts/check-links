@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-# check-links — verify that every references/, scripts/ and assets/ path a
-# SKILL.md points at actually exists inside that skill folder, and that
-# relative markdown links resolve.
+# check-links — verify bundled skill paths and repository Markdown links.
 set -u
 cd "$(dirname "$0")/.."
 
@@ -36,7 +34,32 @@ $links
 EOF
 done
 
+# Public/repository Markdown links. External URLs are checked separately when
+# network access exists; this pass guarantees that every local target resolves
+# from the file containing the link. Fragments are allowed and stripped here.
+while IFS= read -r f; do
+  dir=$(dirname "$f")
+  links=$(grep -oE '\]\([^)]+\)' "$f" | sed 's/^](//; s/)$//' \
+    | grep -vE '^(https?:|mailto:|#)' | sort -u || true)
+  while IFS= read -r p; do
+    [ -n "$p" ] || continue
+    p=${p%%#*}
+    p=${p%%\?*}
+    p=${p#<}
+    p=${p%>}
+    [ -n "$p" ] || continue
+    if [ ! -e "$dir/$p" ]; then
+      echo "FAIL $f: markdown link target '$p' does not exist"
+      fail=1
+    fi
+  done <<EOF
+$links
+EOF
+done <<EOF
+$(find . -type f -name '*.md' -not -path './.git/*' | sort)
+EOF
+
 if [ "$fail" -eq 0 ]; then
-  echo "OK: all referenced local files exist"
+  echo "OK: all bundled paths and inline local Markdown file targets exist"
 fi
 exit "$fail"

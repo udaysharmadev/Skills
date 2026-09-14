@@ -9,7 +9,7 @@ successful execution.
 | --- | --- | --- | --- | --- |
 | Codex | `codex` | `codex exec "<prompt>"` | **verified** 2026-09-14 (v0.153.4, model gpt-5.6-sol) | executed live; reads stdin — runner passes stdin=DEVNULL |
 | OpenCode | `opencode` | `opencode run "<prompt>"` | **verified** 2026-09-14 (v1.18.30) | executed live |
-| Claude Code | `claude` | `claude -p "<prompt>" --output-format json` | flags per [official docs](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/using); **execution hangs in the dev environment** (reproduced sandboxed and unsandboxed, stdin closed) — unverified until run in a working environment |
+| Claude Code | `claude` | `claude -p "<prompt>" --output-format json` | flags per [official docs](https://code.claude.com/docs/en/headless); **execution hangs in the dev environment** (reproduced sandboxed and unsandboxed, stdin closed) — unverified until run in a working environment |
 | Cursor | `cursor-agent` | — | **UNAVAILABLE** (not installed) | add invocation after vendor docs check + install |
 | Antigravity | — | — | **UNAVAILABLE** (no headless CLI found) | recheck when vendor ships one |
 

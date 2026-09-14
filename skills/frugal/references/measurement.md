@@ -42,5 +42,5 @@ a rounding choice.
 - Session handoffs and context compaction: `recall`'s caps (STATUS ≤ 40
   lines, session delta ≤ 25 lines, injection ≤ 40 lines).
 - This suite's own SKILL.md files: ≤ 500 lines, detail in references/
-  loaded on demand — token-conscious main files are a Phase-7
+  loaded on demand — token-conscious main files are a maintained
   dogfooding metric (PRD §13).
