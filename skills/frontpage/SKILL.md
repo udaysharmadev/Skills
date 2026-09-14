@@ -81,6 +81,12 @@ tested?), performance figures, security guarantees. **If a number is
 not proven, it does not get published.** Comparison tables: facts that
 can be checked, or the section goes.
 
+## Anti-Patterns (The Banned List)
+
+- **Template Bloat** — giving a 50-line shell script a 10-section README complete with `Contributing`, `Code of Conduct`, and `Architecture` sections. A small tool wearing enterprise clothes looks ridiculous. Scale the structure to the code.
+- **Hallucinated Badges** — adding `![Build Passing]` or `![Coverage 100%]` badges that link to nowhere just to make the README look "professional." If the CI doesn't exist, the badge doesn't exist.
+- **Theoretical Quickstarts** — writing an `npm install my-repo-name` command when the package isn't published to NPM, or a `docker run` command that hasn't been built. Every command must be executable today.
+
 ## Quality gates
 
 - Above the fold answers what/why/try-it within one screen.
