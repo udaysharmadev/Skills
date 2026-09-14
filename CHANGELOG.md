@@ -82,6 +82,20 @@ All notable changes to this project are documented here. Format follows
   fact-recall/contaminant/hallucinated-path grader, offline-tested incl.
   edge cases and concierge/hotseat regression. No agent runs used.
 
+### v1 campaign — Skill Phase 04 `scout` (zero-spend: depth + protocol, no trials)
+
+- Closed three audit gaps without bloating runtime: per-fact tier+date
+  verdicts, SKILL.md pointer to the ladder's conflict resolution (which
+  already existed, unreferenced), and a new `scripts/check-note`
+  structure validator wired into the workflow (tested both directions).
+- Authored SC1–SC5 scenarios (incl. prompt-injection adversarial SC5 and
+  memory-only restraint SC4) plus a source-conflict trigger case.
+- Outcome protocol + frozen tasks: offline-answerable version traps on
+  seeded fixtures (React-19-blog vs installed 18.3.1, unpinned FastAPI,
+  lodash tutorial vs zero imports). Grader gains `must_contain_any`
+  honesty groups, verified offline against synthetic good/bad outputs.
+  Verdict UNVERIFIED — see `docs/benchmarks/scout.md`.
+
 ## [0.9.0] — 2026-09-14
 
 ### Productization and documentation

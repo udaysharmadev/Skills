@@ -162,6 +162,8 @@ def grade_spelunk(task, raw):
     exp = task["expected"]
     must = [m.lower() for m in exp.get("must_contain", [])]
     missing = [m for m in must if m not in low]
+    missing_groups = [g for g in exp.get("must_contain_any", [])
+                      if not any(alt.lower() in low for alt in g)]
     contaminants = [c for c in exp.get("must_not", []) if c.lower() in low]
     known = fixture_files(task["fixture"])
     hallucinated = []
@@ -176,8 +178,9 @@ def grade_spelunk(task, raw):
                    tok.count("/") == 0 for f in known):
             hallucinated.append(tok)
     recall = (len(must) - len(missing)) / max(len(must), 1)
-    ok = not missing and not contaminants and not hallucinated
+    ok = not missing and not missing_groups and not contaminants and not hallucinated
     return ok, {"recall": round(recall, 2), "missing": missing,
+                "missing_groups": missing_groups,
                 "contaminants": contaminants,
                 "hallucinated_paths": sorted(hallucinated),
                 "paths_checked": checked}

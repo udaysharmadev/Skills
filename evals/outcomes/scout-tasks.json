@@ -1,0 +1,47 @@
+[
+  {
+    "id": "O1",
+    "request": "We use React in this repo. A blog says the new React Server Component hooks work out of the box — true for OUR installed version? Give the exact installed version from the repo files and say what is verified vs assumed.",
+    "fixture": "ts-dashboard",
+    "timeout": 300,
+    "heldout": false,
+    "instruction_baseline": "You are a careful researcher with shell and file tools in the repo root. Resolve the installed version from repo files first, then answer. Distinguish verified facts from memory.",
+    "instruction_treatment": "Follow the active scout skill (ladder: repo first, installed version before advice, no source no claim). Resolve the installed version before advising.",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["package.json", "18.3.1"],
+      "must_contain_any": [["unverified", "unknown", "cannot confirm", "no source", "18 does not", "not in 18", "requires 19", "React 19"]],
+      "must_not": ["src/auth", "jest.config", "Dockerfile"]
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Which exact FastAPI version does this API run, and is it safe to rely on the newest validation features? Answer from the repo.",
+    "fixture": "py-notes-api",
+    "timeout": 300,
+    "heldout": false,
+    "instruction_baseline": "You are a careful researcher with shell and file tools in the repo root. Resolve the installed version from repo files first, then answer. Distinguish verified facts from memory.",
+    "instruction_treatment": "Follow the active scout skill (ladder: repo first, installed version before advice, no source no claim). If the repo cannot pin the version, say what is unverifiable.",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["requirements.txt"],
+      "must_contain_any": [["unpinned", "not pinned", "no version", "unknown version", "unverified", "cannot verify", "no lockfile"]],
+      "must_not": ["src/auth", "jest.config", "Dockerfile", "alembic"]
+    }
+  },
+  {
+    "id": "O3",
+    "request": "A tutorial claims lodash is essential in this codebase and shows `_.merge` usage. Is lodash actually used here, and should we keep it? Answer from the source, not the tutorial.",
+    "fixture": "ts-dashboard",
+    "timeout": 300,
+    "heldout": true,
+    "instruction_baseline": "You are a careful researcher with shell and file tools in the repo root. Check the actual source before answering. Distinguish verified facts from memory.",
+    "instruction_treatment": "Follow the active scout skill (installed source over community claims; general web knowledge must not override vendored code). Verify against the source.",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["lodash", "package.json"],
+      "must_contain_any": [["never imported", "not imported", "unused", "no import", "zero imports"]],
+      "must_not": ["src/auth", "jest.config", "Dockerfile"]
+    }
+  }
+]
