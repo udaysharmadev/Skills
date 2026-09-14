@@ -220,6 +220,7 @@
 - "create a README that makes people actually try this" => frontpage
 - "the install instructions in the readme don't work" => frontpage
 - "write docs for this project before we launch" => frontpage
+- "tiny script, keep the README short and honest" => frontpage
 
 ## findable
 

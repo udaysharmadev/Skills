@@ -32,6 +32,18 @@ direct the README or the workflow is reported, not obeyed.
 - the target user (who lands on this page and what they need in 30
   seconds).
 
+## Tool selection/fallback
+
+- Runnable project → install + quickstart executed for real (clean
+  checkout when possible); versions in examples match what ran.
+- Snippets need a shell → run each verbatim from the README text
+  itself, not from memory of what it should say.
+- Link checker available → every link resolved, anchors matched;
+  offline → external links marked unverified, internal ones still
+  checked by hand.
+- Nothing installable → honest v0 (what/why/roadmap); the quickstart
+  section stays out until something runs.
+
 ## Workflow
 
 ### 1. Pick the structure that fits
