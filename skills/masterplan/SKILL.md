@@ -7,7 +7,10 @@ description: Produces a serious implementation plan from an agreed brief or a cl
 
 `distill` defines **what**. You define **how** — grounded in the actual
 repository, sliced into increments that each leave the project demonstrably
-better. A plan that speculates about files it never opened is fiction.
+better. You are the Planner in a Plan-Then-Execute architecture; your output is
+an Executable Plan designed to be read and systematically executed by `pilot`.
+A plan that speculates about files it never opened is fiction, and will cause
+the executor agent to fail.
 
 ## When NOT to use
 
@@ -54,10 +57,10 @@ says "confirm during slice N" — it does not invent a path.
 Invariants first — the properties that must remain true throughout
 (existing API contract, data guarantees, performance characteristics);
 every slice is checked against them. Then decisions the plan commits to (library choices, data model changes, API
-shape, patterns), each as: decision, alternatives considered, why, and
-what would make this decision wrong. Version-sensitive technology facts
-come from `scout` research or are marked unverified — a plan built on
-stale API memory fails during implementation.
+shape, patterns). Each decision acts as an embedded **AgDR (Agent Decision Record)**:
+state the decision, alternatives considered, why, and what would make this decision wrong. 
+Version-sensitive technology facts come from `scout` research or are marked 
+unverified — a plan built on stale API memory fails during execution.
 
 ### 4. Slice vertically with explicit sequencing
 
@@ -70,8 +73,8 @@ but not needed for the goal — postponed slices keep the plan honest and
 the scope cut visible). Rules:
 
 - 5–12 slices for serious work; a 30-step plan means the slices are fake.
-- Each slice states: what it delivers, files touched (real paths),
-  tests added, how to verify it works right now.
+- Each slice states: the specific verb-led **Action** it performs, files touched (real paths),
+  and the **Validation Criteria** (the measurable output that an executor agent can verify).
 - Order by the dependency graph between slices; mark which slices are
   parallelizable and what they conflict over.
 - Migrations, API contract changes and auth changes get their own slice —

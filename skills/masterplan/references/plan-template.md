@@ -18,10 +18,9 @@
 
 ## Slices
 ### Slice 1: <name>  (depends on: —)
-- Delivers: <observable outcome>
+- Action: <verb-led specific instructions, e.g., 'Create file at...', 'Add endpoint...'>
 - Files: <real paths, verified>
-- Tests: <what gets added>
-- Verify now: <command / manual check>
+- Validation Criteria: <measurable output for verification, e.g., 'unit tests pass', 'JSON response matches schema'>
 - Rollback: <how to undo>
 
 ### Slice 2: <name>  (depends on: 1) …
@@ -58,25 +57,21 @@ localStorage, OS-preference default, no first-paint flash.
 
 ## Slices
 ### Slice 1: theme foundation (depends on: —)
-- Delivers: CSS variables for both palettes; `dark` class strategy wired
+- Action: Wire CSS variables for both palettes and establish `dark` class strategy.
 - Files: `tailwind.config.ts`, `src/styles/theme.css`
-- Tests: none possible — visual
-- Verify now: manual class flip in devtools flips palettes
+- Validation Criteria: Manual class flip on <html> in devtools correctly flips color palettes.
 - Rollback: revert commit
 
 ### Slice 2: toggle + persistence (depends on: 1)
-- Delivers: header toggle, localStorage persistence, OS default
-- Files: `src/components/ThemeToggle.tsx` (new), `src/app/layout.tsx`,
-  `src/components/Header.tsx`
-- Tests: unit test for preference read/write/subscribe
-- Verify now: toggle → reload → persists; clear storage → OS default
+- Action: Build header toggle component, wire localStorage persistence, and set OS default fallback.
+- Files: `src/components/ThemeToggle.tsx` (new), `src/app/layout.tsx`, `src/components/Header.tsx`
+- Validation Criteria: Unit tests for preference read/write pass. UI toggle persists across page reload.
 - Rollback: revert commit (no data migration involved)
 
 ### Slice 3: flash-free first paint (depends on: 2)
-- Delivers: inline pre-hydration script sets class before paint
+- Action: Inject inline pre-hydration script into document head to set class before body paint.
 - Files: `src/app/layout.tsx`
-- Tests: e2e — reload with dark pref → no light flash (throttled paint check)
-- Verify now: hard reload in dark mode × 10, zero flashes
+- Validation Criteria: e2e test confirms no light-mode flash on hard reload when dark preference is set.
 - Rollback: revert commit
 
 ## Risks
