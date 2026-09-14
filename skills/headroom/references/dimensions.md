@@ -92,6 +92,12 @@ hypothetical and Next-level items get concrete triggers. If it shows
 - **Migration path** — from what exists today, in steps that each ship.
   A design with no incremental path from reality is fiction.
 
+## Agentic Workflows & Teams (2026)
+
+- **Agent Modularity (The "Premature Microservices" Trap)** — Do not split an AI agent into independent microservices until operational overhead (contention, memory isolation, deployment lifecycle) forces it. Start with an orchestrated execution graph (modular monolith).
+- **Bounded Agency** — AI agents must operate within explicit, human-defined boundaries (like traditional API interfaces). Define what the agent *cannot* do.
+- **Team Topologies** — An AI-assisted team is still a stream-aligned team responsible for stewardship. Architect for human observability and control, not full unmonitored autonomy.
+
 ## The proportionality table (rough guide)
 
 | Level | Typical numbers | Appropriate shape |

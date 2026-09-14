@@ -35,8 +35,10 @@ writes"). A recommendation without a trigger is a guess wearing a suit.
 
 Walk the dimensions in `references/dimensions.md` — read only the ones
 the decision at hand actually touches; for a typical design review that's
-6–10 of them, not all 22. For each: current state, what breaks first, and
-which level's recommendation covers it.
+6–10 of them, not all. For each: current state, what breaks first, and
+which level's recommendation covers it. (If designing an AI agent system, 
+pay special attention to the Agentic Workflows & Teams dimension to prevent 
+premature microservices).
 
 ## Output: three levels
 
