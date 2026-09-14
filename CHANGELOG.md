@@ -3,6 +3,33 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning is semantic.
 
+## [0.9.0] — 2026-09-14
+
+### Productization and documentation
+
+- Completed a folder-by-folder audit of all 27 skills, their research
+  traceability, references, scripts, assets, capability fallbacks, and output
+  contracts; corrected the remaining unsupported research wording and helper
+  documentation drift.
+- Rebuilt the root README as the product landing page with an above-the-fold
+  install path, lifecycle model, grouped skill catalog, concrete differentiators,
+  natural-language examples, progressive-disclosure architecture, research,
+  compatibility, and trust guidance.
+- Added a documentation home, beginner skill chooser, workflow recipes,
+  human-facing 27-skill guide, and grouped research provenance index.
+- Expanded the repository architecture documentation around discovery,
+  routing, progressive disclosure, capability fallbacks, handoffs, artifact
+  ownership, memory, provenance, and deterministic helpers.
+- Replaced the stale scorecard with current implementation, research, tooling,
+  documentation, and evaluation statuses kept as separate dimensions.
+- Added two focused issue forms and a concise pull request template; updated
+  contribution and security guidance for research-backed behavior changes.
+- Extended local-link validation across public Markdown and made the generated
+  skill index follow lifecycle order.
+
+Empirical outcome benchmarking remains intentionally deferred to the proof
+phase. This release makes no comparative performance claim and is not v1.0.
+
 ## [0.8.6] — 2026-09-14
 
 ### Phase 8 evaluation recovery

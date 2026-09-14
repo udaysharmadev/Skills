@@ -4,7 +4,7 @@ The credibility layer: same agent + same task + skill, versus same
 agent + same task + no skill. Controlled where controllable, multiple
 runs where stochastic, raw outputs recorded, cherry-picking forbidden.
 
-## Status: 0.8 work item — fixtures built, runs not yet executed
+## Status: empirical proof phase intentionally deferred
 
 Nothing on this page is a result. When results exist they will carry:
 agent + version, model, date, git commit, run count, raw transcripts,
@@ -27,8 +27,9 @@ evaluated agent.
 | `py-notes-api` | Python FastAPI-style API | validation gaps, missing tests, config sprawl, doc gaps | `backend` `proof` `frontpage` |
 | `ugly-dashboard.html` | single-page vanilla UI | generic AI-UI patterns, missing states, contrast failures | `polish` `friction` |
 
-PRD §12 names five stack categories; Go/Rust, JVM and mobile fixtures
-are pending (0.8) — the three above are the v0.7 set.
+PRD §12 names five stack categories; the current historical fixture set covers
+TypeScript/web, Python, and standalone HTML. Expanding fixtures and running
+comparisons belong to the future proof phase, not repository productization.
 
 Rules for fixtures: no giant fake repos; every seed documented in the
 answer key with location + expected finding; behavior baseline recorded

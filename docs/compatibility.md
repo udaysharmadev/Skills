@@ -36,11 +36,12 @@ Status semantics:
 | GitHub CLI passthrough | ? | ? | ? | ? | ? |
 | Artifacts on disk | ? | ? | ? | ? | ? |
 
-The skills themselves are Tier A/B portable by design (pure markdown +
-references; deterministic shell scripts; graceful capability fallbacks
-in `shared/capability-map/`), so the expected matrix is mostly green —
-but **expected is not measured**. Filling this table is the 0.8 work
-item: run the remaining agents/capabilities (`scripts/eval-trigger --agent <name>`) and per-capability probes, then update with dates.
+The skills themselves are Tier A/B portable by design (pure Markdown +
+references; deterministic standard-library scripts; graceful capability
+fallbacks in `shared/capability-map/`), but **design intent is not measured
+compatibility**. Unknown cells remain unknown until a future proof pass runs the
+specific agent/capability and records the date. They do not make the runtime
+implementation incomplete.
 
 ## Installation compatibility (measured 2026-09-14)
 

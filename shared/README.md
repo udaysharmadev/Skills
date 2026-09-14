@@ -24,5 +24,5 @@ PR. `scripts/validate-skills` cannot catch drift in prose — reviewers must.
 | `terminology/names.md` | Naming system, collision watchlist, pre-approved alternates |
 | `terminology/artifacts.md` | Which skill owns which file on disk |
 | `capability-map/` | Capability tiers, detection order, fallback ladder |
-| `report-schemas/` | Output schemas shared across skills (populated as skills ship) |
-| `security/` | Safe-by-default rules for bundled scripts (populated with `harden`, Phase 4) |
+| `report-schemas/` | Reserved extraction point for output shapes shared by multiple skills |
+| `security/` | Cross-skill security contract boundary; current rules link to their canonical owners |

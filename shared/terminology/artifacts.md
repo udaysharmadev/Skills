@@ -3,6 +3,11 @@
 Which skill owns which file on disk. One owner per artifact — no skill
 writes another skill's files.
 
+> This table governs artifacts the installed skills create in **user
+> projects**. It does not assign authorship for this bundle's own `docs/`
+> directory, which also contains maintainer research, architecture,
+> evaluations, generated indexes, and product documentation.
+
 ## Human-readable, repository root
 
 | Artifact | Owner | Content |
@@ -29,8 +34,7 @@ writes another skill's files.
 | `docs/reports/detox-<slug>.md` | `unslop` | Detox findings + batch log (when written to disk) |
 | `README.md`, `docs/` documentation pages | `frontpage` | Project documentation (extracted pages, not code docs) |
 
-All 27 skills now have artifact ownership assigned — phases 6–7 add
-none.
+All 27 skills have runtime artifact ownership assigned.
 
 Exception: `pilot` checks off slice checkboxes inside `masterplan`'s plan
 files as work completes — status updates only, never plan content.

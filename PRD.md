@@ -1,10 +1,16 @@
 # PRD — Universal Vibe Coding Skills OS
 
-**Status:** v0.1 Product Definition
+**Status:** Product definition retained; implementation status below
 **Product type:** Open-source universal Agent Skills bundle
-**Target:** ~25 elite skills; v1 currently contains **27** because each has a distinct responsibility
+**Target:** ~25 elite skills; the bundle contains **27** because each has a distinct responsibility
 **Compatibility goal:** Claude Code, Google Antigravity, Codex, Cursor, OpenCode and every practical Agent Skills-compatible coding environment
-**Working product name:** **TBD intentionally**. Do not lock the repository brand until the final naming/availability pass.
+**Product name:** **Skills**. The deliberately plain name matches the repository and installation surface.
+
+**Implementation status (2026-09-14):** 27/27 skills implemented; Deep
+Intelligence Pass complete; product documentation and public repository surface
+complete for the build phase. Empirical outcome benchmarking is intentionally
+deferred to the separate proof phase. No v1.0 or comparative performance claim
+is implied.
 
 ---
 

@@ -1,13 +1,12 @@
-# Report schemas (placeholder)
+# Report schemas
 
 Shared output schemas for cross-skill reports (verification evidence
 bundles, review findings, research notes).
 
-**Status:** intentionally empty in v0.1. Schemas are extracted here when a
-second skill needs the same shape — not before. Premature schema design is
-slop.
+No cross-skill schema has earned extraction yet. Schemas move here only when a
+second skill consumes the same shape; creating a framework in anticipation of
+that need would violate the repository's restraint principle.
 
-Current per-skill output contracts live in each `SKILL.md` ("Output
-contract" section). `roadtest` (shipped) owns the first evidence-bundle shape
-(`docs/reports/roadtest-<slug>/`) — extract it here when a second
-skill needs the same shape.
+Current output contracts live in each `SKILL.md`. `roadtest` owns the evidence
+bundle at `docs/reports/roadtest-<slug>/`; it remains local to that skill until
+another real consumer appears.

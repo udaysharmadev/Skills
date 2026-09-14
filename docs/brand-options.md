@@ -35,6 +35,6 @@ ownable · expandable into a visual identity.
    specialists); easy logo system.
 3. **Bench** — developer-native metaphor, short, clean.
 
-**Do not block v1.0 on branding**: ship as
-`udaysharmadev/Skills`, rename at announcement time if a winner passes
-its audit.
+**Do not block productization on branding**: keep
+`udaysharmadev/Skills`, and rename only if the user chooses a candidate that
+passes its pre-announcement audit. No rename is implied by this document.

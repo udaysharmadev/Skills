@@ -1,9 +1,16 @@
-# Expertise audit — Phase 8 final pass
+# Historical expertise audit — v0.8.6
+
+> This is the snapshot taken at the end of the Deep Intelligence Pass. Its
+> implementation gaps were reconciled during the productization pass; use the
+> [current scorecard](scorecard.md) for present status. Evaluation limitations
+> below remain historical evidence and are intentionally deferred, not runtime
+> defects.
 
 Per-skill maturity table (before = pre-pass scorecard, after = post-pass
 re-score). Scores stay honest: **Evaluation evidence remains the capped
 dimension** (trigger evals measured; workflow trials may run locally, but
-no graded workflow/outcome evidence is published — 0.9 work). No score was
+no graded workflow/outcome evidence is published — work for the deferred proof
+phase). No score was
 inflated past what behavior demonstrates; that is why nothing crosses 92 yet.
 
 | Skill | Before | After | Biggest upgrade | Evidence | Remaining limitation |
@@ -73,10 +80,10 @@ inflated past what behavior demonstrates; that is why nothing crosses 92 yet.
 
 ## Research summary
 
-The Phase 8 edits added domain decision frameworks, but the repository does
-not contain a durable per-domain primary-source map proving that all 27 were
-researched as required. That part of the brief remains **unverified** rather
-than being reconstructed after the fact.
+The Deep Intelligence edits added domain decision frameworks. The subsequent
+commits added one provenance note per skill under `docs/research/`; the
+[research index](research/README.md) is now the durable entry point and its
+**Where encoded** rows were checked against runtime files during productization.
 
 The workflow-evaluation layer was checked against current primary guidance:
 
