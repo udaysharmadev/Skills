@@ -75,7 +75,7 @@ untouched.
 ## Rules
 
 - **The baseline never regresses.** Tests green at every commit; any red
-  → revert the batch, not the baseline.
+  → revert the batch, not the baseline. **Beware the Refactor Loop of Death:** cleaning up code without a baseline test results in a pristine, syntactically perfect codebase that does absolutely nothing correctly. No tests = no detox.
 - **Generated-looking UI slop** (banned patterns, decorative junk) →
   route to `polish`; structural code slop is yours.
 - **Unused dependencies**: remove only when nothing imports them

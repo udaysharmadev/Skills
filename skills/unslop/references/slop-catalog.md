@@ -24,9 +24,10 @@ to every entry: file:line or it isn't a finding.
   seams that already exist, not by a new architecture.
 - **Duplicated logic** — the same transformation in several files;
   consolidate toward one home.
-- **Premature abstractions** — base classes with one subclass, strategy
-  patterns with one strategy, "flexible" config for one use. Inline
-  them; add abstraction when the second real case appears.
+- **Premature / Zombie abstractions** — base classes with one subclass,
+  strategy patterns with one strategy, "flexible" config for one use. AI
+  agents often hallucinate these layers from their 2015-era training bias.
+  Inline them; add abstraction when the second real case appears.
 - **Needless indirection** — wrapper-of-wrapper calls, event buses for
   two listeners, "managers" that manage nothing. Flatten.
 - **Giant utility files** — `utils.ts` as a landfill; split by domain or
@@ -58,6 +59,7 @@ to every entry: file:line or it isn't a finding.
   migrate in batches.
 - **Card-grid UI slop / decorative junk** → `polish`'s territory; note
   it, route it.
+- **AI Sprawl (Accretion by Avoidance)** — agents creating new files or parallel utility functions because writing net-new code is easier than understanding and refactoring the existing file in their context window. Consolidate these.
 - **Hallucination residue** — references to packages that were never
   installed, APIs that don't exist (guarded by `try/catch` so "it
   works"), dead endpoints still called.
