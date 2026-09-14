@@ -32,7 +32,7 @@ git tag --sort=-creatordate | head         # release reality
 - Merged-but-alive branches → deletion candidates (confirm before
   deleting; never delete others' unmerged work).
 - Stale branches (> 30 days, unmerged) → list with age + last message;
-  the owner decides.
+  the owner decides. **Watch for Orphaned AI Branches** (`agent-fix-X`, `experiment-Y`) that agents spun up and forgot.
 - Tags: releases shipped without tags, tag chaos (v1 vs 1.0.0) →
   recommend a convention.
 
