@@ -68,6 +68,12 @@ structured data, factual content, stable URLs). Anything beyond that —
 "AI ranking hacks", secret llms.txt rituals — is presented as
 unproven speculation or not at all.
 
+## Anti-Patterns (The Banned List)
+
+- **Slop Content Generation** — generating 5,000 words of generic, keyword-stuffed AI text to "rank better." 2026 ranking engines penalize volume-based slop. Discoverability is earned through technical structure and actual human-valuable content, not text generation.
+- **Hallucinated Structured Data** — an agent auto-generating schema.org JSON-LD that includes fake 5-star reviews, hallucinated authors, or URLs that 404. Structured data must strictly describe the verifiable reality of the page.
+- **Invisible Meta Tags** — an agent appending `<meta>` tags using client-side React/Vue in a pure SPA without SSR. If you don't prerender it, the crawler won't see it, and the fix is a hallucination.
+
 ## Quality gates
 
 - Findings separated into **confirmed technical issue** (evidence in

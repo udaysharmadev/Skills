@@ -43,6 +43,7 @@ than the template.
   products, BreadcrumbList for deep sites, FAQPage for actual FAQs.
 - Validates (Rich Results Test / validator.schema.org); required
   properties present; **describes only content actually on the page**.
+- **Anti-Hallucination Check:** Verify the JSON-LD does not contain fake 5-star `AggregateRating` reviews, hallucinated authors, or URLs that 404. Fabricating schema data is an anti-pattern.
 - JSON-LD in the served HTML (not injected client-side only).
 
 ## Performance & accessibility overlap (flag, don't deep-dive)
