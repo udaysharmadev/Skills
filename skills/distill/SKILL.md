@@ -43,7 +43,14 @@ Restate the request as one sentence: *what* will be true after the work
 that isn't true now, *for whom*. If you cannot write this sentence, that's
 a clarifying question, not a brief.
 
-### 2. Ambiguity detection (max 5 questions)
+### 2. Ground in the repo first (lightly)
+
+Before drafting a single question, confirm the surfaces the brief touches
+actually exist: the page/module named, the data involved, the commands
+available. Briefs referencing nonexistent files are how hallucinated work
+starts. Most "ambiguities" die here — what remains is genuinely missing.
+
+### 3. Ambiguity detection (max 5 questions)
 
 Actively scan the request for linguistic, semantic, and functional
 ambiguities. List what's genuinely blocking:
@@ -51,15 +58,14 @@ ambiguities. List what's genuinely blocking:
 - Contradictory constraints
 - Missing definitions of "good" or failure states
 
+For each candidate question, apply the materiality test: name the two most
+plausible answers and what each would change about implementation, security,
+data handling, or UX. If nothing material changes, it is not a question —
+it becomes an explicit numbered assumption in the brief.
+
 Ask **only blocking questions, max 5, in one batch**. Anything non-blocking
 becomes an explicit numbered assumption in the brief. Never run a
 back-and-forth interrogation.
-
-### 3. Ground in the repo (lightly)
-
-Confirm the surfaces the brief touches actually exist: the page/module
-named, the data involved, the commands available. Briefs referencing
-nonexistent files are how hallucinated work starts.
 
 ### 4. Write the brief
 

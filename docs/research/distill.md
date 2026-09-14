@@ -7,6 +7,7 @@
 | Requirements Engineering for LLMs (2025/2026 research) | LLMs are capable of proactive ambiguity detection (semantic, linguistic, functional) rather than just passive transcription. | Replaces "gap check" with active "ambiguity detection" targeting specific requirement failures. | SKILL.md §2 |
 | BDD evolution / Executable Specifications (2026 trends) | Industry is moving away from brittle manual Gherkin (Given/When/Then) toward AI-native "agent-executable specifications" where the requirement itself is verifiable by a downstream agent. | Replaces "Acceptance criteria" with "Agent-executable specifications" to signal the shift in audience (agent, not just human QA). | SKILL.md, references/brief-template.md |
 | Less is More (Agentic framework research) | High-quality, structurally precise requirements are critical for successful distillation into coding tasks. | The template requires actionable, verifiable facts over product philosophy. | references/brief-template.md |
+| v1 campaign audit, Phase 05 (2026-09-14) | Repo grounding ran after question drafting, so questions could target nonexistent surfaces; no materiality test separated questions from assumptions | Ground-first reorder + per-question materiality test (name both answers and what each changes, else it is an assumption) | SKILL.md §workflow steps 2–3 |
 
 ## Key new intelligence encoded
 

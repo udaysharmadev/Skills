@@ -50,6 +50,7 @@
 - "turn this rambling into a proper spec for the agent" => distill
 - "I want notifications... like, the good kind, you know" => distill
 - "write a clear task brief for adding profile pages" => distill
+- "spec this typo fix, and keep it tiny, no enterprise ceremony" => distill
 
 ## masterplan
 
