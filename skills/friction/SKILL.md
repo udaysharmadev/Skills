@@ -47,7 +47,8 @@ Note every stumble point with its exact location.
 Read `references/usability-checklist.md` and walk the applicable
 sections: information architecture, navigation, forms and validation,
 error recovery, destructive-action safety, feedback and latency
-perception, keyboard/focus, touch, copy. Fix-the-system findings (a
+perception, keyboard/focus, touch, copy, and **AI/Agentic UX** (planning 
+visibility, audit trails, escalation). Fix-the-system findings (a
 validation pattern wrong everywhere) beat fix-the-instance ones.
 
 ### 4. Accessibility pass

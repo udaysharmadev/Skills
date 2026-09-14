@@ -64,6 +64,13 @@ flow, and the classic tell.
 - Status messages announced without stealing focus (4.1.3).
 - Run axe when available for the mechanical floor; judge the rest by hand.
 
+## AI / Agentic UX (2026)
+
+- **Planning Visibility:** Does the AI state its intended plan *before* executing destructive or long-running actions?
+- **Audit Trails:** Are agent actions logged in plain language (e.g. "Emailed finance@...") rather than raw JSON/tool calls?
+- **Graceful Degradation / Escalation:** When the AI gets stuck, is there a clear, immediate escalation path to a human, or does the user get trapped in a loop?
+- **Selective Transparency:** Does the UI expose the 'why' behind an AI decision without overwhelming the user with full reasoning traces?
+
 ## Copy
 
 - Sentence-case, plain words, no jargon the user didn't introduce.
