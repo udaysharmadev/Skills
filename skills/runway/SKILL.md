@@ -92,17 +92,12 @@ command, verified available), migration down-path (or forward-fix
 policy), DNS/cache TTLs if involved. A rollback that has never been
 stated is a hope, not a path.
 
-## Rules
+## Anti-Patterns (The Banned List)
 
-- Each workflow step announced with its result — a deploy log the user
-  can follow, not a silence and then "done".
-- Verification claims cite live evidence (URL, status, log line,
-  screenshot) — "deployed successfully" means the platform confirmed
-  AND the smoke tests passed.
-- If the platform CLI can't verify something (e.g. CDN cache state),
-  the report says **unverified** with what would confirm it.
-- Failed deploy: capture logs, report the failure layer (build/config/
-  infra), fix forward or roll back per the user's call.
+- **Blind Fire-and-Forget** — running `git push` or `vercel --prod`, seeing the command exit, and immediately declaring "Deployed successfully!" without waiting for the remote build to finish or verifying the live URL.
+- **Dashboard Hallucination** — claiming the deployment is healthy without actually curling the live URL to verify the new version fingerprint, relying instead on wishful thinking or a successful tool invocation.
+- **Enterprise Cosplay** — inventing a 5-stage Kubernetes canary deployment strategy for a static blog on Vercel because of training bias toward "best practices." Strategy follows the platform.
+- **Silent Failures** — a deploy fails, and you hide the logs. Failed deploy: capture logs, report the failure layer (build/config/infra), fix forward or roll back per the user's call.
 
 ## Quality gates
 
