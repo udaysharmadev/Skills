@@ -1,6 +1,6 @@
 # Skills
 
-### The complete implementation of a 27-skill vibe-coding toolkit.
+### The complete implementation of a 28-skill vibe-coding toolkit.
 
 Twenty-seven research-backed specialists for the work between “I have an
 idea” and “it is live in production.” Each skill owns one job, carries its own
@@ -18,7 +18,7 @@ Then run `/concierge`. It reads the project, checks which capabilities are
 available, and routes the request to the smallest useful workflow.
 
 > Building one feature, fixing one bug, or cleaning one frightening repo: you
-> do not need to memorize 27 commands. Start with the concierge.
+> do not need to memorize 28 commands. Start with the concierge.
 
 ## From idea to production
 
@@ -102,11 +102,12 @@ the evidence available, not the honesty of the answer. See the
 Still unsure? `/concierge` is the front door. The beginner-friendly
 [skill chooser](docs/choosing-a-skill.md) covers the rest.
 
-## The 27 specialists
+## The 28 specialists
 
 ### Think
 
 - [`concierge`](skills/concierge/) — inspect the project and route the smallest sufficient workflow.
+- [`handsfree`](skills/handsfree/) — stop babysitting the agent. Routine decisions are autonomous; only real human gates interrupt you.
 - [`hotseat`](skills/hotseat/) — stress-test an idea through seven genuinely different lenses.
 - [`spelunk`](skills/spelunk/) — map an unfamiliar repository without reading it blindly.
 - [`scout`](skills/scout/) — replace stale API memory with version-pinned evidence.
@@ -215,7 +216,7 @@ After installation, run:
 
 ```mermaid
 flowchart TD
-    A["Agent starts"] --> B["27 names + descriptions are discoverable"]
+    A["Agent starts"] --> B["28 names + descriptions are discoverable"]
     B --> C["Relevant skill activates"]
     C --> D["That skill's SKILL.md loads"]
     D --> E["Only necessary references, scripts, or assets load"]
@@ -256,7 +257,7 @@ inspectable, but this bundle is not a security guarantee. See
 - [Compatibility](docs/compatibility.md)
 - [Current maturity scorecard](docs/scorecard.md)
 
-Implementation is complete for all 27 skills. Empirical outcome benchmarking
+Implementation is complete for all 28 skills. Empirical outcome benchmarking
 is a separate, intentionally deferred proof phase; no benchmark superiority is
 claimed here.
 

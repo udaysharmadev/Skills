@@ -103,3 +103,13 @@ changed attack surface, and review checks consumers and migration safety.
 
 The smallest sufficient workflow is a design rule. More specialists do not
 automatically mean a better result.
+
+## Autonomous execution
+
+```text
+handsfree + pilot
+handsfree + sleuth
+handsfree + unslop
+```
+
+When you already know what needs to be built, fixed, or cleaned up, and you do not want the agent to stop for permission to run tests, inspect files, or make routine engineering decisions. The workflow runs continuously until it hits a human-level product decision, a destructive risk, or completion.

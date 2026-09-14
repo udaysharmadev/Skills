@@ -225,3 +225,16 @@
 - "ship it to vercel" => runway
 - "launch the site and verify it works live" => runway
 - "put the new build on staging, then prod if it looks good" => runway
+
+## handsfree
+
+- "just do it" => handsfree
+- "don't keep asking me" => handsfree
+- "handle it yourself" => handsfree
+- "work autonomously" => handsfree
+- "stop asking permission" => handsfree
+- "take this and finish it" => handsfree
+- "the agent keeps asking me yes/no every two minutes" => handsfree
+- "autopilot mode" => handsfree
+- "don't disturb me unless necessary" => handsfree
+- "fix this entire thing and don't bother me unless you actually need me" => handsfree

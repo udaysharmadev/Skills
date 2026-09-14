@@ -7,7 +7,7 @@ cd "$(dirname "$0")/.."
 
 fail=0
 count=0
-expected="backend blueprint cleared concierge distill ditto findable friction frontpage frugal harden headroom hotpath hotseat janitor masterplan pilot polish proof recall referee roadtest runway scout sleuth spelunk unslop"
+expected="backend blueprint cleared concierge distill ditto findable friction frontpage frugal handsfree harden headroom hotpath hotseat janitor masterplan pilot polish proof recall referee roadtest runway scout sleuth spelunk unslop"
 
 for dir in skills/*/; do
   [ -d "$dir" ] || continue
@@ -17,7 +17,7 @@ for dir in skills/*/; do
 
   case " $expected " in
     *" $name "*) ;;
-    *) echo "FAIL $name: not in the frozen 27-skill set"; fail=1 ;;
+    *) echo "FAIL $name: not in the frozen 28-skill set"; fail=1 ;;
   esac
 
   if [ ! -f "$f" ]; then
@@ -125,8 +125,8 @@ if [ "$count" -eq 0 ]; then
   echo "FAIL: no skills found under skills/"
   exit 1
 fi
-if [ "$count" -ne 27 ]; then
-  echo "FAIL: frozen skill set requires exactly 27 folders, found $count"
+if [ "$count" -ne 28 ]; then
+  echo "FAIL: frozen skill set requires exactly 28 folders, found $count"
   fail=1
 fi
 

@@ -7,6 +7,7 @@ the first one that removes the uncertainty blocking your next action.
 | --- | --- | --- |
 | “I have an idea.” | [`hotseat`](../skills/hotseat/) | Challenge demand, feasibility, UX, security, growth, and maintainability before code. |
 | “I know what I want, but my prompt sucks.” | [`distill`](../skills/distill/) | Turn the request into a short, checkable brief. |
+| "The agent keeps asking me yes/no every two minutes." | [`handsfree`](../skills/handsfree/) | Stop babysitting. The agent handles routine choices and only stops for human gates. |
 | “I don’t understand this repo.” | [`spelunk`](../skills/spelunk/) | Find the real entry points, commands, boundaries, and risky areas. |
 | “I’m not sure this API works like I remember.” | [`scout`](../skills/scout/) | Verify the installed version and current primary documentation. |
 | “I want a serious implementation plan.” | [`masterplan`](../skills/masterplan/) | Produce file-grounded vertical slices with proof and rollback. |
