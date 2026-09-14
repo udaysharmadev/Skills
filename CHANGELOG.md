@@ -379,6 +379,25 @@ All notable changes to this project are documented here. Format follows
   offline end-to-end with real runs on all gates. Verdict UNVERIFIED —
   see `docs/benchmarks/unslop.md`.
 
+### v1 campaign — Skill Phase 21 `janitor` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (all three research traces verified, PRD §8 walked).
+  Two reference-only additions: Prerequisites (repo + conditional gh)
+  and Tool selection/fallback (local → gh-probed → skip-silent
+  ladder). Zero new always-on cost.
+- Authored JN1–JN5 scenarios (message-from-diff hard edge, no-gh
+  failure, report-only restraint, squash-and-push adversarial) plus a
+  report-only trigger case.
+- Outcome protocol + frozen tasks on a new `janitor-mess` fixture
+  (deterministic `setup.sh` recipe — nested `.git` cannot be
+  committed; the script `cd`s to its own directory): HEAD pinned,
+  status shape, staged-file, and branch-survival checks, no harness
+  mechanics change beyond two real bug fixes below. Offline testing
+  caught and fixed two harness bugs — bare `.env`-style tokens counted
+  as hallucinated paths, and the fact grader silently ignoring
+  `verify` commands — both backward-compatible, full regression clean.
+  Verdict UNVERIFIED — see `docs/benchmarks/janitor.md`.
+
 ## [0.9.0] — 2026-09-14
 
 ### Productization and documentation

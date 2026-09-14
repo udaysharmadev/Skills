@@ -158,7 +158,7 @@ def grade(task, route, raw, obs=None):
         # inferred, trap strings absent, loop markers present.
         return grade_polish(task, raw, obs or {})
     if isinstance(exp, dict) and exp.get("type") == "spelunk":
-        return grade_spelunk(task, raw)
+        return grade_spelunk(task, raw, obs or {})
     return grade_route(task, route, raw)
 
 
@@ -285,8 +285,11 @@ def fixture_files(name):
     return out
 
 
-def grade_spelunk(task, raw):
-    """Fact recall + contaminant + hallucinated-path check against the fixture."""
+def grade_spelunk(task, raw, obs=None):
+    """Fact recall + contaminant + hallucinated-path check against the fixture.
+
+    Also enforces verify-command exits when the task declares them
+    (previously ignored — a task with verify gates graded chat only)."""
     low = raw.lower()
     exp = task["expected"]
     must = [m.lower() for m in exp.get("must_contain", [])]
@@ -297,8 +300,12 @@ def grade_spelunk(task, raw):
     known = fixture_files(task["fixture"]) if task.get("fixture") else []
     hallucinated = []
     checked = 0
-    for tok in set(PATH_RE.findall(raw)):
-        tok = tok.lstrip("./")
+    for raw_tok in set(PATH_RE.findall(raw)):
+        # Bare dotfile mentions (".env") are names, not path claims —
+        # without this, any required finding about dotfiles false-fails.
+        if raw_tok.startswith(".") and "/" not in raw_tok:
+            continue
+        tok = raw_tok.lstrip("./")
         if not tok:
             continue
         checked += 1
@@ -310,14 +317,18 @@ def grade_spelunk(task, raw):
     line_count = len(raw.strip().splitlines())
     over_budget = (exp.get("max_lines") is not None
                    and line_count > exp["max_lines"])
+    checks = (obs or {}).get("verify") or []
+    failed_checks = [c.get("cmd", "?") for c in checks
+                     if c.get("exit") != c.get("expect", 0)]
     ok = (not missing and not missing_groups and not contaminants
-          and not hallucinated and not over_budget)
+          and not hallucinated and not over_budget and not failed_checks)
     return ok, {"recall": round(recall, 2), "missing": missing,
                 "missing_groups": missing_groups,
                 "contaminants": contaminants,
                 "hallucinated_paths": sorted(hallucinated),
                 "paths_checked": checked, "line_count": line_count,
-                "over_budget": over_budget}
+                "over_budget": over_budget,
+                "failed_checks": failed_checks}
 
 
 def observe(agent, prompt, cfg, timeout, fixture=None, verify=None,
