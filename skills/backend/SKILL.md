@@ -38,14 +38,15 @@ The per-domain checklists live in `references/checklists.md` — read only
 the sections your task touches. The invariants that always apply:
 
 1. **Validate at the boundary.** Every input crossing a trust boundary
-   (HTTP body, query, headers, webhook payloads, queue messages, env) is
-   validated against an explicit shape before use.
+   (HTTP body, query, headers, webhook payloads, queue messages, env, and 
+   **LLM/agent outputs**) is validated against an explicit schema (e.g., Zod, 
+   Pydantic) before use.
 2. **Authorize per resource, not per route.** Middleware checking "is
    logged in" is not authorization. Every object access checks ownership/
    permission at the data layer of that request.
-3. **Money and state-changing operations are idempotent** — idempotency
-   keys or natural constraints; retries happen whether you planned them
-   or not.
+3. **State-changing operations are idempotent.** Because LLMs and network 
+   queues retry non-deterministically, use idempotency keys or internal 
+   ledgers to ensure exactly-once execution.
 4. **Migrations are reversible and additive-first.** Every migration
    states its down-path; destructive changes ship as expand → migrate →
    contract, never as one shot on live data.

@@ -12,13 +12,15 @@ each prevents.
 - Status codes honest: 400 vs 401 vs 403 vs 404 vs 409 vs 422 used for
   their actual meanings; 500 only for genuinely unexpected failures.
 - Pagination on any collection that can grow: limit default, max cap,
-  cursor or offset decision stated (cursor preferred for large/changing
-  sets).
+  cursor or offset decision stated (cursor preferred for large/changing sets).
 - Versioning: breaking change → version bump or explicit compatibility
   window; never silently change response shapes.
-- Idempotency for unsafe methods where retries are plausible (payments,
-  creation with side effects) — accept an idempotency key or dedupe on a
-  natural constraint.
+- **LLM/Agent Outputs:** Any endpoint accepting or returning LLM-generated data 
+  must validate it strictly against a schema (e.g., Pydantic, JSON Schema). 
+  Never trust raw LLM output without a structural boundary check.
+- **Idempotency (Agent-Safe):** Unsafe methods must accept an idempotency key. 
+  Because LLM agents retry non-deterministically, use an internal ledger or 
+  natural constraint to ensure "exactly-once" execution.
 
 ## Data modeling and migrations
 
@@ -82,6 +84,9 @@ each prevents.
   not global.
 - Webhooks: verify signatures before trusting payloads; respond fast,
   process async; treat delivery as at-least-once.
+- **Agent Integration (MCP):** When exposing internal APIs for agent consumption, 
+  wrap them in an MCP (Model Context Protocol) server rather than building 
+  bespoke one-off REST tools.
 
 ## Multi-tenancy
 
