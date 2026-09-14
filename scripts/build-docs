@@ -15,7 +15,7 @@ out="docs/skills/INDEX.md"
   # Lifecycle order matches the human guide and README. Keep the source list
   # explicit so a new folder cannot silently enter the frozen public set.
   for name in \
-    concierge hotseat spelunk scout distill masterplan recall \
+    concierge handsfree hotseat spelunk scout distill masterplan recall \
     pilot backend blueprint headroom \
     polish friction ditto \
     proof roadtest sleuth referee hotpath harden \

@@ -1,8 +1,10 @@
+![28 Skills for Vibe Coding](assets/banner.png)
+
 # Skills
 
 ### The complete implementation of a 28-skill vibe-coding toolkit.
 
-Twenty-seven research-backed specialists for the work between “I have an
+Twenty-eight research-backed specialists for the work between “I have an
 idea” and “it is live in production.” Each skill owns one job, carries its own
 restraints and verification contract, and loads only when it is relevant.
 
@@ -67,7 +69,7 @@ These are not “act like an expert” prompts.
 
 ### Progressive disclosure
 
-Twenty-seven skills do not become one enormous system prompt. Discovery sees
+Twenty-eight skills do not become one enormous system prompt. Discovery sees
 compact names and descriptions; the relevant `SKILL.md` loads on demand; only
 its necessary references or helper scripts load after that. This follows the
 [Agent Skills specification](https://agentskills.io/specification).
