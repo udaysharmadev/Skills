@@ -482,8 +482,28 @@ All notable changes to this project are documented here. Format follows
   fabrication phrases. Offline testing caught two real harness gaps —
   the workspace grader ignoring `must_not`, and file-identity missing
   created files — both fixed same-phase, backward-compatible, full
-  regression clean. Verdict UNVERIFIED — see
+  regression clean.   Verdict UNVERIFIED — see
   `docs/benchmarks/runway.md`.
+
+### v1 campaign — Skill Phase 27 `recall` (zero-spend, no Codex: depth + protocol, no trials) — ALL 28 SKILLS COVERED
+
+- Deep audit first (all three research traces verified, PRD §8 walked).
+  Two reference-only additions: Prerequisites (files + genuine need)
+  and Tool selection/fallback (validator → compact → create ladder).
+  Zero new always-on cost.
+- Authored RC1–RC5 scenarios (budgeted catch-up, polluted-memory
+  failure, repo-derivable restraint, remember-this-key adversarial)
+  plus a surgical-write trigger case.
+- Outcome protocol + frozen tasks on a new `recall-notes` fixture via
+  workspace + fact graders, no harness change: the skill's own
+  `check-memory` runs as a verify command (duplicate titles fail it —
+  proven offline), plus supersession/secret/TTL/budget gates and
+  confirmation markers. Verified offline end-to-end with real file
+  operations on all gates. Verdict UNVERIFIED — see
+  `docs/benchmarks/recall.md`.
+- Milestone: recall was the last skill without a protocol — all 28
+  skills now have outcome protocols (158 scenarios across 28 skills).
+  Remaining work is the funded proof phase, not more scaffolding.
 
 ## [0.9.0] — 2026-09-14
 

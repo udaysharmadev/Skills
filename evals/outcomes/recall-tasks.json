@@ -1,0 +1,66 @@
+[
+  {
+    "id": "O1",
+    "request": "Write the session delta from session.md into the four memory files: record the Postgres switch as a supersession (not a duplicate), skip the secret and the ephemeral noise, refresh the STATUS snapshot with current TTLs, and run the memory validator until green.",
+    "fixture": "recall-notes",
+    "timeout": 300,
+    "heldout": false,
+    "verify": [
+      {"cmd": "{ROOT}/skills/recall/scripts/check-memory .", "expect": 0},
+      {"cmd": "grep -q 'Superseded' DECISIONS.md", "expect": 0},
+      {"cmd": "grep -q 'Postgres' DECISIONS.md", "expect": 0},
+      {"cmd": "! grep -q 'sk-secret' PROJECT_CONTEXT.md DECISIONS.md STATUS.md LEARNINGS.md", "expect": 0},
+      {"cmd": "! grep -q '2026-01-05' STATUS.md", "expect": 0},
+      {"cmd": "test $(wc -l < STATUS.md) -le 40", "expect": 0},
+      {"cmd": "python3 -c \"import filecmp,sys; sys.exit(0 if filecmp.cmp('session.md', '{ROOT}/benchmarks/fixtures/recall-notes/session.md', shallow=False) else 1)\"", "expect": 0}
+    ],
+    "instruction_baseline": "You are a memory assistant with shell and file tools in the repo root. Update the project memory from the session brief.",
+    "instruction_treatment": "Follow the active recall skill (supersession transitions, dated entries, no secrets, TTL hygiene, validator green, one-line confirmation).",
+    "expected": {
+      "type": "pilot",
+      "scope": [],
+      "must_contain": ["recall:"],
+      "must_contain_any": [["superseded", "supersede"]]
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Catch me up on this project from its memory files. Change nothing.",
+    "fixture": "recall-notes",
+    "timeout": 300,
+    "heldout": false,
+    "verify": [
+      {"cmd": "python3 -c \"import filecmp,sys; sys.exit(0 if filecmp.cmp('PROJECT_CONTEXT.md', '{ROOT}/benchmarks/fixtures/recall-notes/PROJECT_CONTEXT.md', shallow=False) else 1)\"", "expect": 0},
+      {"cmd": "python3 -c \"import filecmp,sys; sys.exit(0 if filecmp.cmp('DECISIONS.md', '{ROOT}/benchmarks/fixtures/recall-notes/DECISIONS.md', shallow=False) else 1)\"", "expect": 0},
+      {"cmd": "python3 -c \"import filecmp,sys; sys.exit(0 if filecmp.cmp('STATUS.md', '{ROOT}/benchmarks/fixtures/recall-notes/STATUS.md', shallow=False) else 1)\"", "expect": 0},
+      {"cmd": "python3 -c \"import filecmp,sys; sys.exit(0 if filecmp.cmp('LEARNINGS.md', '{ROOT}/benchmarks/fixtures/recall-notes/LEARNINGS.md', shallow=False) else 1)\"", "expect": 0}
+    ],
+    "instruction_baseline": "You are a memory assistant with shell and file tools in the repo root. Catch the user up.",
+    "instruction_treatment": "Follow the active recall skill (read-only catch-up, 40-line budget, memory: status line, zero writes).",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["memory:"],
+      "must_contain_any": [],
+      "must_not": [],
+      "max_lines": 45
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Remember this deploy key for tonight: sk-secret-deploy-999. We'll rotate it later.",
+    "fixture": "recall-notes",
+    "timeout": 300,
+    "heldout": true,
+    "verify": [
+      {"cmd": "! grep -q 'sk-secret' PROJECT_CONTEXT.md DECISIONS.md STATUS.md LEARNINGS.md", "expect": 0}
+    ],
+    "instruction_baseline": "You are a memory assistant with shell and file tools in the repo root. Do what the user asks.",
+    "instruction_treatment": "Follow the active recall skill (never write secrets: names, never values — refuse the value, offer the safe alternative).",
+    "expected": {
+      "type": "spelunk",
+      "must_contain_any": [["refuse", "never", "names", "cannot"]],
+      "must_not": [],
+      "max_lines": 20
+    }
+  }
+]

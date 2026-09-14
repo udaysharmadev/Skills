@@ -23,7 +23,7 @@ Status vocabulary:
 | `scout` | Complete | Traced | `check-note` structure validator (both directions tested) | Complete | Protocol + offline-trap tasks authored; outcome UNVERIFIED (zero-spend) |
 | `distill` | Complete | Traced | Justified N/A | Complete | Protocol + scale-budget tasks authored; outcome UNVERIFIED (zero-spend) |
 | `masterplan` | Complete | Traced | Justified N/A | Complete | Protocol + groundedness tasks authored; outcome UNVERIFIED (zero-spend) |
-| `recall` | Complete | Traced | `check-memory` syntax-tested | Complete | Outcome proof deferred |
+| `recall` | Complete | Traced | `check-memory` syntax-tested | Complete | Protocol + validator-graded tasks authored; outcome UNVERIFIED (zero-spend) |
 | `pilot` | Complete | Traced | Justified N/A | Complete | Protocol + workspace grader authored; outcome UNVERIFIED (zero-spend) |
 | `backend` | Complete | Traced | Justified N/A | Complete | Protocol + two-stack tasks authored; outcome UNVERIFIED (zero-spend) |
 | `blueprint` | Complete | Traced | `validate-mermaid` both-directions tested; HTML asset present | Complete | Protocol + artifact grader authored; outcome UNVERIFIED (zero-spend) |
