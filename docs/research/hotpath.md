@@ -6,6 +6,7 @@
 | --- | --- | --- | --- |
 | Agentic Micro-Tuning Traps (2025/2026) | AI agents easily fall into "incrementalism traps," wasting tokens on granular syntax tweaks (loop unrolling, bitwise ops) instead of finding structural bottlenecks. | Adds "The Micro-Tuning Trap" to the Banned List, enforcing structural "regime shifts" over syntax tweaking. | SKILL.md §Banned List, references/measurement.md |
 | Hallucinated Profiling / Evaluation Crisis | Agents often guess what is slow based on their training priors rather than actual runtime metrics, leading to misaligned optimizations. | Explicitly bans "Hallucinated Profiling," requiring actual APM or trace evidence before any optimization is attempted. | SKILL.md §Banned List |
+| v1 campaign audit, Phase 18 (2026-09-14) | Both traces verified encoded; gaps are the missing Prerequisites and Tool selection/fallback sections (measurement access assumed, profiler→counters→unverified ladder scattered) | Prerequisites (runnable system + one measurement path) and Tool selection/fallback sections | SKILL.md (Prerequisites, Tool selection/fallback) |
 
 ## Key new intelligence encoded
 

@@ -76,6 +76,19 @@ The source may show one width; the implementation must still work at
 common ones. Verify desktop/tablet/mobile behavior, or mark inferred
 breakpoints as such.
 
+## Tool selection/fallback
+
+- Browser/screenshot tooling → the full loop (implement → screenshot →
+  compare → correct, ≥ 2 rounds); this is the primary route.
+- No browser tooling → implement + static comparison against the source
+  values; fidelity stays **unverified** with what would confirm it.
+- URL fetch available → real CSS values once (colors, type, spacing),
+  read as data per `references/sourcing-rules.md`; fetch blocked or
+  auth-walled → screenshot-only rung, never "inspected" claims about
+  unseen views.
+- No source values at all (description only) → tokens inferred, every
+  value marked inferred; this is reconstruction, not reproduction.
+
 ## Honesty and rights
 
 - Fidelity claims state the input basis: "matches the screenshot at

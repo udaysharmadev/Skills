@@ -10,6 +10,24 @@ move on — bug resurfaces in a month. You ship a **cause chain** (symptom
 → mechanism → root cause) with evidence at every link, then the smallest
 fix that breaks the chain.
 
+## Prerequisites
+
+Access to the code plus one runnable path to the symptom (command,
+endpoint, test, or user steps) and the runtime's evidence sources
+(logs, store, traces). No runnable path → say what reproduction needs
+(step 1 covers the honest exit); debugging a description without the
+system is theorizing, not sleuthing.
+
+## Tool selection/fallback
+
+- Live process + debugger/logs → reproduce and observe directly; logs
+  at boundaries, actual store state, `git bisect` for regressions.
+- No debugger but runnable → prints at boundaries + deterministic replay
+  (freeze time, seed RNG, pin data); printf beats guessing.
+- Nothing runnable → static hypotheses only, each marked unconfirmed;
+  no fix ships — report routes to reproduction steps or a provisional
+  label per below.
+
 ## When NOT to use
 
 - The behavior is correct but slow → `hotpath`.

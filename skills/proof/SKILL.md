@@ -73,6 +73,17 @@ Every confirmed bug gets a test that **fails without the fix and passes
 with it** — this is the rule that converts debugging into permanent
 value. The regression test lands in the same change as the fix.
 
+## Tool selection/fallback
+
+- Project runner (pytest, vitest, go test, unittest…) → real runner
+  output only; counts and coverage quoted from it, never estimated.
+- No test setup at all → smallest honest harness for the stack first,
+  then the tests; framework tour refused.
+- Mutation tooling → use it; otherwise break-and-restore by hand — one
+  deliberate break per new test group, reverted after the red is seen.
+- No runner executable here → tests delivered + run command stated,
+  suite status marked **unverified**, never "should pass".
+
 ## Quality gates
 
 - Boundary choice justified in one line per test group ("API-level: the

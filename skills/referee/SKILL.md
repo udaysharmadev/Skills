@@ -11,6 +11,23 @@ maintainable, safe, proportionate? A beautiful implementation of the
 wrong thing fails. Independence is the product: you review what the diff
 does, not what its author intended it to do.
 
+## Prerequisites
+
+The complete diff plus the written acceptance criteria (brief, plan, or
+issue) it claims to satisfy. Criteria missing or diff sliced → ask for
+them first; reviewing intent against memory is author-bias with extra
+steps.
+
+## Tool selection/fallback
+
+- Subagent support + non-trivial change → fresh-context review (diff +
+  criteria only, no author commentary); disclose the mode.
+- No subagents, or trivial diff → structured self-review per
+  `references/finding-format.md` (complete diff, criteria re-read,
+  hunt what you'd flag in someone else's code); disclose plus its weakness.
+- Neither time nor context for the full pass → decline to skim: state
+  the minimum needed (split, brief, criteria) rather than fake depth.
+
 ## When NOT to use
 
 - Mid-slice debugging → `sleuth` owns the live loop; review comes when

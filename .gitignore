@@ -1,6 +1,10 @@
 # Dependencies
 node_modules/
 
+# Python noise
+__pycache__/
+*.pyc
+
 # OS noise
 .DS_Store
 Thumbs.db

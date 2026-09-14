@@ -7,6 +7,7 @@
 | "AI Design Slop" Anti-Patterns (2025/2026) | Generative UI often lacks systemic rules, leading to "vibe coding" that breaks under real data constraints or ignores accessibility standards. | Bans "Vibe Coding" and mandates "Stress Testing (Data Scaling)". | SKILL.md §banned, references/audit.md |
 | Semantic A11y in Generative UI | AI tools frequently produce visually appealing but semantically broken layouts (e.g., using `<div>` instead of `<h1>`). | Enforces strict Semantic Structure rules in the Reach audit. | references/audit.md |
 | Constrained Generation vs Blank Canvas | Agents guessing at design systems produce generic templates. Agents forced to use existing tokens produce branded, cohesive UI. | Explicitly bans the "Blank Canvas" hallucination, elevating existing design tokens to a hard constraint. | SKILL.md §banned |
+| v1 campaign audit, Phase 11 (2026-09-14) | Tool fallback, no-render stop, and dark-theme audit named nowhere — headless runs could claim "looks better", dark mode was a bullet without a check | Tool selection/fallback section (static pass + unverified marking), no-render stop condition, dark-theme audit bullet (contrast + elevation, not inversion) | SKILL.md (Tool selection/fallback, Stop conditions), references/audit.md (Surfaces) |
 
 ## Key new intelligence encoded
 

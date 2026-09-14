@@ -15,6 +15,12 @@ them (that's proportionality, not laziness).
   95% reads and 50/50 are different architectures.
 - **Latency targets** — interactive (<200ms p50?) vs background? Sets
   how much complexity sync paths may carry.
+- **Tail latency, not just the median** — p99 is where users feel the
+  system: GC pauses, noisy neighbors, retry amplification, and queueing
+  all hide behind a pretty p50. Name what dominates the tail for THIS
+  workload (cold starts? lock contention? downstream fan-out?) and which
+  design choice moves it — a cache that fixes p50 but not p99 fixed the
+  dashboard, not the experience.
 - **Throughput / data size** — GBs vs TBs changes storage choices more
   than any feature comparison chart.
 - **Durability** — how much data loss is acceptable in a disaster (RPO)?
@@ -53,7 +59,11 @@ hypothetical and Next-level items get concrete triggers. If it shows
 - **Concurrency** — hot rows, double-submit, race conditions on limited
   inventory. Usually solved with constraints + idempotency, not queues.
 - **Queues** — for bursty or deferrable work (email, media, webhooks).
-  Not for making a fast request slow on purpose.
+  Not for making a fast request slow on purpose. Queue economics decide
+  the design: max acceptable end-to-end lag sets depth alarms, poison
+  messages need a dead-letter path with its own retention, and retention
+  itself is priced (a 7-day backlog of payloads is a storage bill, not a
+  safety net).
 - **Retries / idempotency** — anything that retries must be safe to
   repeat. Cross-cutting; see `backend`'s disciplines.
 - **Backpressure / load shedding** — what happens when producers
@@ -85,7 +95,11 @@ hypothetical and Next-level items get concrete triggers. If it shows
 ## Operability
 
 - **Caching** — where reads are repetitive; every cache needs an
-  invalidation story.
+  invalidation story. Design the failure modes, not just the hit rate:
+  cold start (what serves traffic while the cache warms?), stampede
+  protection (request coalescing or stale-while-revalidate so one expiry
+  doesn't fan out into N origin hits), and cache-outage fallback (degraded
+  reads or explicit errors — never silent wrong answers).
 - **Observability** — can you see the thing break? Logs/metrics/traces
   proportional to the architecture's complexity (more moving parts =
   more visibility required).

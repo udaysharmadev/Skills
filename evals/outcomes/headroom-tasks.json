@@ -1,0 +1,47 @@
+[
+  {
+    "id": "O1",
+    "request": "Design the architecture for a 50-user college project (maybe 500 next year), one developer, single region, simple CRUD. Keep it boring and say what NOT to build.",
+    "timeout": 300,
+    "heldout": false,
+    "instruction_baseline": "You are a system designer. Recommend an architecture with reasons. Keep it proportionate.",
+    "instruction_treatment": "Follow the active headroom skill (scale that exists first, Now/Next/Scale with trigger metrics, explicit don't-do-yet, shown arithmetic, no resume-driven design).",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["trigger"],
+      "must_contain_any": [["don't", "not yet", "do not build", "no need", "overkill", "boring"]],
+      "must_not": [],
+      "max_lines": 60
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Design for 10k users today growing toward 200k in a year, read-heavy (90% reads), single region. Give Now/Next/Scale with triggers.",
+    "timeout": 300,
+    "heldout": false,
+    "instruction_baseline": "You are a system designer. Recommend an architecture with reasons. Keep it proportionate.",
+    "instruction_treatment": "Follow the active headroom skill (workload numbers with arithmetic, dimension walk, triggers per item, migration paths, don't-do-yet).",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["trigger"],
+      "must_contain_any": [["replica", "cache", "queue", "index"]],
+      "must_not": [],
+      "max_lines": 120
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Design for 5M users with spiky viral traffic, global audience, media uploads. Give Now/Next/Scale with triggers and overload behavior.",
+    "timeout": 300,
+    "heldout": true,
+    "instruction_baseline": "You are a system designer. Recommend an architecture with reasons. Keep it proportionate.",
+    "instruction_treatment": "Follow the active headroom skill (tail latency, backpressure, queue economics, cache failure modes, consistency tradeoffs, triggers).",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["trigger"],
+      "must_contain_any": [["shard", "region", "partition", "queue", "backpressure", "cdn"]],
+      "must_not": [],
+      "max_lines": 150
+    }
+  }
+]

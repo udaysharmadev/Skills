@@ -7,6 +7,7 @@
 | Agentic Codebase Mess Patterns (2025/2026) | "AI Sprawl" occurs because it is cognitively cheaper for an agent's context window to accrete new parallel files than to refactor existing ones. | Adds "AI Sprawl (Accretion by Avoidance)" to the slop catalog to force consolidation. | references/slop-catalog.md |
 | Zombie Abstractions | Agents trained on 2015-era enterprise Java patterns tend to hallucinate strategy patterns and abstract base classes for single-implementation functions. | Renames "Premature abstractions" to "Zombie abstractions," directing the agent to flatten these AI-hallucinated layers. | references/slop-catalog.md |
 | The Refactor Loop of Death | Agents instructed to "clean up this code" without a behavioral baseline will successfully produce pristine, bug-free code that has completely lost its business logic. | Adds the explicit warning against the "Refactor Loop of Death," making tests a hard prerequisite for any detox operation. | SKILL.md §Rules |
+| v1 campaign audit, Phase 20 (2026-09-14) | All three traces verified encoded; only gap is the missing Tool selection/fallback section (runner → smoke-baseline → no-signal-no-detox ladder lived in workflow/rules only) | Tool selection/fallback section consolidating the three signal rungs | SKILL.md (Tool selection/fallback) |
 
 ## Key new intelligence encoded
 

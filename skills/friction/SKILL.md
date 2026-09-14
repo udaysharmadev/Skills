@@ -82,6 +82,18 @@ Fix blockers and majors (directly, or as slices for `pilot`), then
 **re-walk the task** to confirm the path is actually smoother — the
 fix is verified by the walk, not by the intention.
 
+## Tool selection/fallback
+
+- Browser tooling → walk the flows like a user (novice + expert); this
+  is the primary route.
+- No browser but runnable app/screenshots → walk what's walkable, audit
+  the rest via code; every dynamic finding marked **unverified** plus
+  the one command needed to make it verifiable.
+- Playwright + axe → mechanical floor (quote results); manual review
+  always judges the rest — axe can never replace the walk.
+- Nothing runnable → static audit only; stop per below, never invent
+  walk evidence.
+
 ## The judgment calls that matter
 
 - **Destructive actions** get confirmation proportional to damage, and
@@ -120,6 +132,8 @@ fix is verified by the walk, not by the intention.
 - No way to walk the flows (no browser, no runnable app) → static audit
   with every dynamic finding marked **unverified**, and the one command
   needed to make it verifiable.
+- No blockers or majors found → say so with the walks cited; never
+  invent findings to justify the audit, stop.
 
 ## Output contract
 

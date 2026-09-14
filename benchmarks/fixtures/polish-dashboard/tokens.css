@@ -1,0 +1,13 @@
+/* House design tokens — the constraint, not a suggestion.
+   Polish work converges hardcoded values onto these variables.
+   Do not edit token values for novelty. */
+:root {
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --text: #1a2233;
+  --muted: #5b6478;
+  --primary: #2f6fed;
+  --danger: #d64545;
+  --radius: 8px;
+  --gap: 16px;
+}

@@ -10,6 +10,23 @@ same way → report the delta or revert.** An optimization without a
 before/after number is a rumor. Most "obvious" performance work fixes
 code that wasn't hot and misses the query that was.
 
+## Prerequisites
+
+A runnable system plus one measurement path to the complaint (profiler,
+APM, query log, bundle analyzer, or even `time` + counters). No
+measurement path at all → the first deliverable is instrumentation, not
+optimization (see stop conditions).
+
+## Tool selection/fallback
+
+- Layer-native profiler/counters → evidence-grade measurement; this is
+  the primary route.
+- No profiler but runnable → counters and timing around the suspect
+  (`time`, query logs, the bundled `measure-report` for delta honesty);
+  state the distortion.
+- Nothing runnable or measurable → hypotheses only, each explicitly
+  unverified; no code changes as "optimizations".
+
 ## When NOT to use
 
 - The answer is wrong, just slow to be wrong → `sleuth`.

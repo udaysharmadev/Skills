@@ -7,6 +7,7 @@
 | Context Starvation in Agent Reviews (2025/2026) | AI agents reviewing diffs in isolation often approve breaking signature changes because they fail to search the wider codebase for downstream callers. | Bans "Context Starvation" (Isolation Review), mandating that reviewers use search tools to verify all upstream callers. | SKILL.md §Banned List, references/finding-format.md |
 | LGTM Syndrome & Rubber-Stamping | Agents are easily fooled by syntactically perfect code that completely misses the business intent, rubber-stamping logic flaws. | Delineates the difference between an honest clean review and "LGTM Syndrome" (approving syntax while ignoring intent). | SKILL.md §Banned List, references/finding-format.md |
 | Review Fatigue / Nit-Picking | Agents often output 15 stylistic opinions to "prove" they did work, causing developers to ignore the review. | Bans "Nit-Picking / AI Pedantry", enforcing a strict triage where nits are collapsed and never block. | SKILL.md §Banned List |
+| v1 campaign audit, Phase 17 (2026-09-14) | All three traces verified encoded; gaps are the missing Prerequisites and Tool selection/fallback sections (criteria-plus-diff assumed, subagent→self-review→decline ladder lived in modes only) | Prerequisites (complete diff + written criteria) and Tool selection/fallback sections | SKILL.md (Prerequisites, Tool selection/fallback) |
 
 ## Key new intelligence encoded
 

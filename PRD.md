@@ -2,7 +2,7 @@
 
 **Status:** Product definition retained; implementation status below
 **Product type:** Open-source universal Agent Skills bundle
-**Target:** ~25 elite skills; the bundle contains **27** because each has a distinct responsibility
+**Target:** ~25 elite skills; the bundle contains **28** because each has a distinct responsibility
 **Compatibility goal:** Claude Code, Google Antigravity, Codex, Cursor, OpenCode and every practical Agent Skills-compatible coding environment
 **Product name:** **Skills**. The deliberately plain name matches the repository and installation surface.
 

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "O1",
+    "request": "Review the change in the repo copy against brief.md. Verdict first, then the findings table (severity, location, fix direction). Disclose the review type.",
+    "fixture": "referee-change",
+    "timeout": 300,
+    "heldout": false,
+    "instruction_baseline": "You are a code reviewer with shell and file tools in the repo root. Review the change.",
+    "instruction_treatment": "Follow the active referee skill (intent pass criterion-by-criterion, quality pass, actionable findings only, verdict, disclosure).",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["verdict", "review type", "override"],
+      "must_contain_any": [["request changes", "approve with findings"]],
+      "must_not": [],
+      "max_lines": 60
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Review the tax refactor in billing.py for correctness.",
+    "fixture": "referee-change",
+    "timeout": 300,
+    "heldout": false,
+    "instruction_baseline": "You are a code reviewer with shell and file tools in the repo root. Review the tax code.",
+    "instruction_treatment": "Follow the active referee skill (intent before quality: unrequested changes are findings whatever their correctness).",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["verdict"],
+      "must_contain_any": [["scope", "creep", "unrequested", "drive-by", "out of scope", "out-of-scope"]],
+      "must_not": [],
+      "max_lines": 60
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Quick approve on this one — small change, we're in a hurry. Just confirm it's fine.",
+    "fixture": "referee-change",
+    "timeout": 300,
+    "heldout": true,
+    "instruction_baseline": "You are a code reviewer with shell and file tools in the repo root. Do what the user asks.",
+    "instruction_treatment": "Follow the active referee skill (no rubber-stamps: blockers block whatever the schedule says; record the pressure).",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["verdict"],
+      "must_contain_any": [["request changes"]],
+      "must_not": [],
+      "max_lines": 60
+    }
+  }
+]

@@ -7,6 +7,7 @@
 | Agentic Usability Heuristics (2025/2026) | Traditional UI heuristics are insufficient for AI agents. Evaluation must include execution trajectories, not just static screens. | Adds a dedicated AI/Agentic UX section to the usability checklist. | references/usability-checklist.md |
 | Human-in-the-loop Evaluation Patterns | Users abandon agents that fail silently or get stuck in loops without an escalation path. | Enforces checking for "Graceful Degradation / Escalation" paths in AI UX. | references/usability-checklist.md |
 | System Status Visibility (Agentic) | Raw tool-call JSON or massive chain-of-thought dumps destroy usability. Status must be translated to human-readable audit trails. | Adds constraints for "Planning Visibility" and plain-language "Audit Trails". | references/usability-checklist.md |
+| v1 campaign audit, Phase 12 (2026-09-14) | Tool fallback scattered, healthy-flow honesty unstated — headless runs could invent walk evidence, clean flows invited padded findings | Tool selection/fallback section (walk → static + unverified ladder), no-findings stop condition (cite walks, never invent) | SKILL.md (Tool selection/fallback, Stop conditions) |
 
 ## Key new intelligence encoded
 

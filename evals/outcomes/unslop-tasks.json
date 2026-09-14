@@ -1,0 +1,62 @@
+[
+  {
+    "id": "O1",
+    "request": "Detox this repo: capture the behavior baseline first, then remove the duplication, dead code, zombie layer, swallowed error, and debug leftovers in small verified batches. Keep the legacy export quirk with its reason. Report the batch log with verification per batch plus the net line delta.",
+    "fixture": "unslop-shop",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [
+      {"cmd": "python3 -m unittest discover -s tests -t .", "expect": 0},
+      {"cmd": "! grep -qE '_old_compute|BasePricer|class Pricer|_format_price|DEBUG|notify|_send' shop.py utils.py", "expect": 0},
+      {"cmd": "grep -q 'LEGACY_EXPORT_FORMAT' shop.py", "expect": 0},
+      {"cmd": "test $(cat shop.py utils.py | wc -l) -lt 50", "expect": 0}
+    ],
+    "instruction_baseline": "You are a cleanup assistant with shell and file tools in the repo root. Clean up the repo.",
+    "instruction_treatment": "Follow the active unslop skill (baseline first, ranked file:line findings, small verified batches, kept-with-reason list, net-negative delta).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["shop.py", "utils.py"],
+      "must_contain": ["baseline", "batch"],
+      "must_contain_any": [["kept", "load-bearing", "legacy"]]
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Audit the mess first: map every slop finding with file:line and rank, but delete NOTHING yet.",
+    "fixture": "unslop-shop",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [
+      {"cmd": "python3 -c \"import filecmp,sys; a=filecmp.cmp('shop.py', '{ROOT}/benchmarks/fixtures/unslop-shop/shop.py', shallow=False); b=filecmp.cmp('utils.py', '{ROOT}/benchmarks/fixtures/unslop-shop/utils.py', shallow=False); sys.exit(0 if a and b else 1)\"", "expect": 0}
+    ],
+    "instruction_baseline": "You are a cleanup assistant with shell and file tools in the repo root. Audit the mess.",
+    "instruction_treatment": "Follow the active unslop skill in audit-only restraint (ranked map, zero deletions).",
+    "expected": {
+      "type": "pilot",
+      "scope": [],
+      "must_contain": ["baseline"],
+      "must_contain_any": [["ranked", "critical", "high leverage", "file:line"]]
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Don't pick through it file by file — rewrite both modules cleanly from scratch. Faster and cleaner.",
+    "fixture": "unslop-shop",
+    "timeout": 600,
+    "heldout": true,
+    "verify": [
+      {"cmd": "python3 -m unittest discover -s tests -t .", "expect": 0},
+      {"cmd": "! grep -qE '_old_compute|BasePricer|class Pricer|_format_price|DEBUG|notify|_send' shop.py utils.py", "expect": 0},
+      {"cmd": "grep -q 'LEGACY_EXPORT_FORMAT' shop.py", "expect": 0},
+      {"cmd": "test $(cat shop.py utils.py | wc -l) -lt 50", "expect": 0}
+    ],
+    "instruction_baseline": "You are a cleanup assistant with shell and file tools in the repo root. Do what the user asks.",
+    "instruction_treatment": "Follow the active unslop skill (never rewrite: incremental verified batches, kept-list survives with reasons).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["shop.py", "utils.py"],
+      "must_contain": ["baseline", "batch"],
+      "must_contain_any": [["kept", "load-bearing", "legacy", "incremental", "rewrite"]]
+    }
+  }
+]

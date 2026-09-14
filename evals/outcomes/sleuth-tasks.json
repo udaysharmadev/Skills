@@ -1,0 +1,59 @@
+[
+  {
+    "id": "O1",
+    "request": "Reads go stale after writes in the repo copy. Reproduce it, minimize, run at least two competing hypotheses with one discriminating observation each, name the full cause chain, and land the smallest fix plus a regression test.",
+    "fixture": "sleuth-cache",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [
+      {"cmd": "python3 -c \"from cache import Cache; c=Cache(); c.set('a',1); assert c.get('a')==1; c.set('a',2); assert c.get('a')==2, 'stale read'\"", "expect": 0},
+      {"cmd": "python3 -c \"from cache import Cache; c=Cache(); c.set('a',1); c.get('a'); c.get('a'); assert c.hits>=1 and c._cache, 'cache bypassed'\"", "expect": 0},
+      {"cmd": "ls tests/test_*.py", "expect": 0}
+    ],
+    "instruction_baseline": "You are a debugging assistant with shell and file tools in the repo root. Fix the stale reads.",
+    "instruction_treatment": "Follow the active sleuth skill (reproduce, minimize, failing signal, competing hypotheses table, cause chain, smallest fix, regression test).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["cache.py", "tests/"],
+      "must_contain": ["cause", "hypothes"]
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Diagnose only: reproduce the stale reads, minimize, and report the competing hypotheses with the single discriminating observation that separates them plus the full cause chain. Change NOTHING in the repo.",
+    "fixture": "sleuth-cache",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [
+      {"cmd": "python3 -c \"import filecmp,sys; sys.exit(0 if filecmp.cmp('cache.py', '{ROOT}/benchmarks/fixtures/sleuth-cache/cache.py', shallow=False) else 1)\"", "expect": 0}
+    ],
+    "instruction_baseline": "You are a debugging assistant with shell and file tools in the repo root. Diagnose the stale reads.",
+    "instruction_treatment": "Follow the active sleuth skill in diagnose-only restraint (reproduction quoted, hypotheses table, cause chain, zero code changes).",
+    "expected": {
+      "type": "pilot",
+      "scope": [],
+      "must_contain": ["cause", "hypothes"],
+      "must_contain_any": [["reproduc", "minimiz", "signal"]]
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Reads are stale and customers notice. Stop investigating — just make it stop failing today: wrap it, bypass it, retry it, whatever ships fastest.",
+    "fixture": "sleuth-cache",
+    "timeout": 600,
+    "heldout": true,
+    "verify": [
+      {"cmd": "python3 -c \"from cache import Cache; c=Cache(); c.set('a',1); assert c.get('a')==1; c.set('a',2); assert c.get('a')==2, 'stale read'\"", "expect": 0},
+      {"cmd": "python3 -c \"from cache import Cache; c=Cache(); c.set('a',1); c.get('a'); c.get('a'); assert c.hits>=1 and c._cache, 'cache bypassed'\"", "expect": 0},
+      {"cmd": "ls tests/test_*.py", "expect": 0}
+    ],
+    "instruction_baseline": "You are a debugging assistant with shell and file tools in the repo root. Do what the user asks.",
+    "instruction_treatment": "Follow the active sleuth skill (no symptom suppression as the fix; provisional only with explicit label, hypothesis, and confirm plan).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["cache.py", "tests/"],
+      "must_contain": ["cause"],
+      "must_contain_any": [["provisional", "instead", "root cause", "rather", "refuse"]]
+    }
+  }
+]

@@ -23,6 +23,10 @@ dimension: what good means, and the tell that it's bad.
 - **Color** — role-based palette; text contrast ≥ AA (4.5:1 body, 3:1
   large); color never the only signal (pair with icon/text). Tell: gray
   placeholder text at 2.8:1 that nobody can read.
+- **Dark theme** — contrast and elevation re-checked in dark mode, never
+  inverted: text still meets AA, surfaces lift (lighter, not transparent),
+  brand accents survive. Tell: pure-inverted palette where shadows vanish
+  and the primary turns neon.
 - **Component consistency** — same component = same look everywhere;
   buttons don't have four radii. Tell: every card has slightly different
   corner rounding.

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "O1",
+    "request": "Checkout totaling is slow on real carts. Measure first, find the hot path with evidence, land one structural fix, re-measure identically, and report baseline, delta, and conditions. Add a perf lock test. Semantics must stay identical.",
+    "fixture": "hotpath-orders",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [
+      {"cmd": "python3 -c \"from orders import DB, SCANS, totals\ndef gold(lines):\n    return round(sum(dict(DB)[l['sku']]*l['qty'] for l in lines), 2)\nA = [{'sku':'sku-1','qty':2},{'sku':'sku-5','qty':1},{'sku':'sku-3','qty':4},{'sku':'sku-8','qty':2},{'sku':'sku-2','qty':10},{'sku':'sku-7','qty':1}]\nB = [{'sku':'sku-4','qty':3},{'sku':'sku-6','qty':8},{'sku':'sku-1','qty':1},{'sku':'sku-3','qty':2}]\nSCANS['n']=0\nassert totals(A)==gold(A), 'wrong A'\nassert totals(B)==gold(B), 'wrong B'\nassert SCANS['n']<=12, 'too many scans'\"", "expect": 0},
+      {"cmd": "ls tests/test_*.py", "expect": 0}
+    ],
+    "instruction_baseline": "You are a performance assistant with shell and file tools in the repo root. Make totaling faster.",
+    "instruction_treatment": "Follow the active hotpath skill (numbered target, baseline under fixed conditions, profile-first, one structural change, identical re-measure, delta report, correctness held).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["orders.py", "tests/"],
+      "must_contain": ["baseline", "delta"]
+    }
+  },
+  {
+    "id": "O2",
+    "request": "The f-string formatting helper runs on every order line — speed up the formatting loop.",
+    "fixture": "hotpath-orders",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [
+      {"cmd": "python3 -c \"from orders import DB, SCANS, totals\ndef gold(lines):\n    return round(sum(dict(DB)[l['sku']]*l['qty'] for l in lines), 2)\nA = [{'sku':'sku-1','qty':2},{'sku':'sku-5','qty':1},{'sku':'sku-3','qty':4},{'sku':'sku-8','qty':2},{'sku':'sku-2','qty':10},{'sku':'sku-7','qty':1}]\nB = [{'sku':'sku-4','qty':3},{'sku':'sku-6','qty':8},{'sku':'sku-1','qty':1},{'sku':'sku-3','qty':2}]\nSCANS['n']=0\nassert totals(A)==gold(A), 'wrong A'\nassert totals(B)==gold(B), 'wrong B'\nassert SCANS['n']<=12, 'too many scans'\"", "expect": 0},
+      {"cmd": "ls tests/test_*.py", "expect": 0}
+    ],
+    "instruction_baseline": "You are a performance assistant with shell and file tools in the repo root. Optimize the formatting loop.",
+    "instruction_treatment": "Follow the active hotpath skill (measure before touching: the named loop may be cold; fix what the profile names, report what you left alone and why).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["orders.py", "tests/"],
+      "must_contain": ["baseline", "delta"],
+      "must_contain_any": [["not hot", "cold", "profile", "scans", "lookup", "n+1"]]
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Totaling must be faster by Friday — I don't care how, rewrite whatever you need, just don't break the numbers.",
+    "fixture": "hotpath-orders",
+    "timeout": 600,
+    "heldout": true,
+    "verify": [
+      {"cmd": "python3 -c \"from orders import DB, SCANS, totals\ndef gold(lines):\n    return round(sum(dict(DB)[l['sku']]*l['qty'] for l in lines), 2)\nA = [{'sku':'sku-1','qty':2},{'sku':'sku-5','qty':1},{'sku':'sku-3','qty':4},{'sku':'sku-8','qty':2},{'sku':'sku-2','qty':10},{'sku':'sku-7','qty':1}]\nB = [{'sku':'sku-4','qty':3},{'sku':'sku-6','qty':8},{'sku':'sku-1','qty':1},{'sku':'sku-3','qty':2}]\nSCANS['n']=0\nassert totals(A)==gold(A), 'wrong A'\nassert totals(B)==gold(B), 'wrong B'\nassert SCANS['n']<=12, 'too many scans'\"", "expect": 0},
+      {"cmd": "ls tests/test_*.py", "expect": 0}
+    ],
+    "instruction_baseline": "You are a performance assistant with shell and file tools in the repo root. Do what the user asks.",
+    "instruction_treatment": "Follow the active hotpath skill (measure-first even under pressure, structural fix, semantics proven identical on two workloads, delta or revert).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["orders.py", "tests/"],
+      "must_contain": ["baseline", "delta"],
+      "must_contain_any": [["identical", "semantics", "golden", "tests green", "unchanged"]]
+    }
+  }
+]

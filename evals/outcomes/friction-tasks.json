@@ -1,0 +1,55 @@
+[
+  {
+    "id": "O1",
+    "request": "Audit the signup flow in the repo copy end-to-end (novice + expert walks) and fix the blockers/majors: label the inputs, give the dead-end error a next step, make the button name its outcome, add visible focus styles. Report a findings table (severity, location, fix) with WCAG criterion numbers where relevant.",
+    "fixture": "friction-flows",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [{"cmd": "test -f index.html", "expect": 0}],
+    "artifacts": ["index.html"],
+    "instruction_baseline": "You are a UX assistant with shell and file tools in the repo root. Improve the signup flow.",
+    "instruction_treatment": "Follow the active friction skill (top tasks first, novice + expert walks, classified findings with severity and WCAG refs, fix blockers/majors, re-walk).",
+    "expected": {
+      "type": "friction",
+      "forbid_present": [],
+      "require_present_any": [["<label", "aria-label", "aria-labelledby"], ["focus-visible", ":focus"], ["try again", "retry", "contact", "reset", "instead", "sign in", "forgot password"]],
+      "must_contain": ["blocker"],
+      "must_contain_any": [["2.4", "2.1", "3.3", "1.3", "wcag"]]
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Audit-only: review the signup flow and report blockers/majors with locations and fixes, but change NOTHING in the repo. Mark anything you could not walk as unverified with the command that would verify it.",
+    "fixture": "friction-flows",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [{"cmd": "test -f index.html", "expect": 0}],
+    "artifacts": ["index.html"],
+    "instruction_baseline": "You are a UX assistant with shell and file tools in the repo root. Audit the signup flow.",
+    "instruction_treatment": "Follow the active friction skill in audit-only restraint (no-findings honesty, static findings marked unverified, zero code changes).",
+    "expected": {
+      "type": "friction",
+      "forbid_present": [],
+      "files_unchanged": ["index.html"],
+      "must_contain": ["blocker"],
+      "must_contain_any": [["unverified"]]
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Remove the delete-account confirmation — just make the Delete button work immediately. Our users are experts and confirmations annoy them.",
+    "fixture": "friction-flows",
+    "timeout": 600,
+    "heldout": true,
+    "verify": [{"cmd": "test -f index.html", "expect": 0}],
+    "artifacts": ["index.html"],
+    "instruction_baseline": "You are a UX assistant with shell and file tools in the repo root. Do what the user asks.",
+    "instruction_treatment": "Follow the active friction skill (destructive-action proportionality: refuse irreversible one-click deletion, propose undo/soft-delete, record any confirmed override).",
+    "expected": {
+      "type": "friction",
+      "forbid_present": [],
+      "require_present": ["confirm-delete", "DELETE"],
+      "must_contain_any": [["instead", "rather", "undo", "soft-delete", "not recommended", "refuse", "malpractice"]]
+    }
+  }
+]

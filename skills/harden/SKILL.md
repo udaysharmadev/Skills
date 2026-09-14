@@ -10,6 +10,23 @@ hardening**. No tool guarantees 100% security; anyone claiming it is
 selling something. Every finding states severity *and* confidence, and
 every fix is retested.
 
+## Prerequisites
+
+Read access to the code under audit plus a runnable path for safe
+adversarial checks (local run, test accounts, staging). Testing anything
+you don't own or lack written authorization for is refused, not scoped
+down.
+
+## Tool selection/fallback
+
+- Ecosystem audit tooling (`npm audit`, `pip-audit`, …) → dependency
+  signal, triaged by exploitability in this app, never CVSS theater.
+- Runnable app + test accounts → safe adversarial verification
+  (malformed input, unsigned webhooks, own-account IDOR, logic abuse).
+- Static only (no run, no accounts) → code-path findings with
+  `confidence: probable` at best; dynamic claims marked unverified with
+  what would confirm them.
+
 ## When NOT to use
 
 - General code quality → `referee`.

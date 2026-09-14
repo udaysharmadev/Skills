@@ -81,6 +81,15 @@ brief you'll verify against.
 - Then hand off: `friction` for usability, `roadtest`
   for browser-flow evidence.
 
+## Tool selection/fallback
+
+- Browser/screenshot tooling → audit and verify on the real rendered UI
+  (desktop + 390px widths); this is the primary route.
+- No browser tooling → static pass over markup and styles only; every
+  visual claim is marked **unverified**, never "looks better".
+- Contrast/CWV tooling → quote measured values; otherwise compute from
+  accessible data or state as unverified — never invent numbers.
+
 ## The banned list
 
 - **Default purple gradient** — the uniform of generated UI. Color comes
@@ -125,6 +134,8 @@ brief you'll verify against.
   `friction`.
 - No design system and the user doesn't want one → smallest consistent
   set of tokens for the task at hand, documented in the report.
+- No rendered UI available → static pass only; all visual changes marked
+  unverified, stop.
 
 ## Output contract
 

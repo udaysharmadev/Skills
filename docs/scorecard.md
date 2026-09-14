@@ -27,17 +27,17 @@ Status vocabulary:
 | `pilot` | Complete | Traced | Justified N/A | Complete | Protocol + workspace grader authored; outcome UNVERIFIED (zero-spend) |
 | `backend` | Complete | Traced | Justified N/A | Complete | Protocol + two-stack tasks authored; outcome UNVERIFIED (zero-spend) |
 | `blueprint` | Complete | Traced | `validate-mermaid` both-directions tested; HTML asset present | Complete | Protocol + artifact grader authored; outcome UNVERIFIED (zero-spend) |
-| `headroom` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
-| `polish` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
-| `friction` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
-| `ditto` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
-| `proof` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
-| `roadtest` | Complete | Traced | `test-matrix` smoke-tested | Complete | Outcome proof deferred |
-| `sleuth` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
-| `referee` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
-| `hotpath` | Complete | Traced | `measure-report` smoke-tested | Complete | Outcome proof deferred |
-| `harden` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
-| `unslop` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
+| `headroom` | Complete | Traced | Justified N/A | Complete | Protocol + tiny/growing/large tasks authored; outcome UNVERIFIED (zero-spend) |
+| `polish` | Complete | Traced | Justified N/A | Complete | Protocol + fixture-graded tasks authored; outcome UNVERIFIED (zero-spend) |
+| `friction` | Complete | Traced | Justified N/A | Complete | Protocol + fixture-graded tasks authored; outcome UNVERIFIED (zero-spend) |
+| `ditto` | Complete | Traced | Justified N/A | Complete | Protocol + fixture-graded tasks authored; outcome UNVERIFIED (zero-spend) |
+| `proof` | Complete | Traced | Justified N/A | Complete | Protocol + workspace tasks authored; outcome UNVERIFIED (zero-spend) |
+| `roadtest` | Complete | Traced | `test-matrix` smoke-tested | Complete | Protocol + fixture tasks authored; outcome UNVERIFIED (zero-spend) |
+| `sleuth` | Complete | Traced | Justified N/A | Complete | Protocol + workspace tasks authored; outcome UNVERIFIED (zero-spend) |
+| `referee` | Complete | Traced | Justified N/A | Complete | Protocol + fixture tasks authored; outcome UNVERIFIED (zero-spend) |
+| `hotpath` | Complete | Traced | `measure-report` smoke-tested | Complete | Protocol + workspace tasks authored; outcome UNVERIFIED (zero-spend) |
+| `harden` | Complete | Traced | Justified N/A | Complete | Protocol + exploit-graded tasks authored; outcome UNVERIFIED (zero-spend) |
+| `unslop` | Complete | Traced | Justified N/A | Complete | Protocol + workspace tasks authored; outcome UNVERIFIED (zero-spend) |
 | `janitor` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
 | `frontpage` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
 | `findable` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |

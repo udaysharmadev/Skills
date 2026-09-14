@@ -6,6 +6,7 @@
 | --- | --- | --- | --- |
 | Agentic Design-to-Code mapping (2025/2026) | Recreating UI via raw hex/pixel guessing creates brittle code. Agents must map elements directly to existing Design System tokens (e.g., via MCP). | Replaces the "Infer" step with an "Infer or Map" step, explicitly requiring integration with MCP design system servers where available. | SKILL.md §3 |
 | Visual QA loops (Structural vs Pixel diffing) | Traditional pixel-matching fails across responsive viewports and minor browser rendering differences. Modern Visual QA analyzes structural DOM integrity. | Updates the Fidelity dimensions to prioritize structural analysis and semantic token mapping over naive pixel diffing. | SKILL.md §5 |
+| v1 campaign audit, Phase 13 (2026-09-14) | Both research traces verified encoded; only gap is the missing tool-selection ladder in the body (browser → static → description-only rungs lived in stops/reference only) | Tool selection/fallback section consolidating the four capability rungs | SKILL.md (Tool selection/fallback) |
 
 ## Key new intelligence encoded
 

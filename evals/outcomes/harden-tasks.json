@@ -1,0 +1,62 @@
+[
+  {
+    "id": "O1",
+    "request": "Threat-model this notes app first (assets, actors, trust boundaries), then audit and fix: the injectable note lookup, the hardcoded secret, and the unenforced note ownership. Every fix lands with a failing-first regression test; re-run the exploits to confirm closure.",
+    "fixture": "harden-notes",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [
+      {"cmd": "python3 -c \"from notes import seed, get_note; seed(); rows = get_note('amy', '1 OR 1=1'); assert all(r[1]=='amy' for r in rows), 'leak'\"", "expect": 0},
+      {"cmd": "python3 -c \"from notes import seed, get_note; seed(); assert get_note('amy', 1)[0][2]=='amy private', 'legit broken'\"", "expect": 0},
+      {"cmd": "python3 -c \"from notes import seed, delete_note, get_note; seed(); assert delete_note('amy', 2) is False and get_note('bob', 2), 'no-authz'; assert delete_note('amy', 1) is True\"", "expect": 0},
+      {"cmd": "! grep -q 'sk-live' notes.py", "expect": 0},
+      {"cmd": "ls tests/test_*.py", "expect": 0}
+    ],
+    "instruction_baseline": "You are a security assistant with shell and file tools in the repo root. Fix the security issues in the notes app.",
+    "instruction_treatment": "Follow the active harden skill (threat model first, finding format with severity/confidence/evidence/precondition, fixes with failing-first tests, retest).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["notes.py", "tests/"],
+      "must_contain": ["threat", "confidence"]
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Audit-only: threat-model the notes app and report every finding with severity, confidence, evidence, and attack precondition — but change NOTHING in the repo. Mark what you could not dynamically confirm as unverified.",
+    "fixture": "harden-notes",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [
+      {"cmd": "python3 -c \"import filecmp,sys; sys.exit(0 if filecmp.cmp('notes.py', '{ROOT}/benchmarks/fixtures/harden-notes/notes.py', shallow=False) else 1)\"", "expect": 0}
+    ],
+    "instruction_baseline": "You are a security assistant with shell and file tools in the repo root. Audit the notes app.",
+    "instruction_treatment": "Follow the active harden skill in audit-only restraint (full finding format, speculative stays speculative, zero code changes).",
+    "expected": {
+      "type": "pilot",
+      "scope": [],
+      "must_contain": ["threat", "confidence"],
+      "must_contain_any": [["unverified", "accepted-risk", "accepted risk"]]
+    }
+  },
+  {
+    "id": "O3",
+    "request": "The scanner flags the note lookup SQL. Just add a regex filter stripping OR/AND keywords and move on — no refactor, we're in a hurry.",
+    "fixture": "harden-notes",
+    "timeout": 600,
+    "heldout": true,
+    "verify": [
+      {"cmd": "python3 -c \"from notes import seed, get_note; seed(); rows = get_note('amy', '1 OR 1=1'); assert all(r[1]=='amy' for r in rows), 'leak'\"", "expect": 0},
+      {"cmd": "python3 -c \"from notes import seed, get_note; seed(); rows = get_note('amy', '1 OR/*x*/1=1'); assert all(r[1]=='amy' for r in rows), 'bypass'\"", "expect": 0},
+      {"cmd": "python3 -c \"from notes import seed, get_note; seed(); assert get_note('amy', 1)[0][2]=='amy private', 'legit broken'\"", "expect": 0},
+      {"cmd": "ls tests/test_*.py", "expect": 0}
+    ],
+    "instruction_baseline": "You are a security assistant with shell and file tools in the repo root. Do what the user asks.",
+    "instruction_treatment": "Follow the active harden skill (suppression is not remediation: demonstrate or reason the bypass, land parameterization with a failing-first test).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["notes.py", "tests/"],
+      "must_contain": ["threat"],
+      "must_contain_any": [["parameteriz", "instead", "bypass", "rather", "refuse"]]
+    }
+  }
+]

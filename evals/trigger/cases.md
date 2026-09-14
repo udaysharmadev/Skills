@@ -124,6 +124,7 @@
 - "should we split this into microservices" => headroom
 - "design the system for the new notification service" => headroom
 - "sql or nosql for this workload" => headroom
+- "50 users today, plan for maybe 500, keep it boring" => headroom
 
 ## polish
 
@@ -131,6 +132,7 @@
 - "this dashboard looks so generic, fix it" => polish
 - "improve the UI of the settings screen" => polish
 - "our app screams AI-generated, help" => polish
+- "just tidy the dashboard a little, small tweaks only" => polish
 
 ## friction
 
@@ -138,6 +140,7 @@
 - "the onboarding flow is confusing, audit it" => friction
 - "is our app accessible? check keyboard navigation too" => friction
 - "the error messages in our app are useless" => friction
+- "just audit the checkout flow, don't change anything yet" => friction
 
 ## ditto
 
@@ -145,6 +148,7 @@
 - "rebuild this page from the URL I sent" => ditto
 - "clone this dashboard design from the Figma export" => ditto
 - "recreate the UI in this image using our stack" => ditto
+- "just rebuild the layout, use placeholders for their photos and logo" => ditto
 
 ## proof
 
@@ -152,6 +156,7 @@
 - "we need regression coverage for that bug you fixed" => proof
 - "should this be a unit test or an integration test" => proof
 - "improve our test suite, it misses real breakage" => proof
+- "just add a regression test for this bug, leave the suite alone" => proof
 
 ## roadtest
 
@@ -159,6 +164,7 @@
 - "check that checkout works end to end before release" => roadtest
 - "walk through the app like a user and screenshot everything" => roadtest
 - "verify the UI changes in a real browser" => roadtest
+- "don't unit-test it, actually drive it in the browser" => roadtest
 
 ## sleuth
 
@@ -166,6 +172,7 @@
 - "the API randomly 500s about 1 in 20 times" => sleuth
 - "debug why the sync job duplicates records" => sleuth
 - "it works locally but breaks in production, why" => sleuth
+- "find what's actually causing this before you change anything" => sleuth
 
 ## referee
 
@@ -173,6 +180,7 @@
 - "can you do a code review on this PR" => referee
 - "check whether this change actually implements the spec" => referee
 - "act as a reviewer for the auth refactor" => referee
+- "review this but only flag what truly blocks, skip the nits" => referee
 
 ## hotpath
 
@@ -180,6 +188,7 @@
 - "profile and optimize the report generation" => hotpath
 - "our bundle is huge, find out why" => hotpath
 - "make the search endpoint faster, but measure it" => hotpath
+- "find the actual bottleneck, no blind optimization" => hotpath
 
 ## harden
 
@@ -187,6 +196,7 @@
 - "we're handling payments now, check we're not doing anything stupid" => harden
 - "check for injection and XSS risks in the new API" => harden
 - "harden the auth flow, we store PII" => harden
+- "only flag what's actually exploitable, skip theoretical CVEs" => harden
 
 ## unslop
 
@@ -194,6 +204,7 @@
 - "clean up this repo, it's full of AI slop" => unslop
 - "there's so much duplicated garbage in this codebase" => unslop
 - "detox my project before I keep building on it" => unslop
+- "audit the mess first, don't delete anything yet" => unslop
 
 ## janitor
 
@@ -201,6 +212,7 @@
 - "write a commit message for what I just staged" => janitor
 - "we have like 40 stale branches, deal with it" => janitor
 - "audit the repo hygiene before we open source it" => janitor
+- "just report the git mess, don't touch my branches" => janitor
 
 ## frontpage
 

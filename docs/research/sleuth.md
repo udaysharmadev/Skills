@@ -7,6 +7,7 @@
 | Agentic Debugging Anti-Patterns (2025/2026) | The "Guess-and-Check" loop is the primary failure mode of autonomous debugging agents, burning tokens without converging on a root cause. | Explicitly bans guess-and-check edits and "Amnesia" (retrying the same failed action), forcing hypothesis-driven elimination instead. | SKILL.md §Banned List |
 | Observability Blind Spots in Agentic Systems | Traditional black-box APM tools cannot debug non-deterministic agent workflows. | Adds "Trace-Based Observability" to ensure agents inspect the entire reasoning and tool-call hierarchy when debugging orchestrations. | references/techniques.md |
 | Hallucinated Fixes | Agents without strict runtime grounding default to suggesting plausible but incorrect structural patches. | Bans suggesting any fix before gathering runtime evidence (logs, DB state). | SKILL.md §Banned List |
+| v1 campaign audit, Phase 16 (2026-09-14) | All three traces verified encoded; gaps are the missing Prerequisites and Tool selection/fallback sections (repro access assumed, debugger→prints→static ladder unstated) | Prerequisites (code + runnable path + evidence sources) and Tool selection/fallback sections | SKILL.md (Prerequisites, Tool selection/fallback) |
 
 ## Key new intelligence encoded
 

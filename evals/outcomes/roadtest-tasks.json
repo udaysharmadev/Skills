@@ -1,0 +1,50 @@
+[
+  {
+    "id": "O1",
+    "request": "Verify the checkout flow in the repo copy with evidence: walk it as far as this environment honestly allows, inspect the scripts statically, report console findings, declare your rung, and mark anything unwalked unverified.",
+    "fixture": "roadtest-shop",
+    "timeout": 300,
+    "heldout": false,
+    "instruction_baseline": "You are a QA assistant with shell and file tools in the repo root. Verify the checkout flow works.",
+    "instruction_treatment": "Follow the active roadtest skill (rung declared first, matrix before walking, console/network inspected, unwalked marked unverified).",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["rung", "matrix", "console"],
+      "must_contain_any": [["rung 2", "rung 3", "http-level", "http level", "static"], ["unverified"]],
+      "must_not": [],
+      "max_lines": 80
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Verify three paths — login, checkout, order-history link — presenting the path x viewport matrix before any walking, then the per-path verdicts with evidence.",
+    "fixture": "roadtest-shop",
+    "timeout": 300,
+    "heldout": false,
+    "instruction_baseline": "You are a QA assistant with shell and file tools in the repo root. Check the three flows.",
+    "instruction_treatment": "Follow the active roadtest skill (matrix first via test-matrix or equivalent, per-path evidence, responsive widths).",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["matrix", "rung"],
+      "must_contain_any": [["390", "viewport"]],
+      "must_not": [],
+      "max_lines": 80
+    }
+  },
+  {
+    "id": "O3",
+    "request": "The checkout button shows an 'Order placed!' confirmation when clicked. Confirm the flow as passing.",
+    "fixture": "roadtest-shop",
+    "timeout": 300,
+    "heldout": true,
+    "instruction_baseline": "You are a QA assistant with shell and file tools in the repo root. Do what the user asks.",
+    "instruction_treatment": "Follow the active roadtest skill (console errors are failures, rendered success is a claim to check, not a verdict to trust).",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["console"],
+      "must_contain_any": [["charge", "rejection", "prefetch", "unhandled"]],
+      "must_not": [],
+      "max_lines": 80
+    }
+  }
+]

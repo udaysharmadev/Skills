@@ -185,6 +185,200 @@ All notable changes to this project are documented here. Format follows
   verified offline on all five gates with full 8-grader regression.
   Verdict UNVERIFIED — see `docs/benchmarks/blueprint.md`.
 
+### v1 campaign — Skill Phase 10 `headroom` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (traces verified). Three reference-only additions where
+  the campaign bar explicitly required more: tail-latency thinking (what
+  dominates p99 for this workload), cache failure-mode design (cold
+  start, stampede, outage fallback), and queue economics (lag alarms, DLQ
+  retention, retention pricing). Zero new always-on cost.
+- Authored HR1–HR5 scenarios (no-numbers framework, premature-monolith
+  restraint, billion-user adversarial) plus a boring-brief trigger case.
+- Outcome protocol + frozen tasks (tiny/growing/large workloads) with an
+  endorsement-vs-mention limitation stated upfront. Offline testing caught
+  and fixed a real harness crash (fact grader assumed a fixture); all
+  discriminations re-verified. Verdict UNVERIFIED — see
+  `docs/benchmarks/headroom.md`.
+
+### v1 campaign — Skill Phase 11 `polish` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (all three research traces verified, PRD §8 walked).
+  Three reference-only additions where the campaign bar explicitly
+  required more: Tool selection/fallback section (static pass +
+  unverified marking without browser tooling), a no-render stop
+  condition, and a dark-theme audit bullet (contrast + elevation, not
+  inversion). Zero new always-on cost.
+- Authored PO1–PO5 scenarios (direction-first normal, token-constraint
+  hard edge, no-render failure, subtle-mode restraint, make-it-pop
+  adversarial) plus a small-tweaks trigger case.
+- Outcome protocol + frozen tasks on a new `polish-dashboard` fixture
+  (slop-seeded page + constraint tokens file; a directory because the
+  runner copies fixture dirs) with a new artifact grader (slop-hex scan,
+  token byte-identity, state markers, Direction line) — verified offline
+  on all gates with full 6-grader regression;   taste/hierarchy stays in
+  blind review, stated upfront. Verdict UNVERIFIED — see
+  `docs/benchmarks/polish.md`.
+
+### v1 campaign — Skill Phase 12 `friction` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (all three research traces verified, PRD §8 walked).
+  Two reference-only additions where the campaign bar explicitly
+  required more: Tool selection/fallback section (walk → static +
+  unverified ladder, axe as floor-not-ceiling) and a no-findings stop
+  condition (cite the walks, never invent findings). Zero new always-on
+  cost.
+- Authored FR1–FR5 scenarios (destructive-proportionality hard edge,
+  nothing-runnable failure, healthy-flow/audit-only restraint,
+  remove-the-confirmation adversarial) plus an audit-only trigger case.
+- Outcome protocol + frozen tasks on a new `friction-flows` fixture
+  (seeded signup friction + one good typed-confirm pattern to defend)
+  via the shared artifact grader (new `friction` type dispatch,
+  `files_unchanged` support for audit-only restraint). Offline testing
+  caught and broadened one brittle next-step word group before freezing;
+  all discriminations re-verified with full 7-path regression. Marker
+  presence ≠ walk quality stays in blind review, stated upfront. Verdict
+  UNVERIFIED — see `docs/benchmarks/friction.md`.
+
+### v1 campaign — Skill Phase 13 `ditto` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (both research traces verified, PRD §8 walked). One
+  reference-only addition where the campaign bar explicitly required
+  more: Tool selection/fallback section consolidating the four
+  capability rungs (full loop → static → screenshot-only →
+  description-only). Zero new always-on cost.
+- Authored DT1–DT5 scenarios (single-viewport hard edge, auth-walled
+  failure, placeholders-only restraint, injection-plus-secret
+  adversarial) plus a placeholders-only trigger case.
+- Outcome protocol + frozen tasks on a new `ditto-source` fixture
+  (raw-hex styles, owned asset refs, one embedded AI directive, one fake
+  secret) via the shared artifact grader (new `ditto` type dispatch, no
+  new grader mechanics). Verified offline on all gates with full 7-path
+  regression; visual match stays in blind review, stated upfront.
+  Verdict UNVERIFIED — see `docs/benchmarks/ditto.md`.
+
+### v1 campaign — Skill Phase 14 `proof` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (all three research traces verified, PRD §8 walked).
+  One reference-only addition where the campaign bar explicitly required
+  more: Tool selection/fallback section consolidating the four
+  execution rungs (real runner → minimal harness → hand mutation →
+  unverified). Zero new always-on cost.
+- Authored PF1–PF5 scenarios (boundary-choice hard edge, zero-harness
+  failure, one-test restraint, make-CI-green adversarial) plus a
+  leave-the-suite-alone trigger case.
+- Outcome protocol + frozen tasks on a new `proof-cart` fixture (stdlib
+  unittest — pytest not guaranteed in trial envs; green suite blind to
+  a seeded double-discount bug) via the workspace grader, no harness
+  change. O1 graded on genuine red (`FAILED (failures=` separates red
+  from green and from erroring suites); O3 grades honesty, not suite
+  color. Verified offline end-to-end with real test runs on all gates.
+  Verdict UNVERIFIED — see `docs/benchmarks/proof.md`.
+
+### v1 campaign — Skill Phase 15 `roadtest` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (all three research traces verified, PRD §8 walked).
+  No runtime gap found — the capability ladder already is the
+  tool-selection section, untrusted-content and self-healing rules
+  present, rung discipline in the gates. Audit recorded in research,
+  zero lines added to the runtime.
+- Authored RT1–RT5 scenarios (console-error-on-green hard edge,
+  no-browser failure, logic-only restraint, missing-testid plus
+  instructive-text adversarial) plus a drive-it-not-unit-test trigger
+  case.
+- Outcome protocol + frozen tasks on a new `roadtest-shop` fixture
+  (fake-success checkout, unhandled rejection, dead link), chat-graded
+  via the fact grader — headless trials cannot produce browser
+  evidence, so ladder honesty (rung/matrix/console markers, line
+  budget) is the graded object, stated upfront. Verified offline on all
+  gates.   Verdict UNVERIFIED — see `docs/benchmarks/roadtest.md`.
+
+### v1 campaign — Skill Phase 16 `sleuth` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (all three research traces verified, PRD §8 walked).
+  Two reference-only additions: Prerequisites (code + runnable path +
+  evidence sources) and Tool selection/fallback (debugger → prints →
+  static-unconfirmed ladder). Zero new always-on cost.
+- Authored SL1–SL5 scenarios (intermittent hard edge,
+  cannot-reproduce failure, labeled-provisional restraint,
+  wrap-it-and-ship adversarial) plus a cause-before-change trigger case.
+- Outcome protocol + frozen tasks on a new `sleuth-cache` fixture
+  (stale-reads bug) via the workspace grader: freshness + cache-used
+  behavior checks separate true fixes from bypasses. Offline testing
+  caught and fixed a real harness bug — `__pycache__/*.pyc` counted as
+  changed files false-failed every Python scope trial (latent in Phase
+  14's `proof` tasks; its sim missed it) — filtered in
+  `scripts/eval-outcome`, both phases re-verified after. Verdict
+  UNVERIFIED — see `docs/benchmarks/sleuth.md`.
+
+### v1 campaign — Skill Phase 17 `referee` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (all three research traces verified, PRD §8 walked).
+  Two reference-only additions: Prerequisites (complete diff + written
+  criteria) and Tool selection/fallback (subagent → self-review →
+  decline-to-skim ladder). Zero new always-on cost.
+- Authored RF1–RF5 scenarios (signature-change hard edge,
+  context-free-giant-diff failure, clean-diff restraint, hurry-up
+  adversarial) plus a blockers-only trigger case.
+- Outcome protocol + frozen tasks on a new `referee-change` fixture
+  (3-criterion brief; change meets one, misses one, smuggles a
+  refactor), chat-graded via the fact grader — review judgment has no
+  executable oracle, so marker discipline (verdict, disclosure,
+  intent/scope groups, 60-line budget) is the graded object, stated
+  upfront. Verified offline on all gates. Verdict UNVERIFIED — see
+  `docs/benchmarks/referee.md`.
+
+### v1 campaign — Skill Phase 18 `hotpath` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (both research traces verified, PRD §8 walked). Two
+  reference-only additions: Prerequisites (runnable system + one
+  measurement path) and Tool selection/fallback (profiler → counters →
+  unverified-hypotheses ladder). Zero new always-on cost.
+- Authored HP1–HP5 scenarios (micro-tune-bait hard edge,
+  unmeasurable-here failure, target-met restraint, faster-by-Friday
+  adversarial) plus a no-blind-optimization trigger case.
+- Outcome protocol + frozen tasks on a new `hotpath-orders` fixture
+  (per-line catalog scans + cold formatting decoy) via the workspace
+  grader, no harness change: deterministic scan counts + golden totals
+  on two workloads (wall-clock deliberately ungraded — flaky on shared
+  runners). Verified offline end-to-end with real runs on all gates:
+  structural fixes pass; micro-tunes, hardcodes, drift, untouched, and
+  report-less runs each fail.   Verdict UNVERIFIED — see
+  `docs/benchmarks/hotpath.md`.
+
+### v1 campaign — Skill Phase 19 `harden` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (all three research traces verified, PRD §8 walked).
+  Two reference-only additions: Prerequisites (code + runnable path +
+  authorization line) and Tool selection/fallback (scanner →
+  adversarial → static ladder). Zero new always-on cost.
+- Authored HN1–HN5 scenarios (IDOR hard edge, blind-spot failure,
+  triage-not-theater restraint, WAF-it adversarial) plus an
+  exploitability-only trigger case.
+- Outcome protocol + frozen tasks on a new `harden-notes` fixture
+  (in-memory sqlite: injectable lookup, hardcoded secret, unenforced
+  ownership) via the workspace grader, no harness change: plain AND
+  comment-obfuscated injection separate parameterization from regex
+  theater; legit-flow checks separate fixes from breakage. Verified
+  offline end-to-end with real exploit runs on all gates. Verdict
+  UNVERIFIED — see `docs/benchmarks/harden.md`.
+
+### v1 campaign — Skill Phase 20 `unslop` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (all three research traces verified, PRD §8 walked).
+  One reference-only addition: Tool selection/fallback section
+  consolidating the three signal rungs (runner → smoke-baseline →
+  no-signal-no-detox). Zero new always-on cost.
+- Authored UN1–UN5 scenarios (load-bearing hard edge, no-baseline
+  failure, audit-only restraint, rewrite-it adversarial) plus an
+  audit-first trigger case. Signature U1–U3 remain as cross-checks.
+- Outcome protocol + frozen tasks on a new `unslop-shop` fixture
+  (seeded duplication, dead code, zombie layer, swallowed error, debug
+  leftover, plus a test-locked legacy quirk to defend) via the
+  workspace grader, no harness change: suite green + slop gone + quirk
+  surviving + net-negative lines + tests-untouched scope. Verified
+  offline end-to-end with real runs on all gates. Verdict UNVERIFIED —
+  see `docs/benchmarks/unslop.md`.
+
 ## [0.9.0] — 2026-09-14
 
 ### Productization and documentation

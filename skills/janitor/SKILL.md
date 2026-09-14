@@ -9,6 +9,21 @@ Everything here is grounded in actual `git`/`gh` output — never assumed.
 Destructive operations (history rewrite, force push, branch deletion)
 are the user's explicit call, always.
 
+## Prerequisites
+
+A git repository to work in, plus `gh` authenticated only when the task
+touches the remote. No repo → say so; hygiene of a non-repo is a
+different job (usually `unslop`).
+
+## Tool selection/fallback
+
+- Local git → full local audit (history, branches, tags, ignore,
+  churn); always available, always first.
+- `gh` present + authenticated → remote section (README, releases,
+  Actions, PRs/issues, protections); probe once, skip silently absent.
+- No `gh`/network → remote marked "skipped (no gh/network)", local
+  fully walked; remote state never invented.
+
 ## When NOT to use
 
 - Code cleanliness → `unslop`.

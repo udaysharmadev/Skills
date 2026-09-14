@@ -147,6 +147,16 @@ def grade(task, route, raw, obs=None):
         return grade_pilot(task, raw, obs or {})
     if isinstance(exp, dict) and exp.get("type") == "blueprint":
         return grade_blueprint(task, raw, obs or {})
+    if isinstance(exp, dict) and exp.get("type") == "polish":
+        return grade_polish(task, raw, obs or {})
+    if isinstance(exp, dict) and exp.get("type") == "friction":
+        # Audit-and-fix skills grade on the same artifact mechanics:
+        # forbidden strings, file identity, required markers.
+        return grade_polish(task, raw, obs or {})
+    if isinstance(exp, dict) and exp.get("type") == "ditto":
+        # Rebuild skills grade on the same artifact mechanics: tokens
+        # inferred, trap strings absent, loop markers present.
+        return grade_polish(task, raw, obs or {})
     if isinstance(exp, dict) and exp.get("type") == "spelunk":
         return grade_spelunk(task, raw)
     return grade_route(task, route, raw)
@@ -195,6 +205,52 @@ def grade_blueprint(task, raw, obs):
                 "paths_checked": checked}
 
 
+def grade_polish(task, raw, obs):
+    """Artifact grading (polish, friction, ditto): forbidden strings absent, named
+    files byte-identical to the fixture where required, required markers
+    present in artifacts and chat."""
+    exp = task["expected"]
+    artifacts = obs.get("artifacts") or {}
+    if not artifacts:
+        return False, {"reason": "no artifacts captured", "files": 0}
+    body = "\n".join(artifacts[p] for p in sorted(artifacts))
+    low_body = body.lower()
+    low = raw.lower()
+    forbid = [s.lower() for s in exp.get("forbid_present", [])]
+    present_forbidden = sorted(s for s in forbid if s in low_body)
+    # File identity: named artifacts must match fixture bytes exactly
+    # (token preservation, audit-only restraint).
+    changed_tokens = []
+    for rel in exp.get("tokens_unchanged", []) + exp.get("files_unchanged", []):
+        fp = os.path.join(ROOT, "benchmarks", "fixtures",
+                          task["fixture"], rel)
+        try:
+            with open(fp, encoding="utf-8") as f:
+                original = f.read()
+        except OSError:
+            changed_tokens.append(rel + " (fixture missing)")
+            continue
+        if artifacts.get(rel) != original:
+            changed_tokens.append(rel)
+    req = [s.lower() for s in exp.get("require_present", [])]
+    missing = [s for s in req if s not in low_body]
+    missing_groups = [g for g in exp.get("require_present_any", [])
+                      if not any(alt.lower() in low_body for alt in g)]
+    must = [m.lower() for m in exp.get("must_contain", [])]
+    missing_chat = [m for m in must if m not in low]
+    chat_groups = [g for g in exp.get("must_contain_any", [])
+                   if not any(alt.lower() in low for alt in g)]
+    ok = (not present_forbidden and not changed_tokens and not missing
+          and not missing_groups and not missing_chat and not chat_groups)
+    return ok, {"files": len(artifacts),
+                "forbidden_present": present_forbidden,
+                "tokens_changed": changed_tokens,
+                "missing_artifact": missing,
+                "missing_artifact_groups": missing_groups,
+                "missing_chat": missing_chat,
+                "missing_chat_groups": chat_groups}
+
+
 def grade_pilot(task, raw, obs):
     """Workspace grading: verify-command exits + scope containment + report markers."""
     exp = task["expected"]
@@ -238,7 +294,7 @@ def grade_spelunk(task, raw):
     missing_groups = [g for g in exp.get("must_contain_any", [])
                       if not any(alt.lower() in low for alt in g)]
     contaminants = [c for c in exp.get("must_not", []) if c.lower() in low]
-    known = fixture_files(task["fixture"])
+    known = fixture_files(task["fixture"]) if task.get("fixture") else []
     hallucinated = []
     checked = 0
     for tok in set(PATH_RE.findall(raw)):
@@ -308,7 +364,11 @@ def observe(agent, prompt, cfg, timeout, fixture=None, verify=None,
                                    "expect": v.get("expect", 0), "tail": "TIMEOUT"})
             st = subprocess.run(["git", "status", "--porcelain"], capture_output=True,
                                 text=True, cwd=workdir)
-            changed = [l[3:] for l in st.stdout.splitlines() if l.strip()]
+            raw_changed = [l[3:] for l in st.stdout.splitlines() if l.strip()]
+            # Tool noise is never agent work: drop bytecode caches (mirrors
+            # .gitignore). Without this, any Python trial false-fails scope.
+            changed = [f for f in raw_changed
+                       if "__pycache__" not in f and not f.endswith(".pyc")]
             obs["verify"] = checks
             obs["changed_files"] = changed
         if artifacts:
@@ -431,6 +491,10 @@ def main():
                 vals = [r["notes"].get("diagrams", 0) for r in rows]
                 print(f"{task['id']} {cond}: pass={pr:.2f} "
                       f"mean_diagrams={sum(vals)/max(len(vals),1):.2f}")
+            elif isinstance(task["expected"], dict) and task["expected"].get("type") in ("polish", "friction", "ditto"):
+                vals = [r["notes"].get("files", 0) for r in rows]
+                print(f"{task['id']} {cond}: pass={pr:.2f} "
+                      f"mean_artifacts={sum(vals)/max(len(vals),1):.2f}")
             else:
                 lens = [len(r["notes"].get("route") or []) for r in rows]
                 ml = sum(lens) / max(len(lens), 1)

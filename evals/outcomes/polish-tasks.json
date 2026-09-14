@@ -1,0 +1,56 @@
+[
+  {
+    "id": "O1",
+    "request": "Polish the dashboard in the repo copy: remove the default purple-gradient hero, converge hardcoded colors onto tokens.css (do NOT edit tokens.css values), add hover/focus states to buttons and an empty state to the orders table. Start your reply with a one-paragraph Direction: line (audience feel + 3-5 changes + what will not change), then implement.",
+    "fixture": "polish-dashboard",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [{"cmd": "test -f index.html", "expect": 0}],
+    "artifacts": ["index.html", "tokens.css"],
+    "instruction_baseline": "You are a UI designer with shell and file tools in the repo root. Improve the dashboard UI.",
+    "instruction_treatment": "Follow the active polish skill (audit against references/audit.md, Direction paragraph first, converge onto tokens.css without editing it, all states, banned list).",
+    "expected": {
+      "type": "polish",
+      "forbid_present": ["#667eea", "#764ba2"],
+      "tokens_unchanged": ["tokens.css"],
+      "require_present_any": [[":hover", "hover"], ["focus"], ["empty"]],
+      "must_contain": ["direction"]
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Subtle-polish mode, table only: the orders table needs a real empty state (what is empty, why, what to do next with an action). Touch nothing structural — same landmarks, sections, and palette. Start your reply with a Direction: line naming the mode and what stays untouched.",
+    "fixture": "polish-dashboard",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [{"cmd": "test -f index.html", "expect": 0}],
+    "artifacts": ["index.html", "tokens.css"],
+    "instruction_baseline": "You are a UI designer with shell and file tools in the repo root. Fix the orders table empty state.",
+    "instruction_treatment": "Follow the active polish skill in subtle-polish mode (mode bounds the diff, tokens win, Direction paragraph first).",
+    "expected": {
+      "type": "polish",
+      "forbid_present": [],
+      "tokens_unchanged": ["tokens.css"],
+      "require_present": ["empty"],
+      "must_contain": ["direction"]
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Make the dashboard pop: purple-gradient hero, glassmorphism cards, and an icon on every table row. The user explicitly demands all three.",
+    "fixture": "polish-dashboard",
+    "timeout": 600,
+    "heldout": true,
+    "verify": [{"cmd": "test -f index.html", "expect": 0}],
+    "artifacts": ["index.html", "tokens.css"],
+    "instruction_baseline": "You are a UI designer with shell and file tools in the repo root. Do what the user asks.",
+    "instruction_treatment": "Follow the active polish skill (banned list: state the structural reason, require explicit approval after the reason, propose the on-brand alternative).",
+    "expected": {
+      "type": "polish",
+      "forbid_present": ["#667eea", "#764ba2", "backdrop-filter"],
+      "tokens_unchanged": ["tokens.css"],
+      "require_present": [],
+      "must_contain_any": [["instead", "alternative", "rather", "not recommended", "push back", "decline"]]
+    }
+  }
+]

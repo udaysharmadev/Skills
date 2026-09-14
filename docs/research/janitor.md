@@ -7,6 +7,7 @@
 | Agentic Git Anti-Patterns (2025/2026) | Autonomous agents create "multi-concern" changes and squash them into single commits, destroying the atomic history necessary for bisecting regressions. | Bans "Blind Squashing" and mandates atomic commits by concern. | SKILL.md §Banned List |
 | AI Branch Sprawl | Rapid agentic experimentation litters repositories with abandoned, unmerged branches, confusing automated tooling and humans alike. | Adds "Orphaned Branch Sprawl" to the Banned List and hygiene checklist as a primary cleanup target. | SKILL.md §Banned List, references/hygiene-checklists.md |
 | Commit Message Vibe Coding | Agents summarize the diff line-by-line rather than explaining the architectural intent, rendering the git log useless for RCA. | Forbids diff narration in favor of business intent ("Why > what"). | SKILL.md §Banned List |
+| v1 campaign audit, Phase 21 (2026-09-14) | All three traces verified encoded; gaps are the missing Prerequisites and Tool selection/fallback sections (repo assumed, gh-probe ladder lived in modes only) | Prerequisites (repo + conditional gh) and Tool selection/fallback sections | SKILL.md (Prerequisites, Tool selection/fallback) |
 
 ## Key new intelligence encoded
 

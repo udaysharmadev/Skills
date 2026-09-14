@@ -22,6 +22,15 @@ that's how the last ounce of working behavior dies.
 A runnable baseline or the means to build one. Behavior-preservation
 claims are only as good as the signal behind them.
 
+## Tool selection/fallback
+
+- Project test runner + build → baseline signal; every batch re-verified
+  the same way.
+- No tests but runnable → batch 0 builds the smoke baseline (a handful
+  of API-level tests around the money paths) before any deletion.
+- Nothing runnable → fix that first (via `sleuth` if broken); no cleanup
+  batch ships without a signal — "it still runs" is not one.
+
 ## Workflow
 
 ### 1. Establish the behavior baseline

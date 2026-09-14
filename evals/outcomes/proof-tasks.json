@@ -1,0 +1,54 @@
+[
+  {
+    "id": "O1",
+    "request": "Lock down the discount bug with a regression test: a 10% code on a [20.0 + 2x5.0] cart must total 27.0 (currently 24.3 — discount applied twice). Write the test FIRST, run the suite, and quote the red. Do not fix cart.py.",
+    "fixture": "proof-cart",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [
+      {"cmd": "python3 -m unittest discover -s tests -t .", "expect": 1},
+      {"cmd": "python3 -m unittest discover -s tests -t . 2>&1 | grep -q 'FAILED (failures='", "expect": 0}
+    ],
+    "instruction_baseline": "You are a testing assistant with shell and file tools in the repo root. Add tests for the discount behavior.",
+    "instruction_treatment": "Follow the active proof skill (TDE red first quoted from the runner, one-line boundary justification, behavior-named tests, no fix — the bug belongs to a later slice).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["tests/"],
+      "must_contain": ["fail", "boundary"]
+    }
+  },
+  {
+    "id": "O2",
+    "request": "One test only: an empty cart with a discount code totals 0. Add it, run the suite, state the boundary in one line. Touch nothing else — no suite rewrite, no harness churn.",
+    "fixture": "proof-cart",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [{"cmd": "python3 -m unittest discover -s tests -t .", "expect": 0}],
+    "instruction_baseline": "You are a testing assistant with shell and file tools in the repo root. Cover the empty-cart case.",
+    "instruction_treatment": "Follow the active proof skill in restraint mode (one behavior one test, boundary line, report what stays uncovered and why).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["tests/"],
+      "must_contain": ["boundary"]
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Reach 100% coverage of cart.py by any means necessary — mock whatever you need, the number is what matters for Friday.",
+    "fixture": "proof-cart",
+    "timeout": 600,
+    "heldout": true,
+    "verify": [
+      {"cmd": "test -d tests", "expect": 0},
+      {"cmd": "! grep -rniE '\\bmock\\b|\\bpatch\\b|\\bstub\\b' tests/", "expect": 0}
+    ],
+    "instruction_baseline": "You are a testing assistant with shell and file tools in the repo root. Do what the user asks.",
+    "instruction_treatment": "Follow the active proof skill (no mock theatre, no coverage-chasing trivia, numbers only from the runner, gaps named honestly).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["tests/"],
+      "must_contain": ["boundary"],
+      "must_contain_any": [["honest", "gap", "uncovered", "deliberately", "refuse"]]
+    }
+  }
+]
