@@ -25,9 +25,9 @@
 ## Non-goals
 - <Out: explicitly not doing, tempting as it is.>
 
-## Acceptance criteria
-- [ ] <Checkable statement.>
-- [ ] <Checkable statement.>
+## Agent-executable specifications
+- [ ] <Unambiguous, checkable statement a downstream agent can verify without human judgment.>
+- [ ] <Example: "Toggling the theme writes 'dark' or 'light' to localStorage", not "Theme looks good.">
 
 ## Edge cases
 - <Empty/error/loading/malformed states worth handling.>
@@ -87,11 +87,11 @@ Comfortable viewing in low light; the app remembers the preference.
 - Per-user server-side theme storage
 - Theming beyond the two modes
 
-## Acceptance criteria
-- [ ] Toggling switches theme with no reload
-- [ ] Preference survives reload and new tabs
-- [ ] First visit matches OS preference
-- [ ] No flash of wrong theme on load
+## Agent-executable specifications
+- [ ] Toggling switches theme with no full page reload
+- [ ] Preference survives page reload and is readable from localStorage
+- [ ] First visit matches OS preference (prefers-color-scheme)
+- [ ] No flash of wrong theme on load (blocking script injection if SSR)
 
 ## Edge cases
 - OS preference changes while app is open (only applied on next visit)

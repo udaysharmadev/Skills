@@ -43,12 +43,17 @@ Restate the request as one sentence: *what* will be true after the work
 that isn't true now, *for whom*. If you cannot write this sentence, that's
 a clarifying question, not a brief.
 
-### 2. Gap check → at most 5 questions
+### 2. Ambiguity detection (max 5 questions)
 
-List what's genuinely blocking (scope boundaries, environment, data,
-definition of "good"). Ask **only blocking questions, max 5, in one batch**.
-Anything non-blocking becomes an explicit numbered assumption in the brief
-instead of a question. Never run a back-and-forth interrogation.
+Actively scan the request for linguistic, semantic, and functional
+ambiguities. List what's genuinely blocking:
+- Undefined boundaries ("make it fast" → what is the target metric?)
+- Contradictory constraints
+- Missing definitions of "good" or failure states
+
+Ask **only blocking questions, max 5, in one batch**. Anything non-blocking
+becomes an explicit numbered assumption in the brief. Never run a
+back-and-forth interrogation.
 
 ### 3. Ground in the repo (lightly)
 
@@ -66,7 +71,7 @@ example). Core sections:
 - constraints and conventions to respect;
 - scope: what's in;
 - non-goals: what's explicitly out (as valuable as scope);
-- acceptance criteria: checkable statements;
+- agent-executable specifications: statements another agent can objectively verify without human judgment;
 - edge cases: empty/loading/error/malformed states worth handling;
 - non-functional requirements **only when they bite** (performance
   budget, accessibility bar, i18n, security constraint) — omitted means
@@ -96,7 +101,7 @@ polish — downstream skills (`masterplan`) will surface anything structural.
 
 - A reader who never saw this chat could implement without guessing on
   scope — test your draft against this before showing it.
-- Every acceptance criterion is objectively checkable.
+- Every agent-executable specification is objectively checkable by another agent without human intervention.
 - The verification section names real commands/checks (that exist in this
   repo or are standard).
 - Assumptions are numbered and falsifiable ("A1: single-user, no roles").
