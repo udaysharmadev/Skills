@@ -16,7 +16,7 @@ Status semantics:
 | Agent | Installed | Version | Headless invocation | Routing eval |
 | --- | --- | --- | --- | --- |
 | Codex | yes | 0.153.4 (gpt-5.6-sol) | ✅ tested (`codex exec`, stdin closed) | ✅ measured — smoke 0.917 accuracy (11/12), 2026-09-14 |
-| OpenCode | yes | 1.18.30 | ✅ tested (`opencode run`) | ✅ measured — smoke 0.917 accuracy (11/12), 2026-09-14 |
+| OpenCode | yes | 1.18.30 | ✅ tested (`opencode run`) | ✅ measured — smoke 1.0 accuracy (12/12), 2026-09-14 |
 | Claude Code | yes | 2.1.235 | ? flags documented; **execution hangs in dev env** | ? — pending a working environment |
 | Cursor | no | — | — | — unavailable locally |
 | Antigravity | no | — | — | — unavailable locally |

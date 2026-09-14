@@ -3,6 +3,27 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning is semantic.
 
+## [0.8.6] — 2026-09-14
+
+### Phase 8 evaluation recovery
+
+- Added `scripts/eval-workflow`, a standard-library evidence runner that
+  requires explicit scenario selection before live agent invocation, hides
+  assertions from the evaluated agent, records dirty-tree provenance and
+  archives produced artifacts. Results remain ungraded until a real grader
+  evaluates them.
+- Made all 21 signature-skill scenarios independently runnable by separating
+  setup/task input from hidden checks; corrected the ambiguous single-turn
+  `hotseat` cheerleading scenario.
+- Extended deterministic eval validation to workflow scenario structure and
+  corrected documentation that previously claimed execution was already
+  wired.
+- Executed one final Codex/gpt-5.6-sol H3 trial. Raw evidence is stored
+  locally; no workflow pass rate is claimed.
+- Fresh-context review found and resolved artifact-durability, setup parsing,
+  provenance, full-skill-package, progressive-disclosure and evidence-wording
+  issues. `shellcheck` was unavailable locally and remains unverified.
+
 ## [0.8.5] — 2026-09-14
 
 ### Phase 8, Batch E — cleanup & public-quality depth

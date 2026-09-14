@@ -57,4 +57,8 @@ fi
 if [ "$fail" -eq 0 ]; then
   echo "OK: $total trigger cases well-formed across all suites (measurement: scripts/eval-trigger)"
 fi
+
+if ! scripts/eval-workflow --check; then
+  fail=1
+fi
 exit "$fail"

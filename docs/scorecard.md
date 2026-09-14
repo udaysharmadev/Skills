@@ -68,12 +68,12 @@ professional · 97+ exceptional.
 ## Summary (post expertise pass, v0.8.5)
 
 - **27 skills, median 84.5 pre-pass → ~89 post-pass** — the expertise
-  pass added decision frameworks, failure depth, and 4 deterministic
+  pass added decision frameworks, failure depth, and 5 deterministic
   scripts (spelunk inventory, recall check-memory, blueprint
   validate-mermaid, roadtest test-matrix, hotpath measure-report = 5).
 - Still short of 92 across the board for one reason: **Evaluation
-  evidence (5 pts)** — only trigger evals are measured; workflow and
-  outcome evals remain authored-not-executed. That is 0.9 work, and it
+  evidence (5 pts)** — only trigger evals are measured; workflow trials
+  may run locally, but no graded workflow or outcome evidence is published. That is 0.9 work, and it
   is the only thing between "strong" and "professional" here. Scores
   were not inflated to cross the line.
 - Batch status: A (0.8.1) B (0.8.2) C (0.8.3) D (0.8.4) E+F (0.8.5) —

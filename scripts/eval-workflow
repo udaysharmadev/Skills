@@ -1,0 +1,217 @@
+#!/usr/bin/env python3
+"""Run one explicitly selected workflow scenario and preserve raw evidence.
+
+The evaluated agent sees setup + task, never assertions or answer keys.
+Results stay ungraded until deterministic or human grading occurs.
+"""
+import argparse
+import hashlib
+import json
+import re
+import runpy
+import shutil
+import subprocess
+import sys
+import tarfile
+import tempfile
+from datetime import datetime, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+SCENARIOS = ROOT / "evals/workflow/scenarios"
+RESULTS = ROOT / "evals/results"
+TRIGGER = runpy.run_path(str(ROOT / "scripts/eval-trigger"))
+AGENTS = TRIGGER["AGENTS"]
+observe = TRIGGER["observe"]
+
+
+def load_scenarios():
+    known = {p.name for p in (ROOT / "skills").iterdir() if p.is_dir()}
+    scenarios, errors, seen = [], [], set()
+    for path in sorted(SCENARIOS.glob("*.md")):
+        if path.name == "README.md":
+            continue
+        skill = current = None
+        for lineno, line in enumerate(path.read_text().splitlines(), 1):
+            if line.startswith("## "):
+                skill = line[3:].strip()
+                if skill not in known:
+                    errors.append(f"{path}:{lineno}: unknown skill {skill!r}")
+            elif line.startswith("### "):
+                if current:
+                    scenarios.append(current)
+                parts = line[4:].split(maxsplit=1)
+                scenario_id = parts[0]
+                current = {"id": scenario_id, "title": parts[1] if len(parts) > 1 else "",
+                           "skill": skill, "path": str(path.relative_to(ROOT)),
+                           "line": lineno, "body": []}
+                if scenario_id in seen:
+                    errors.append(f"{path}:{lineno}: duplicate scenario id {scenario_id}")
+                seen.add(scenario_id)
+            elif current is not None:
+                current["body"].append(line)
+        if current:
+            scenarios.append(current)
+
+    for scenario in scenarios:
+        body = "\n".join(scenario.pop("body"))
+        setup = re.search(r"^- Setup:\s*(.+(?:\n  .+)*)", body, re.M)
+        task = re.search(r"^- Task:\s*(.+(?:\n  .+)*)", body, re.M)
+        assertions = re.findall(r"^- (D\d+):\s*(.+(?:\n  .+)*)", body, re.M)
+        rubrics = re.findall(r"^- (R\d+):\s*(.+(?:\n  .+)*)", body, re.M)
+        scenario["setup"] = " ".join(setup.group(1).split()) if setup else ""
+        scenario["task"] = " ".join(task.group(1).split()) if task else ""
+        scenario["assertions"] = [
+            {"id": key, "kind": "candidate-check", "text": " ".join(value.split()),
+             "status": "ungraded"} for key, value in assertions
+        ] + [
+            {"id": key, "kind": "qualitative-rubric", "text": " ".join(value.split()),
+             "status": "ungraded"} for key, value in rubrics
+        ]
+        if not scenario["setup"]:
+            errors.append(f"{scenario['path']}:{scenario['line']}: missing Setup")
+        if not scenario["task"]:
+            errors.append(f"{scenario['path']}:{scenario['line']}: missing Task")
+        if not assertions:
+            errors.append(f"{scenario['path']}:{scenario['line']}: no deterministic assertion")
+    return scenarios, errors
+
+
+def copy_fixture(scenario, workdir):
+    text = f"{scenario['setup']} {scenario['task']}"
+    for name in ("ts-dashboard", "py-notes-api", "ugly-dashboard.html"):
+        if name not in text:
+            continue
+        source = ROOT / "benchmarks/fixtures" / name
+        target = Path(workdir) / name
+        if source.is_dir():
+            shutil.copytree(source, target)
+        elif source.is_file():
+            shutil.copy2(source, target)
+        return str(target)
+    return None
+
+
+def copy_skill(skill, workdir):
+    directory = ROOT / "skills" / skill
+    target = Path(workdir) / ".eval-skill" / skill
+    shutil.copytree(directory, target)
+    return target, manifest(directory, relative_to=ROOT)
+
+
+def manifest(workdir, relative_to=None):
+    files = []
+    for path in sorted(Path(workdir).rglob("*")):
+        if not path.is_file() or ".git" in path.parts or ".eval-skill" in path.parts:
+            continue
+        data = path.read_bytes()
+        files.append({"path": str(path.relative_to(relative_to or workdir)), "bytes": len(data),
+                      "sha256": hashlib.sha256(data).hexdigest()})
+    return files
+
+
+def sha256(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def archive_workspace(workdir, destination):
+    with tarfile.open(destination, "w:gz") as archive:
+        for path in sorted(Path(workdir).rglob("*")):
+            if ".git" in path.parts or ".eval-skill" in path.parts:
+                continue
+            archive.add(path, arcname=path.relative_to(workdir), recursive=False)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--check", action="store_true")
+    parser.add_argument("--list", action="store_true")
+    parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--agent", choices=AGENTS, default="codex")
+    parser.add_argument("--scenario", help="explicit scenario id; required for a live run")
+    parser.add_argument("--timeout", type=int, default=600)
+    args = parser.parse_args()
+
+    scenarios, errors = load_scenarios()
+    if errors:
+        for error in errors:
+            print(f"FAIL: {error}", file=sys.stderr)
+        return 1
+    if args.check:
+        print(f"OK: {len(scenarios)} workflow scenarios well-formed across "
+              f"{len({item['skill'] for item in scenarios})} skills")
+        return 0
+    if args.list or (args.dry_run and not args.scenario):
+        for item in scenarios:
+            print(f"{item['id']:<4} {item['skill']:<10} {item['title']}")
+        return 0
+    if not args.scenario:
+        parser.error("--scenario is required for a live run (prevents accidental token spend)")
+    matches = [item for item in scenarios if item["id"].lower() == args.scenario.lower()]
+    if not matches:
+        parser.error(f"unknown scenario {args.scenario!r}")
+    scenario = matches[0]
+    if args.dry_run:
+        print(f"dry run: scenario={scenario['id']} skill={scenario['skill']} "
+              f"agent={args.agent}")
+        return 0
+
+    cfg = AGENTS[args.agent]
+    if not shutil.which(cfg.get("bin", "")):
+        print(f"UNAVAILABLE: {cfg.get('bin')} not installed — no result fabricated", file=sys.stderr)
+        return 3
+    workdir = tempfile.mkdtemp(prefix=f"workflow-{scenario['id'].lower()}-")
+    subprocess.run(["git", "init", "-q", workdir], check=True)
+    skill_path, context_files = copy_skill(scenario["skill"], workdir)
+    fixture = copy_fixture(scenario, workdir)
+    before = manifest(workdir)
+    prompt = (f"Read and follow the skill at {skill_path / 'SKILL.md'}.\n"
+              "Evaluation scenario (assertions and answer keys are not provided):\n"
+              f"Setup: {scenario['setup']}\nTask: {scenario['task']}\n"
+              "Work only inside the current evaluation directory. Perform the task, then report "
+              "observed evidence and unverified areas.")
+    result = observe(args.agent, prompt, cfg, args.timeout, workdir=workdir)
+    commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT,
+                            capture_output=True, text=True).stdout.strip()
+    try:
+        version = subprocess.run([cfg["bin"], "--version"], capture_output=True,
+                                 text=True, timeout=15).stdout.strip()[:80]
+    except Exception:
+        version = "?"
+    repo_status = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT,
+                                 capture_output=True, text=True).stdout
+    repo_diff = subprocess.run(["git", "diff", "--binary", "HEAD"], cwd=ROOT,
+                               capture_output=True, text=True).stdout
+    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    RESULTS.mkdir(exist_ok=True)
+    bundle = RESULTS / f"{stamp}-workflow-{args.agent}-{scenario['id'].lower()}-artifacts.tar.gz"
+    archive_workspace(workdir, bundle)
+    record = {
+        "schema_version": "1.0", "kind": "workflow",
+        "timestamp": datetime.now(timezone.utc).isoformat(), "git_commit": commit,
+        "agent": args.agent, "agent_version": version, "model": result.get("model"),
+        "invocation": "verified" if cfg["verified"] else "unverified",
+        "scenario": {key: scenario[key] for key in ("id", "skill", "title", "setup", "task", "path")},
+        "status": result["status"], "grading_status": "ungraded",
+        "assertions": scenario["assertions"], "fixture": fixture,
+        "skill_context": context_files, "workspace_before": before,
+        "workspace_after": manifest(workdir), "raw_output": result.get("raw", ""),
+        "error": result.get("error"), "duration_s": round(result.get("duration", 0), 1),
+        "artifact_bundle": str(bundle),
+        "provenance": {"working_tree_dirty": bool(repo_status),
+                       "working_tree_diff_sha256": hashlib.sha256(repo_diff.encode()).hexdigest(),
+                       "runner_sha256": sha256(ROOT / "scripts/eval-workflow"),
+                       "scenario_source_sha256": sha256(ROOT / scenario["path"])},
+        "limitations": ["CLI output does not expose the full tool-call transcript",
+                        "assertions require deterministic or human grading before pass/fail is claimed"],
+    }
+    output = RESULTS / f"{stamp}-workflow-{args.agent}-{scenario['id'].lower()}.json"
+    output.write_text(json.dumps(record, indent=2) + "\n")
+    shutil.rmtree(workdir)
+    print(f"status={record['status']} grading=UN GRADED scenario={scenario['id']}")
+    print(f"results: {output}")
+    return 0 if result["status"] == "ok" else 2
+
+
+if __name__ == "__main__":
+    sys.exit(main())

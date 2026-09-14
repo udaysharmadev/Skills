@@ -25,17 +25,34 @@ scripts/eval-trigger --suite all --agent claude --tier standard
 - **Provenance:** every result JSON records schema version, timestamp,
   git commit, agent + version + model (where the runtime exposes it),
   invocation-verified flag, runs, and raw per-case output. Results run
-  in a neutral temp cwd — the evaluated agent cannot read the answer key. Results land in `evals/results/` (gitignored);
+  in a neutral temp cwd — the answer key is not placed in its prompt or cwd.
+  This is contamination resistance, not a filesystem/network security
+  boundary. Results land in `evals/results/` (gitignored);
   curated release evidence may be committed separately.
 
-## Workflow evals (authored; execution wired in 0.8)
+## Workflow evals (evidence runner available)
 
-`evals/workflow/scenarios/` — per-skill scenario specs with
-deterministic assertions first (file exists, command exits zero,
-artifact shape, forbidden-claim absence), model-graded rubrics only
-where the dimension is genuinely qualitative. Coverage status is
+`evals/workflow/scenarios/` — per-skill scenario specs with candidate
+checks labeled `D#` (deterministic where possible) and qualitative rubrics
+labeled `R#`. Coverage status is
 tracked in that directory's README — authored ≠ executed, and we don't
 conflate the two.
+
+```bash
+scripts/eval-workflow --check
+scripts/eval-workflow --list
+scripts/eval-workflow --scenario H3 --agent codex
+```
+
+Live workflow runs require an explicit scenario id. The evaluated agent
+receives setup, task and skill instructions, but not assertions or answer
+keys. Each result records raw final output, skill-package hashes, workspace
+manifests, an artifact archive and agent/version/model provenance. Assertions stay `ungraded`
+until a deterministic or human grader evaluates them; an executed trial is
+not automatically a passing trial. This task/trial/grader separation and
+evidence-first design follows current guidance from
+[Anthropic](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
+and the UK AI Security Institute's [Inspect log model](https://inspect.aisi.org.uk/eval-logs.html).
 
 ## Outcome benchmarks (0.8)
 

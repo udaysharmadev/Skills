@@ -104,10 +104,10 @@ def routing_prompt(utterance, skills, chain):
             f'User request: "{utterance}"\n\n{ask}')
 
 
-def observe(agent, prompt, cfg, timeout):
+def observe(agent, prompt, cfg, timeout, workdir=None):
     t0 = time.time()
     try:
-        workdir = tempfile.mkdtemp(prefix="eval-run-")
+        workdir = workdir or tempfile.mkdtemp(prefix="eval-run-")
         subprocess.run(["git", "init", "-q", workdir], capture_output=True)
         proc = subprocess.run(cfg["cmd"](prompt), capture_output=True,
                               text=True, timeout=timeout, cwd=workdir,
