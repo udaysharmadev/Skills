@@ -141,6 +141,20 @@ All notable changes to this project are documented here. Format follows
   across all 7 grader types. Verdict UNVERIFIED — see
   `docs/benchmarks/pilot.md`.
 
+### v1 campaign — Skill Phase 08 `backend` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (all research traces verified, PRD §8 walked). Fixed a
+  duplicated webhooks bullet; added transactional outbox atomicity,
+  caller-owned retries with deadline propagation, lock-order +
+  whole-transaction deadlock retry, backpressure-vs-circuit distinction,
+  and the missing Prerequisites + Tool selection/fallback sections.
+- Authored BE1–BE5 scenarios (exactly-once-under-retries, trust-the-client
+  adversarial, CRUD restraint) plus an idempotency trigger case.
+- Outcome protocol + frozen tasks on two stacks (Python + TypeScript
+  fixtures). Workspace grader gains `must_contain_any`; verified offline
+  with full 8-path regression. Verdict UNVERIFIED — see
+  `docs/benchmarks/backend.md`.
+
 ## [0.9.0] — 2026-09-14
 
 ### Productization and documentation

@@ -1,0 +1,48 @@
+[
+  {
+    "id": "O1",
+    "request": "In the repo copy: add request validation to POST /notes (reject empty titles with 422 via a schema/model, not an inline hack) and add limit/offset pagination with a default and a max cap to the list endpoint. Keep the diff scoped to the API module. Report verified vs unverified.",
+    "fixture": "py-notes-api",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [{"cmd": "python3 -c \"import ast; ast.parse(open('app/main.py').read())\"", "expect": 0}],
+    "instruction_baseline": "You are a backend engineer with shell and file tools in the repo root. Implement, validate inputs, keep the diff scoped, verify honestly.",
+    "instruction_treatment": "Follow the active backend skill (stack detection line first, validate at the boundary, scope containment, honest verified/unverified report).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["app/"],
+      "must_contain": ["verif", "422"]
+    }
+  },
+  {
+    "id": "O2",
+    "request": "In the repo copy: order submission must survive client retries — a duplicate submit with the same idempotency key returns the original result without creating a second order. Implement with a ledger or natural constraint, not hope. Report verified vs unverified.",
+    "fixture": "ts-dashboard",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [{"cmd": "test -f src/api/orders.ts", "expect": 0}],
+    "instruction_baseline": "You are a backend engineer with shell and file tools in the repo root. Implement idempotent submission, keep the diff scoped, verify honestly.",
+    "instruction_treatment": "Follow the active backend skill (semantic idempotency via key or ledger, retry ownership, scope containment, honest report).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["src/"],
+      "must_contain": ["verif", "idempoten"]
+    }
+  },
+  {
+    "id": "O3",
+    "request": "In the repo copy: prevent duplicate note ids at the database level (not just an app-level if) and return 409 on conflict. Report verified vs unverified, including anything you could not run.",
+    "fixture": "py-notes-api",
+    "timeout": 600,
+    "heldout": true,
+    "verify": [{"cmd": "python3 -c \"import ast; ast.parse(open('app/main.py').read())\"", "expect": 0}],
+    "instruction_baseline": "You are a backend engineer with shell and file tools in the repo root. Implement the constraint, keep the diff scoped, verify honestly.",
+    "instruction_treatment": "Follow the active backend skill (constraints in the database, honest unverified marking for what cannot run).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["app/"],
+      "must_contain": ["verif"],
+      "must_contain_any": [["409", "conflict", "unique", "constraint", "integrity"]]
+    }
+  }
+]

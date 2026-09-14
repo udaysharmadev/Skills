@@ -25,7 +25,7 @@ Status vocabulary:
 | `masterplan` | Complete | Traced | Justified N/A | Complete | Protocol + groundedness tasks authored; outcome UNVERIFIED (zero-spend) |
 | `recall` | Complete | Traced | `check-memory` syntax-tested | Complete | Outcome proof deferred |
 | `pilot` | Complete | Traced | Justified N/A | Complete | Protocol + workspace grader authored; outcome UNVERIFIED (zero-spend) |
-| `backend` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
+| `backend` | Complete | Traced | Justified N/A | Complete | Protocol + two-stack tasks authored; outcome UNVERIFIED (zero-spend) |
 | `blueprint` | Complete | Traced | `validate-mermaid` syntax-tested; HTML asset present | Complete | Outcome proof deferred |
 | `headroom` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
 | `polish` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
