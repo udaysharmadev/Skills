@@ -93,6 +93,12 @@ No regression test = the bug is rented, not killed.
 Signal green, related tests green, original reproduction clean. State
 what was verified and how.
 
+## The Banned List (Anti-Patterns)
+
+- **The "Guess-and-Check" Loop** — making random code edits and re-running the test hoping it passes, without updating the hypothesis table. If you don't know *why* it should work, don't run it.
+- **Amnesia (Action Fingerprinting)** — retrying the exact same fix or tool call that just failed. If a fix fails, the hypothesis is dead. Do not resurrect it with minor syntax tweaks.
+- **Hallucinated Fixes** — suggesting a patch before reading the runtime state (logs, stack traces, DB rows). A fix proposed without a confirmed mechanism is a hallucination.
+
 ## Provisional fixes (the honest exception)
 
 A workaround is not a root-cause fix — it suppresses the symptom and

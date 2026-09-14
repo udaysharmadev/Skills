@@ -12,6 +12,7 @@ Pick by what you're facing; most bugs need two or three of these.
 - **Full messages, always** — truncated errors ("TypeError: cannot read
   properties of undefined") hide the property name that names the
   suspect.
+- **Trace-Based Observability (2026)** — for agentic or orchestrated systems, traditional APMs hide the bug. Read the full execution trace (tool calls, state transitions, reasoning steps), not just the final HTTP 500.
 
 ## Reproduction engineering
 
