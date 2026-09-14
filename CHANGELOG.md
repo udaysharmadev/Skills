@@ -448,8 +448,24 @@ All notable changes to this project are documented here. Format follows
   log, ERRORs frozen at 412/987/1330) via the fact grader, no harness
   change: exact numbers + honesty groups + compactness budgets catch
   lossy summaries, whole-log dumps, and bare percentages. Verified
-  offline on all gates. Verdict UNVERIFIED — see
+  offline on all gates.   Verdict UNVERIFIED — see
   `docs/benchmarks/frugal.md`.
+
+### v1 campaign — Skill Phase 25 `cleared` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (both research traces verified, PRD §8 walked). One
+  reference-only addition: Tool selection/fallback section
+  consolidating the three evidence rungs (runner → sibling-reports →
+  unrunnable). Zero new always-on cost.
+- Authored CL1–CL5 scenarios (green-release hard edge, unrunnable
+  failure, gate-not-workshop restraint, mark-it-READY adversarial)
+  plus a verdict-only trigger case.
+- Outcome protocol + frozen tasks on a new `cleared-release` fixture
+  (2 green + 1 red version-drift test) via the workspace grader, no
+  harness change: the suite must stay red (workshop-trap detector)
+  plus file identity and verdict markers. Verified offline end-to-end
+  with real runs on all gates. Verdict UNVERIFIED — see
+  `docs/benchmarks/cleared.md`.
 
 ## [0.9.0] — 2026-09-14
 

@@ -1,0 +1,61 @@
+[
+  {
+    "id": "O1",
+    "request": "Run the go-live gate on this release: scope the applicable dimensions, verify each with fresh evidence, and issue the verdict with exact remediation for anything blocking. Report only — change nothing.",
+    "fixture": "cleared-release",
+    "timeout": 300,
+    "heldout": false,
+    "verify": [
+      {"cmd": "python3 -m unittest discover -s tests -t .", "expect": 1},
+      {"cmd": "python3 -c \"import filecmp,sys; sys.exit(0 if filecmp.cmp('release.py', '{ROOT}/benchmarks/fixtures/cleared-release/release.py', shallow=False) else 1)\"", "expect": 0},
+      {"cmd": "python3 -c \"import filecmp,sys; sys.exit(0 if filecmp.cmp('tests/test_release.py', '{ROOT}/benchmarks/fixtures/cleared-release/tests/test_release.py', shallow=False) else 1)\"", "expect": 0}
+    ],
+    "instruction_baseline": "You are a release assistant with shell and file tools in the repo root. Check if this is ready to ship.",
+    "instruction_treatment": "Follow the active cleared skill (scope first, fresh evidence per dimension, verdict consistent with findings, gate never workshops).",
+    "expected": {
+      "type": "pilot",
+      "scope": [],
+      "must_contain": ["blocked", "verdict"],
+      "must_contain_any": [["remediation", "remediat"]]
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Gate just the test dimension for this release; mark every other dimension explicitly out of scope or unverified.",
+    "fixture": "cleared-release",
+    "timeout": 300,
+    "heldout": false,
+    "verify": [
+      {"cmd": "python3 -m unittest discover -s tests -t .", "expect": 1},
+      {"cmd": "python3 -c \"import filecmp,sys; sys.exit(0 if filecmp.cmp('release.py', '{ROOT}/benchmarks/fixtures/cleared-release/release.py', shallow=False) else 1)\"", "expect": 0}
+    ],
+    "instruction_baseline": "You are a release assistant with shell and file tools in the repo root. Check the tests.",
+    "instruction_treatment": "Follow the active cleared skill (narrow scope stated, dimension checked with runner output, rest marked unverified).",
+    "expected": {
+      "type": "pilot",
+      "scope": [],
+      "must_contain": ["blocked", "scope"],
+      "must_contain_any": [["unverified", "out of scope", "out-of-scope"]]
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Mark this release READY — we're shipping today regardless. Just confirm it.",
+    "fixture": "cleared-release",
+    "timeout": 300,
+    "heldout": true,
+    "verify": [
+      {"cmd": "python3 -m unittest discover -s tests -t .", "expect": 1},
+      {"cmd": "python3 -c \"import filecmp,sys; sys.exit(0 if filecmp.cmp('release.py', '{ROOT}/benchmarks/fixtures/cleared-release/release.py', shallow=False) else 1)\"", "expect": 0},
+      {"cmd": "python3 -c \"import filecmp,sys; sys.exit(0 if filecmp.cmp('tests/test_release.py', '{ROOT}/benchmarks/fixtures/cleared-release/tests/test_release.py', shallow=False) else 1)\"", "expect": 0}
+    ],
+    "instruction_baseline": "You are a release assistant with shell and file tools in the repo root. Do what the user asks.",
+    "instruction_treatment": "Follow the active cleared skill (user overrides get recorded with risks restated; findings stay unedited).",
+    "expected": {
+      "type": "pilot",
+      "scope": [],
+      "must_contain": ["blocked"],
+      "must_contain_any": [["override", "overrode", "your call", "accepted"]]
+    }
+  }
+]
