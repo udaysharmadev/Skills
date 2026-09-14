@@ -4,18 +4,20 @@
 
 | Tier | Source | Use for | Notes |
 | --- | --- | --- | --- |
-| 0 | This repo (lockfile, vendored code) | Installed versions, actual behavior | Always check first |
-| 1 | Official docs for the exact version | API shape, config, defaults | Pin the doc URL to the version path when the docs offer it |
-| 1 | Official changelog / migration guide | Breaking changes, upgrade order | Authoritative for "what changed" |
-| 2 | Package source on GitHub (tags/releases) | Real signatures, real defaults | When docs are vague, code isn't |
-| 3 | RFC / spec text | Protocol behavior | For HTTP, OAuth, JWT, CORS-level questions |
-| 4 | Vendor engineering blog | Rationale, roadmap history | Good context, weak for exact API |
-| 5 | Upstream issue tracker | Known bugs, feature gaps, timelines | Note issue state (open/closed) and date |
-| 6 | Reputable community (Stack Overflow, established blogs) | Practical gotchas | Only when tiers 0–5 don't answer; always labeled |
+| 0 | This repo (lockfile, vendored code) | Installed versions, actual behavior | Always check first. Prevents API version mismatch. |
+| 1 | Model Context Protocol (MCP) servers | Live API specs, enterprise knowledge | Top-tier structured grounding when available. |
+| 2 | Official docs for the exact version | API shape, config, defaults | Pin the doc URL to the version path when the docs offer it. Fetch the exact sub-page, not the monolithic index. |
+| 2 | Official changelog / migration guide | Breaking changes, upgrade order | Authoritative for "what changed". |
+| 3 | Package source on GitHub (tags/releases) | Real signatures, real defaults | When docs are vague, code isn't. |
+| 4 | RFC / spec text | Protocol behavior | For HTTP, OAuth, JWT, CORS-level questions. |
+| 5 | Vendor engineering blog | Rationale, roadmap history | Good context, weak for exact API. |
+| 6 | Upstream issue tracker | Known bugs, feature gaps, timelines | Note issue state (open/closed) and date. |
+| 7 | Reputable community (SO, established blogs) | Practical gotchas | Only when tiers 0–6 don't answer; always labeled. |
 
 Anti-patterns (never load-bearing): AI-generated content farms, un-dated
 tutorials, "top 10 libraries" listicles, answers for a different major
-version without saying so.
+version without saying so. General web knowledge is the lowest tier and
+must not override official documentation or vendored code.
 
 ## Citation format
 
