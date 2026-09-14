@@ -1,49 +1,71 @@
 # Contributing
 
-Thanks for helping build the bundle. This repo holds itself to the standard
-its skills preach: evidence, verification, no slop.
+Thanks for helping improve the bundle. The repository holds contributions to
+the same standard as its skills: evidence, restraint, verification, and no
+generic instruction padding.
 
-## The bar
+## What belongs here
 
-A skill ships only when it meets PRD §19 ("legendary skill"):
+A useful behavior change usually adds one or more of:
 
-- clear trigger and clear non-trigger;
-- model-independent workflow with capability fallbacks;
-- real output contract and verification loop;
-- token-conscious `SKILL.md` (≤ 500 lines, detail in `references/`);
-- trigger cases in `evals/trigger/cases.md`;
-- known limitations documented;
-- no unsupported marketing claim.
+- non-obvious specialist decision logic;
+- prevention for a demonstrated failure mode;
+- a capability-aware tool or fallback;
+- a verification or completion contract;
+- restraint—when the skill should not act, should stop, or needs approval.
 
-If a contribution can't meet the bar yet, say so in the PR — an honest
-"not ready" beats a shipped maybe.
+Do not add “best practices” a capable model already knows. More words are not
+more intelligence, and a helper script is justified only when deterministic
+execution materially improves reliability.
 
-## Workflow
+## Changing research-backed behavior
 
-1. Fork/branch from `main`.
-2. Make your change. Keep each skill folder self-contained (see [AGENTS.md](AGENTS.md)).
-3. Run the validators:
+Include the complete chain in one pull request:
 
-   ```bash
-   scripts/validate-skills
-   scripts/check-names
-   scripts/check-links
-   scripts/build-docs   # if frontmatter changed
-   ```
+1. **Reason:** the observed weakness or decision that needs to change.
+2. **Evidence:** prefer primary/official sources; community anecdotes identify
+   failure modes, not ground truth.
+3. **Research note:** update `docs/research/<skill>.md` with only sources that
+   materially changed the skill and record tempting rejected ideas when useful.
+4. **Runtime change:** update `SKILL.md`, a conditional reference, or a helper
+   at the layer where the behavior belongs.
+5. **Trace:** make the research note’s **Where encoded** field point to current
+   reality.
 
-4. Add trigger cases for any new or changed skill.
-5. Open a PR describing what the skill does, when it must trigger, and when it
-   must stay quiet.
+Do not copy source text. Mark fast-moving sources and unresolved uncertainty.
+Research notes stay outside runtime context.
 
-## Naming
+## Skill contract
 
-Single lowercase word per skill (PRD §16) — the energy of `ponytail` /
-`grill-me` / `impeccable`, never the exact words. Before proposing a new name,
-check the collision watchlist in `shared/terminology/names.md`, and expect a
-fresh GitHub + skills.sh exact-name audit before anything freezes.
+Every changed skill must remain self-contained and satisfy [PRD §8](PRD.md):
+purpose, clear trigger and non-trigger, prerequisites, workflow, tool selection
+and fallback, quality gates, stop conditions, output contract, and discoverable
+references. Keep `SKILL.md` at or below 500 lines; conditional depth belongs in
+`references/`.
 
-## Reporting problems with a skill's behavior
+The public set is frozen at 27. Proposals should improve an existing owner, not
+create a near-duplicate skill. Any future change to that set needs an explicit
+product decision rather than arriving through an ordinary pull request.
 
-Open an issue with: the runtime you used (Claude Code, Codex, Cursor,
-Antigravity, OpenCode, other), the exact user message, what the skill did,
-and what you expected. Transcripts beat summaries.
+## Before opening a pull request
+
+```bash
+scripts/validate-skills
+scripts/check-names
+scripts/check-links
+scripts/build-docs
+scripts/check-context
+scripts/run-evals
+```
+
+- Add or update trigger cases in `evals/trigger/cases.md` when frontmatter or
+  routing behavior changes.
+- Regenerate `docs/skills/INDEX.md` after frontmatter changes; never edit it by
+  hand.
+- Run every changed helper with representative input and include the observed
+  output in the pull request.
+- Keep each pull request to one coherent concern. Existing benchmark fixtures
+  do not need to run unless the change touches evaluation infrastructure.
+
+Use the pull request template. For bugs, exact requests and transcripts are
+more useful than summaries; remove secrets and personal data first.

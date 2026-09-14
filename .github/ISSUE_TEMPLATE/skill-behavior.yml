@@ -1,0 +1,55 @@
+name: Skill behavior bug
+description: Report a reproducible skill routing or behavior failure.
+title: "[skill bug] "
+labels: [bug]
+body:
+  - type: input
+    id: skill
+    attributes:
+      label: Skill
+      description: Which skill ran or should have run?
+      placeholder: sleuth
+    validations:
+      required: true
+  - type: input
+    id: runtime
+    attributes:
+      label: Agent and runtime
+      description: Include the model and version when known.
+      placeholder: Codex, model unknown, CLI 0.x
+    validations:
+      required: true
+  - type: textarea
+    id: request
+    attributes:
+      label: Exact user request
+      description: Paste the request verbatim after removing secrets and personal data.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened
+      description: Include the relevant output or transcript, not only a summary.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should have happened
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Repository context and reproduction
+      description: Minimal project facts, steps, capabilities, and files needed to reproduce.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed credentials, tokens, personal data, and private repository content.
+          required: true

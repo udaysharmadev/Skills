@@ -1,0 +1,39 @@
+name: Improvement or research update
+description: Propose stronger behavior for one existing skill.
+title: "[improvement] "
+labels: [enhancement]
+body:
+  - type: input
+    id: skill
+    attributes:
+      label: Skill
+      description: The 27-skill set is frozen; name the existing owner.
+      placeholder: headroom
+    validations:
+      required: true
+  - type: textarea
+    id: gap
+    attributes:
+      label: Missing behavior
+      description: What decision, failure mode, restraint, or tool behavior is absent?
+    validations:
+      required: true
+  - type: textarea
+    id: weakness
+    attributes:
+      label: Why the current behavior is weak
+      description: Give a concrete failure or consequence, not a generic best-practice list.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Source or evidence
+      description: Prefer primary/official sources. Label community anecdotes as failure signals.
+  - type: textarea
+    id: change
+    attributes:
+      label: Suggested change
+      description: Name the runtime instruction, reference, helper, or restraint that should change.
+    validations:
+      required: true
