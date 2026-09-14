@@ -48,9 +48,10 @@ implementation incomplete.
 - `npx skills add udaysharmadev/Skills --all -y` → **verified**: all 27
   skills discovered and installed into `./.agents/skills/` of a clean
   directory via the public skills CLI; CLI reports Claude Code as
-  symlinked target and broad "universal" agent support. **28-skill
-  re-verification (with `handsfree`) is pending — see C-004 in
-  [claims.md](claims.md); do not quote 28-install success until it runs.**
+  symlinked target and broad "universal" agent support.
+- 28-skill re-verification (with `handsfree`) → **verified 2026-09-14**:
+  clean-directory install yields 28/28 folders under `.agents/skills/`
+  including `handsfree` — see C-004 in [claims.md](claims.md).
 - Interactive single-skill install (`npx skills add udaysharmadev/Skills`)
   → same CLI, selection mode; discovery verified, interactive flow
   exercised manually.
