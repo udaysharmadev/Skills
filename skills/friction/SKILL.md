@@ -58,9 +58,19 @@ run them: axe findings are a floor, not a ceiling — automated checks
 cannot find every issue, so they complement the manual walk, never
 replace it.
 
-### 5. Rank and fix
+### 5. Classify, then rank
 
-Findings ranked:
+Name the **concern** per finding — they have different owners and fixes:
+
+- **usability** — task completion, flow, feedback (this skill's core);
+- **accessibility** — WCAG failures (may be legal/contractual, fix
+  regardless of usage data);
+- **visual design** — aesthetic problems belong to `polish`; reference,
+  don't own;
+- **conversion/product** — drop-off from positioning, pricing, value
+  clarity — these route to product decisions, not UI fixes.
+
+Do not call every UI problem UX. Then rank:
 
 - **Blocker** — the task cannot be completed (dead end, lost data,
   unrecoverable error).
@@ -80,6 +90,15 @@ fix is verified by the walk, not by the intention.
   loading) is part of your audit, not just raw timing.
 - **Copy is UX** — error text the user can't act on is a broken
   interaction with good CSS.
+- **Information scent and cognitive load**: does each page make the next
+  step obvious (scent)? Is the user choosing between 8 equal options
+  where 2 would do (overload)? Progressive disclosure — hide advanced
+  paths, don't delete them.
+- **Trust**: does the UI explain why it asks for what it asks (esp.
+  permissions, payment, identity)? Unexplained asks read as phishing.
+- **Internationalization where relevant**: text expansion (German ≈
+  +30%) breaking fixed-width layouts; date/number formats; RTL mirrors
+  for layout direction.
 
 ## Quality gates
 

@@ -19,10 +19,12 @@ is the failure mode.
 ## Inputs (any combination)
 
 screenshot · live URL · HTML/CSS snippet · Figma/design export · textual
-description of a known UI. Multiple sources? Newest/most specific wins;
-the rest corroborate. Record what was provided — fidelity claims depend
-on input quality (a URL yields ground truth; a screenshot is a single
-state at one viewport).
+description of a known UI · **multiple references** (desktop + mobile
+shots of the same page; two component states). Multiple sources?
+Newest/most specific wins; the rest corroborate — a desktop+mobile pair
+turns responsive behavior from inferred into observed. Record what was
+provided — fidelity claims depend on input quality (a URL yields ground
+truth; a screenshot is a single state at one viewport).
 
 ## Workflow
 
@@ -53,6 +55,13 @@ With the project's stack and the inferred tokens. Layout semantics real
 source only shows one viewport (marked as inferred).
 
 ### 5. Compare — the loop that is the skill
+
+Fidelity is measured across nine dimensions, each marked in the final
+report: **structure** (arrangement), **geometry** (dimensions/alignment),
+**typography** (family, scale, weights), **color** (values, contrast),
+**spacing** (rhythm), **assets** (images/icons — placeholders noted),
+**responsive** behavior, **interaction** (hover/focus where observable),
+**states** (empty/loading/error if the source shows them).
 
 1. Screenshot the implementation at the same viewport(s) as the source.
 2. Compare: side-by-side plus overlay/ablation pass; diff systematically

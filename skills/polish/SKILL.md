@@ -26,6 +26,20 @@ components, fonts already in the repo) and what's already built you can
 reuse. **Existing good design tokens are an asset, not a suggestion** —
 rewrite them only if they are actively broken, never for novelty.
 
+## Modes
+
+| Mode | Scope |
+| --- | --- |
+| **subtle polish** | spacing/type/consistency fixes; no structural change |
+| **full redesign** | structure up: layout, hierarchy, then surfaces |
+| **dashboard** | density first, scannability, state completeness over decoration |
+| **landing page** | hierarchy and one primary action; message before aesthetics |
+| **mobile-first** | design the 390px flow, then enhance upward |
+| **design-system cleanup** | converge drift onto the existing tokens; add nothing new |
+
+The mode bounds the diff. A "subtle polish" that restructures the page
+ignored the mode.
+
 ## Workflow
 
 ### 1. Audit against the checklist
@@ -80,8 +94,15 @@ brief you'll verify against.
 - **Arbitrary gradients/glows** — decoration must earn its place or go.
 - **Icon spam** — an icon per bullet adds noise, not scanability.
 - **Token rewrites for novelty** — the existing system wins.
-- Each ban has an escape hatch: state the structural reason and the user
-  can approve it explicitly.
+- The rule underneath every ban: these patterns fail when used as
+  **default decoration** — the same treatment can be right when it
+  serves the product (a glass surface that communicates real layering,
+  a gradient that is the brand). Ban the thoughtlessness, not the
+  technique: state the structural reason and the user approves
+  explicitly.
+- **Dark mode is a design surface, not an inversion:** check contrast
+  and elevation colors separately in dark theme; pure-inverted palettes
+  break shadows and brand accents.
 
 ## Quality gates
 

@@ -3,6 +3,24 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning is semantic.
 
+## [0.8.3] — 2026-09-14
+
+### Phase 8, Batch C — design & UX depth
+
+- **polish**: six contextual modes bounding the diff (subtle polish /
+  full redesign / dashboard / landing page / mobile-first /
+  design-system cleanup); anti-slop rules nuanced to their actual
+  principle (ban the default decoration, not the technique); dark mode
+  as a separate design surface with its own contrast checks.
+- **friction**: findings classified by concern (usability /
+  accessibility / visual design / conversion-product) with different
+  owners and fix paths; information scent, cognitive load,
+  progressive-disclosure, trust-signal and i18n dimensions added.
+- **ditto**: fidelity measured across nine named dimensions (structure,
+  geometry, typography, color, spacing, assets, responsive, interaction,
+  states) reported per-dimension; multi-reference input (desktop+mobile
+  pairs upgrade responsive from inferred to observed).
+
 ## [0.8.2] — 2026-09-14
 
 ### Phase 8, Batch B — building & architecture depth
