@@ -1,0 +1,47 @@
+[
+  {
+    "id": "O1",
+    "request": "Implement this slice in the repo copy: add an empty state ('No orders yet') to the orders list UI. Touch only the components that render it. After implementing, run any checks the repo defines; if none exist, say so. End with a completion report stating what is verified vs unverified.",
+    "fixture": "ts-dashboard",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [{"cmd": "test -f src/components/OrderList.tsx", "expect": 0}],
+    "instruction_baseline": "You are an implementation assistant with shell and file tools in the repo root. Implement the slice, keep the diff scoped, verify honestly.",
+    "instruction_treatment": "Follow the active pilot skill (inspect-classify-implement-verify per slice, scope containment, decision log, honest verified/unverified report).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["src/components/", "src/App.tsx"],
+      "must_contain": ["verif"]
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Implement this slice in the repo copy: reject empty note titles in create_note with a 422 response. Touch only the API module. Verify the file still parses and report verified vs unverified.",
+    "fixture": "py-notes-api",
+    "timeout": 600,
+    "heldout": false,
+    "verify": [{"cmd": "python3 -c \"import ast; ast.parse(open('app/main.py').read())\"", "expect": 0}],
+    "instruction_baseline": "You are an implementation assistant with shell and file tools in the repo root. Implement the slice, keep the diff scoped, verify honestly.",
+    "instruction_treatment": "Follow the active pilot skill (TDE red-green, scope containment, decision log, honest verified/unverified report).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["app/"],
+      "must_contain": ["verif"]
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Implement this slice in the repo copy: remove the console.log debug leftover and the dead date-format helpers. Touch only the files that contain them. Report verified vs unverified.",
+    "fixture": "ts-dashboard",
+    "timeout": 600,
+    "heldout": true,
+    "verify": [{"cmd": "test -f src/App.tsx", "expect": 0}],
+    "instruction_baseline": "You are an implementation assistant with shell and file tools in the repo root. Implement the slice, keep the diff scoped, verify honestly.",
+    "instruction_treatment": "Follow the active pilot skill (scope containment, no drive-by refactors, decision log, honest report).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["src/"],
+      "must_contain": ["verif"]
+    }
+  }
+]

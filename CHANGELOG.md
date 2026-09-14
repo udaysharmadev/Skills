@@ -121,8 +121,25 @@ All notable changes to this project are documented here. Format follows
   irreversibility trigger case.
 - Outcome protocol + frozen tasks (feature slicing, migration rollback,
   held-out component split). Grader verified offline: vertical slice-plan
-  passes, horizontal phase-plan fails. Verdict UNVERIFIED — see
+  passes,   horizontal phase-plan fails. Verdict UNVERIFIED — see
   `docs/benchmarks/masterplan.md`.
+
+### v1 campaign — Skill Phase 07 `pilot` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Full audit first: all three research traces re-verified against runtime
+  (no drift), PRD §8 contract checked, neighbour boundaries walked. Four
+  substantive gaps closed: running decision log in the plan file,
+  dirty-tree checkpoint rule (never absorb user state), replan materiality
+  test (in-slice deviation → record + continue; architecture/scope →
+  `masterplan`), and the slice-tests vs `proof`-suite boundary.
+- Authored PI1–PI5 scenarios (pre-existing breakage, "just make it green"
+  adversarial) plus a plan-reality trigger case.
+- Outcome protocol + frozen tasks with **workspace grading** (changed-file
+  scope + check-command exits recorded pre-cleanup): new `verify`/`scope`
+  support in `scripts/eval-outcome`, offline-tested on synthetic
+  observations (clean/drift/red all grade correctly) with full regression
+  across all 7 grader types. Verdict UNVERIFIED — see
+  `docs/benchmarks/pilot.md`.
 
 ## [0.9.0] — 2026-09-14
 

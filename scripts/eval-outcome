@@ -134,13 +134,33 @@ def grade_hotseat(task, raw):
                 "has_matrix": has_matrix, "has_minority": has_minority}
 
 
-def grade(task, route, raw):
+def grade(task, route, raw, obs=None):
     exp = task["expected"]
     if isinstance(exp, dict) and exp.get("type") == "hotseat":
         return grade_hotseat(task, raw)
+    if isinstance(exp, dict) and exp.get("type") == "pilot":
+        return grade_pilot(task, raw, obs or {})
     if isinstance(exp, dict) and exp.get("type") == "spelunk":
         return grade_spelunk(task, raw)
     return grade_route(task, route, raw)
+
+
+def grade_pilot(task, raw, obs):
+    """Workspace grading: verify-command exits + scope containment + report markers."""
+    exp = task["expected"]
+    checks = (obs.get("verify") or [])
+    failed_checks = [c["cmd"] for c in checks if c["exit"] != c.get("expect", 0)]
+    scope = exp.get("scope", [])
+    changed = obs.get("changed_files", [])
+    outside = [f for f in changed
+               if scope and not any(f == s or f.startswith(s.rstrip("/") + "/")
+                                    or f.startswith(s) for s in scope)]
+    low = raw.lower()
+    must = [m.lower() for m in exp.get("must_contain", [])]
+    missing = [m for m in must if m not in low]
+    ok = not failed_checks and not outside and not missing
+    return ok, {"failed_checks": failed_checks, "outside_scope": outside,
+                "changed_files": changed, "missing": missing}
 
 
 PATH_RE = re.compile(r"[\w\-./]*\.(?:ts|tsx|js|jsx|json|html|css|py|txt|md|toml|yaml|yml|lock|env|gitignore|sh|sqlite|db)\b")
@@ -191,7 +211,7 @@ def grade_spelunk(task, raw):
                 "over_budget": over_budget}
 
 
-def observe(agent, prompt, cfg, timeout, fixture=None):
+def observe(agent, prompt, cfg, timeout, fixture=None, verify=None):
     workdir = tempfile.mkdtemp(prefix="outcome-")
     if fixture:
         src = os.path.join(ROOT, "benchmarks", "fixtures", fixture)
@@ -213,10 +233,30 @@ def observe(agent, prompt, cfg, timeout, fixture=None):
         # keep head (framing) + tail (verdict) instead of head-only truncation.
         if len(out) > 60000:
             out = out[:20000] + "\n…[truncated]…\n" + out[-40000:]
-        return {"status": "ok" if proc.returncode == 0 else "error",
-                "exit": proc.returncode, "output": out,
-                "output_chars": len((proc.stdout or "") + (proc.stderr or "")),
-                "duration": round(time.time() - t0, 1)}
+        obs = {"status": "ok" if proc.returncode == 0 else "error",
+               "exit": proc.returncode, "output": out,
+               "output_chars": len((proc.stdout or "") + (proc.stderr or "")),
+               "duration": round(time.time() - t0, 1)}
+        if verify:
+            # Execution skills are graded on the workspace, not the chat:
+            # run check commands and record the changed-file set BEFORE cleanup.
+            checks = []
+            for v in verify:
+                try:
+                    r = subprocess.run(v["cmd"], shell=True, capture_output=True,
+                                       text=True, timeout=120, cwd=workdir)
+                    checks.append({"cmd": v["cmd"], "exit": r.returncode,
+                                   "expect": v.get("expect", 0),
+                                   "tail": ((r.stdout or "") + (r.stderr or ""))[-1500:]})
+                except subprocess.TimeoutExpired:
+                    checks.append({"cmd": v["cmd"], "exit": None,
+                                   "expect": v.get("expect", 0), "tail": "TIMEOUT"})
+            st = subprocess.run(["git", "status", "--porcelain"], capture_output=True,
+                                text=True, cwd=workdir)
+            changed = [l[3:] for l in st.stdout.splitlines() if l.strip()]
+            obs["verify"] = checks
+            obs["changed_files"] = changed
+        return obs
     except subprocess.TimeoutExpired:
         return {"status": "error", "error": "timeout",
                 "duration": round(time.time() - t0, 1)}
@@ -274,10 +314,11 @@ def main():
             for t in range(a.trials):
                 to = task.get("timeout", a.timeout)
                 obs = observe(a.agent, build_prompt(task, cat, ctx), cfg, to,
-                              fixture=task.get("fixture"))
+                              fixture=task.get("fixture"),
+                              verify=task.get("verify"))
                 raw = obs.get("output", "")
                 route = normalize_route(raw)
-                passed, notes = grade(task, route, raw)
+                passed, notes = grade(task, route, raw, obs)
                 rec["trials"].append({"task": task["id"], "condition": cond,
                                      "trial": t + 1, "pass": passed,
                                      "notes": notes, "obs": obs})
@@ -310,6 +351,10 @@ def main():
                 vals = [r["notes"].get("recall", 0) for r in rows]
                 print(f"{task['id']} {cond}: pass={pr:.2f} "
                       f"mean_recall={sum(vals)/max(len(vals),1):.2f}")
+            elif isinstance(task["expected"], dict) and task["expected"].get("type") == "pilot":
+                vals = [len(r["notes"].get("outside_scope", [])) for r in rows]
+                print(f"{task['id']} {cond}: pass={pr:.2f} "
+                      f"mean_out_of_scope={sum(vals)/max(len(vals),1):.2f}")
             else:
                 lens = [len(r["notes"].get("route") or []) for r in rows]
                 ml = sum(lens) / max(len(lens), 1)
