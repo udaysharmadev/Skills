@@ -1,0 +1,49 @@
+[
+  {
+    "id": "O1",
+    "request": "bro add dashboard make it good. Repo is in the working directory — check what's actually there first.",
+    "fixture": "ts-dashboard",
+    "timeout": 300,
+    "heldout": false,
+    "instruction_baseline": "You are a requirements writer with shell and file tools in the repo root. Turn this vague request into a compact brief: goal, scope, non-goals, assumptions, verification. Check the repo before writing; reference only real files.",
+    "instruction_treatment": "Follow the active distill skill (repo-first grounding, materiality test for questions, numbered assumptions over interrogation, scaled brief). Check the repo before writing; reference only real files.",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["non-goal"],
+      "must_contain_any": [["A1:", "A1 ", "assumption"]],
+      "must_not": ["src/auth", "jest.config", "Dockerfile"],
+      "max_lines": 200
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Fix the typo in the README. Keep it tiny — no ceremony.",
+    "fixture": "py-notes-api",
+    "timeout": 300,
+    "heldout": false,
+    "instruction_baseline": "You are a requirements writer with shell and file tools in the repo root. Write the brief for this tiny fix, scaled to its blast radius.",
+    "instruction_treatment": "Follow the active distill skill (scale the brief to the request: tiny task = goal + acceptance + where, no template ceremony).",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["readme"],
+      "must_not": ["src/auth", "jest.config", "Dockerfile"],
+      "max_lines": 30
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Add user login to the dashboard so different people can have their own orders.",
+    "fixture": "ts-dashboard",
+    "timeout": 300,
+    "heldout": true,
+    "instruction_baseline": "You are a requirements writer with shell and file tools in the repo root. Turn this into a compact brief: goal, scope, non-goals, assumptions, verification. Reference only real files.",
+    "instruction_treatment": "Follow the active distill skill (repo-first grounding, numbered assumptions, NFRs only where they bite — auth bites). Reference only real files.",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["non-goal"],
+      "must_contain_any": [["auth", "secur", "password", "session", "jwt"]],
+      "must_not": ["src/auth", "jest.config", "Dockerfile"],
+      "max_lines": 200
+    }
+  }
+]

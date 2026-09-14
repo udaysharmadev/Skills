@@ -21,7 +21,7 @@ Status vocabulary:
 | `hotseat` | Complete | Traced | Justified N/A | Complete | **PROVEN LIFT** — 5/5 structural passes vs 0/5 baseline (strong-critic baseline); cost documented; see `docs/benchmarks/hotseat.md` |
 | `spelunk` | Complete | Traced | `inventory` extended (manifests, generated/vendor, scoped churn) | Complete | Protocol + fixture grader authored; outcome UNVERIFIED (zero-spend) |
 | `scout` | Complete | Traced | `check-note` structure validator (both directions tested) | Complete | Protocol + offline-trap tasks authored; outcome UNVERIFIED (zero-spend) |
-| `distill` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
+| `distill` | Complete | Traced | Justified N/A | Complete | Protocol + scale-budget tasks authored; outcome UNVERIFIED (zero-spend) |
 | `masterplan` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
 | `recall` | Complete | Traced | `check-memory` syntax-tested | Complete | Outcome proof deferred |
 | `pilot` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |

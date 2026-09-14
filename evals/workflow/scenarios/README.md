@@ -11,6 +11,7 @@ grading stays blind and reviewable; it is never described as ground truth.
 | `concierge.md` | concierge | 5 (normal/hard-edge/failure/restraint/adversarial) | authored; evidence runner available |
 | `spelunk.md` | spelunk | 5 (normal/hard-edge/failure/restraint/adversarial) | authored; evidence runner available |
 | `scout.md` | scout | 5 (normal/hard-edge/failure/restraint/adversarial) | authored; evidence runner available |
+| `distill.md` | distill | 5 (normal/hard-edge/failure/restraint/adversarial) | authored; evidence runner available |
 
 Target coverage for v1.0 eval completeness: all 28 skills × 3 scenarios
 (≥ 84). Authored ≠ executed: a scenario only counts as coverage once a

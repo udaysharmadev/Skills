@@ -96,6 +96,20 @@ All notable changes to this project are documented here. Format follows
   honesty groups, verified offline against synthetic good/bad outputs.
   Verdict UNVERIFIED — see `docs/benchmarks/scout.md`.
 
+### v1 campaign — Skill Phase 05 `distill` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Closed two audit gaps: repo grounding now runs before question drafting
+  (questions can't target nonexistent surfaces), and every candidate
+  question faces a materiality test — name both plausible answers and what
+  each changes, else it becomes a numbered assumption.
+- Authored DI1–DI5 scenarios (contradiction, missing-surface, tiny-brief
+  restraint, scope-smuggling adversarial) plus a no-ceremony trigger case.
+- Outcome protocol + frozen tasks: grounding trap (O1), 30-line tiny-brief
+  budget (O2 — over-specifying is the failure), held-out login scoping
+  (O3). Grader gains `max_lines`; verified offline on synthetic
+  good/bloat/tiny outputs. Verdict UNVERIFIED — see
+  `docs/benchmarks/distill.md`.
+
 ## [0.9.0] — 2026-09-14
 
 ### Productization and documentation

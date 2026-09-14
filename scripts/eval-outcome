@@ -178,12 +178,17 @@ def grade_spelunk(task, raw):
                    tok.count("/") == 0 for f in known):
             hallucinated.append(tok)
     recall = (len(must) - len(missing)) / max(len(must), 1)
-    ok = not missing and not missing_groups and not contaminants and not hallucinated
+    line_count = len(raw.strip().splitlines())
+    over_budget = (exp.get("max_lines") is not None
+                   and line_count > exp["max_lines"])
+    ok = (not missing and not missing_groups and not contaminants
+          and not hallucinated and not over_budget)
     return ok, {"recall": round(recall, 2), "missing": missing,
                 "missing_groups": missing_groups,
                 "contaminants": contaminants,
                 "hallucinated_paths": sorted(hallucinated),
-                "paths_checked": checked}
+                "paths_checked": checked, "line_count": line_count,
+                "over_budget": over_budget}
 
 
 def observe(agent, prompt, cfg, timeout, fixture=None):
