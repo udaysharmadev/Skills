@@ -6,11 +6,13 @@
 **Compatibility goal:** Claude Code, Google Antigravity, Codex, Cursor, OpenCode and every practical Agent Skills-compatible coding environment
 **Product name:** **Skills**. The deliberately plain name matches the repository and installation surface.
 
-**Implementation status (2026-09-14):** 27/27 skills implemented; Deep
-Intelligence Pass complete; product documentation and public repository surface
-complete for the build phase. Empirical outcome benchmarking is intentionally
-deferred to the separate proof phase. No v1.0 or comparative performance claim
-is implied.
+**Implementation status (2026-09-14):** 28/28 skills implemented; Deep
+Intelligence Pass complete; `handsfree` autonomy-governor depth pass complete
+with version-verified host research; product documentation and public
+repository surface complete for the build phase. Empirical outcome
+benchmarking is intentionally deferred to the separate proof phase
+(all skills `UNVERIFIED` at Layer C — see `docs/claims.md`). No v1.0 or
+comparative performance claim is implied.
 
 ---
 
@@ -200,7 +202,7 @@ This keeps behavior predictable and avoids skill loops.
 
 ---
 
-# 5. The 27 Skills
+# 5. The 28 Skills
 
 These are **working names after a style + collision-removal pass**, not immutable final names.
 
@@ -241,6 +243,7 @@ Before publication every final slug must receive another exact GitHub + skills.s
 | 25 | `frugal`  | Reduce token usage without reducing task quality     |
 | 26 | `cleared`  | Final production-readiness gate                      |
 | 27 | `runway`  | Deployment and post-deployment verification          |
+| 28 | `handsfree` | Autonomy governor: silent reversible work, explicit high-risk gates |
 
 ---
 

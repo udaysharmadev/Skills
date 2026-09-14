@@ -34,7 +34,9 @@ writes another skill's files.
 | `docs/reports/detox-<slug>.md` | `unslop` | Detox findings + batch log (when written to disk) |
 | `README.md`, `docs/` documentation pages | `frontpage` | Project documentation (extracted pages, not code docs) |
 
-All 27 skills have runtime artifact ownership assigned.
+All 28 skills have runtime artifact ownership assigned (`handsfree` owns
+the chat output contract plus durable handoffs to `recall` — no dedicated
+disk file by design).
 
 Exception: `pilot` checks off slice checkboxes inside `masterplan`'s plan
 files as work completes — status updates only, never plan content.

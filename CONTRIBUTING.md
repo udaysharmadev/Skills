@@ -43,7 +43,7 @@ and fallback, quality gates, stop conditions, output contract, and discoverable
 references. Keep `SKILL.md` at or below 500 lines; conditional depth belongs in
 `references/`.
 
-The public set is frozen at 27. Proposals should improve an existing owner, not
+The public set is frozen at 28. Proposals should improve an existing owner, not
 create a near-duplicate skill. Any future change to that set needs an explicit
 product decision rather than arriving through an ordinary pull request.
 

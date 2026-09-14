@@ -1,6 +1,6 @@
 # Skill maturity scorecard
 
-The 27 skills are **implementation-complete**. Empirical outcome benchmarking
+The 28 skills are **implementation-complete**. Empirical outcome benchmarking
 is a separate future proof phase. This scorecard therefore keeps implementation
 maturity, research depth, tooling, documentation, and evaluation evidence
 separate instead of lowering a finished runtime because an intentionally
@@ -44,18 +44,19 @@ Status vocabulary:
 | `frugal` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
 | `cleared` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
 | `runway` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
+| `handsfree` | Complete | Traced (primary host sources, verified 2026-09-14) | Justified N/A | Complete | 5 workflow scenarios + outcome protocol authored; outcome proof deferred |
 
 ## What the final audit verified
 
-- 27/27 `SKILL.md` files exist; frontmatter names match folders.
-- 27/27 define scope boundaries, failure behavior, verification/completion, and
+- 28/28 `SKILL.md` files exist; frontmatter names match folders.
+- 28/28 define scope boundaries, failure behavior, verification/completion, and
   an output contract.
-- 27/27 have a research provenance note and at least one reachable reference.
+- 28/28 have a research provenance note and at least one reachable reference.
 - Every `SKILL.md` reference is linked from the runtime workflow and resolves.
 - Five scripts are executable, syntax-valid, and wired to the skill that owns
   them; the one asset is referenced by `blueprint`.
 - No stale `(planned)` language, sibling filesystem dependency, or hardcoded
-  runtime requirement remains in the 27 skill packages.
+  runtime requirement remains in the 28 skill packages.
 - The research **Where encoded** rows were checked against current runtime
   content; one unsupported numeric over-routing claim was removed while
   preserving the evidence-backed restraint.

@@ -27,7 +27,7 @@ The README is the front door. This directory is the map behind it.
 
 ## Research
 
-- [Research provenance index](research/README.md) — all 27 research passes,
+- [Research provenance index](research/README.md) — all 28 research passes,
   grouped by lifecycle area.
 
 ## Maintainers

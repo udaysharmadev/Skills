@@ -3,6 +3,37 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning is semantic.
 
+## [Unreleased]
+
+### v1 campaign — Phase 0 truth-freeze, Foundation Phase 1, `handsfree` depth
+
+- Added `docs/audits/current-state.md`: frozen truth at `96b4646` with
+  PASS / PARTIAL / BLOCKED / LEGACY / UNVERIFIED verdicts. Layer C outcome
+  evidence is `UNVERIFIED` for all 28 skills; no benchmark claim is made.
+- Added `docs/research/SOURCES.md`: version-verified primary citations
+  (Antigravity modes, Gemini CLI approval/policy engine, Agent Skills spec,
+  skills.sh CLI, Anthropic harness work), all re-verified 2026-09-14.
+- Rewrote `docs/research/handsfree.md` against primary URLs with exact
+  `Where encoded` traces; recorded rejected ideas (zero-prompt marketing,
+  settings widening, permission laundering).
+- Deepened `skills/handsfree/` to the autonomy-governor contract:
+  AUTO / AUTO+CHECKPOINT / ASK ONCE / BLOCKED classes, checkpoint and
+  retry budgets, dirty-tree preservation, host-mode detection, adversarial
+  gate ("never ask me" never waives BLOCKED), completion predicate.
+- Added canonical contracts `shared/evidence/`, `shared/risk/`,
+  `shared/schemas/claim.md`, `shared/generated/` (maintainer-side only;
+  runtime self-containment unchanged).
+- Added `docs/claims.md` (9 rows: FACT/MEASURED/DERIVED/UNVERIFIED) and
+  validators `validate-frontmatter`, `check-claims`, `check-readme-sync`,
+  all wired into CI.
+- Authored `handsfree` evidence scaffolding, all `UNVERIFIED`: 5 workflow
+  scenarios (HF1–HF5), outcome protocol (O1–O2) in `evals/outcomes/`,
+  evidence page `docs/benchmarks/handsfree.md`.
+- Cleared 27→28 staleness across PRD, CONTRIBUTING, scorecard (new
+  `handsfree` row), skill guides, research index, evals targets, and the
+  compatibility install note (28-skill install re-verification tracked as
+  C-004, still pending).
+
 ## [0.9.0] — 2026-09-14
 
 ### Productization and documentation

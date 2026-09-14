@@ -1,4 +1,4 @@
-# The human guide to all 27 skills
+# The human guide to all 28 skills
 
 This is the browseable guide. It explains the job each skill owns without
 duplicating its runtime instructions. For exact trigger metadata, use the
@@ -285,3 +285,20 @@ must expose the new fingerprint before a deploy counts as successful.
 **Input → output:** cleared release and platform → flight record with live smoke evidence.  
 **Neighbors:** `cleared` before; `roadtest` for live critical paths.  
 [Research](../research/runway.md) · [Source](../../skills/runway/)
+
+## Autonomy
+
+### `handsfree`
+
+**Use it when:** the agent keeps interrupting safe reversible work with
+"continue?" prompts and permission ceremony.  
+**Owns:** the autonomy policy — what runs silently, what checkpoints, what
+asks once, what stays blocked.  
+**Different because:** it is a governor, not a bypass: model ceremony is
+eliminated, host enforcement is reported by layer, and fewer questions via
+skipped gates counts as a regression.  
+**Input → output:** an authorized task → verified outcome with autonomous
+decisions, checkpoints, and pending gates stated.  
+**Neighbors:** wraps any execution; never cancels `cleared`, `runway`, or
+`janitor` history gates.  
+[Research](../research/handsfree.md) · [Source](../../skills/handsfree/)

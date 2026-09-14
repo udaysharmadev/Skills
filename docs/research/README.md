@@ -95,3 +95,10 @@ recorded when they are tempting enough to recur.
 | --- | --- |
 | [`cleared`](cleared.md) | evidence inflation, release-gate boundaries, and actionable ownership |
 | [`runway`](runway.md) | live-state verification, deployed fingerprints, and proportional rollout strategy |
+
+## Autonomy
+
+| Skill | Research focus |
+| --- | --- |
+| [`handsfree`](handsfree.md) | host permission modes, interruption cost, checkpoint discipline, and gate recall |
+| [Canonical sources](SOURCES.md) | version-verified primary citations shared across skills (Antigravity/Gemini modes, Skills spec, skills.sh CLI, harness design) |

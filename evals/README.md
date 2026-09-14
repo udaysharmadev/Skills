@@ -5,9 +5,10 @@ actually measured (PRD §3.4, §13).
 
 | Directory | Purpose | Status |
 | --- | --- | --- |
-| `trigger/` | 168 routing cases: positive/negative, sibling-confusion, router-stress | **runner live** — `scripts/eval-trigger` |
+| `trigger/` | 178 routing cases: positive/negative, sibling-confusion, router-stress | **runner live** — `scripts/eval-trigger` |
 | `adapters/` | per-agent invocation config + verification status | codex + opencode verified (live); claude unverified (headless hangs in dev env); cursor/antigravity UNAVAILABLE |
-| `workflow/` | per-skill scenario specs, deterministic checks where possible | 21 scenarios authored (7 signature skills); evidence runner live, results ungraded by default |
+| `workflow/` | per-skill scenario specs, deterministic checks where possible | 26 scenarios authored (7 signature skills + handsfree); evidence runner live, results ungraded by default |
+| `outcomes/` | baseline-vs-skill outcome protocols + per-skill verdicts | `handsfree` protocol authored (O1–O2), zero trials — pattern for remaining 27 |
 | `regression/` | field bugs captured as cases before fixes merge | populated as issues land |
 | `fixtures/` | representative stack fixtures | superseded by `benchmarks/fixtures/` (kept for evals that want them) |
 | `results/` | runner output JSONs (gitignored) | curated release evidence may be committed separately |

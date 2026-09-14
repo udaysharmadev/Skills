@@ -4,7 +4,7 @@
 
 - **`concierge`** — First-run setup, capability detection, and routing for this coding-skills bundle. Use when the user runs /concierge, asks what these skills can do in this repository, starts work in a repo where the bundle is installed, or brings a request when it is unclear which skill should own it. Detects the project stack, test/build commands, git state and runtime capabilities (shell, web research, browser automation, subagents, GitHub CLI), then routes to the smallest workflow that solves the request — never the whole suite.
 
-- **`handsfree`** — Stop babysitting the agent. Routine decisions are autonomous; only real human gates interrupt you. Use when user says "just do it", "work autonomously", "stop asking permission", or "handsfree".
+- **`handsfree`** — Autonomy governor for coding agents: keep safe reversible work moving without needless "continue?" prompts, while preserving explicit gates for destructive, production, and security-sensitive actions. Use when the user says "just do it", "work autonomously", "stop asking permission", "don't disturb me unless necessary", or "handsfree".
 
 - **`hotseat`** — Runs a structured multi-persona debate that stress-tests a product or project idea before any code is written. Use whenever the user brings an idea ("I want to build an attendance app"), asks whether they should build something, wants feedback or validation of a concept, or says words like idea, side project, MVP, startup, feature pitch, or "thoughts on this". Seven independent specialists critique the idea from product, engineering, UX, systems, security, growth and beginner perspectives, then a moderator synthesizes decisions, MVP scope and risks.
 
