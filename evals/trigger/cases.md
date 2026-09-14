@@ -58,6 +58,7 @@
 - "give me a migration plan from mongodb to postgres" => masterplan
 - "we agreed on the spec, now plan the refactor" => masterplan
 - "break this epic into implementable slices" => masterplan
+- "plan the auth migration and flag anything irreversible" => masterplan
 
 ## recall
 

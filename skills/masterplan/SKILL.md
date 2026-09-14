@@ -49,8 +49,12 @@ known unknown silently.
 
 Open and read the files the plan will touch. Every file path that appears
 in the final plan must be one you saw. For each: current state, what
-changes, what it connects to. Where a path can't be confirmed, the plan
-says "confirm during slice N" — it does not invent a path.
+changes, what it connects to. Label every path by status: **confirmed**
+(you read it), **probable** (deduced from structure — say from what), or
+**to-discover** ("confirm during slice N"). A plan with no to-discover
+labels on a non-trivial repo is lying about its certainty. Where a path
+can't be confirmed, the plan says "confirm during slice N" — it does not
+invent a path.
 
 ### 3. Record invariants and architectural decisions
 
@@ -79,6 +83,13 @@ the scope cut visible). Rules:
   parallelizable and what they conflict over.
 - Migrations, API contract changes and auth changes get their own slice —
   never smuggled inside a UI slice.
+- Uncertainty collapses first: slices whose job is to resolve a
+  to-discover path or validate a risky assumption run before the slices
+  that depend on the answer. Speculative work never fronts the plan.
+- Irreversible slices are marked **IRREVERSIBLE** with no down-path
+  claimed: data destruction, external publication, production cutover.
+  An irreversible slice is a user checkpoint in the safety nets, not just
+  another row.
 
 ### 5. Safety nets
 
@@ -106,7 +117,8 @@ executable definition of done is a wishlist.
 - 100% of file paths verified to exist during step 2.
 - Every slice independently verifiable (tests/commands named).
 - Rollback exists for every destructive or hard-to-reverse step;
-  migrations state their down-path.
+  migrations state their down-path; irreversible slices are marked and gated.
+- Uncertainty-collapsing slices precede their dependents.
 - Decisions section covers every choice a reviewer would ask "why?" about.
 - Acceptance criteria from the brief all appear in the definition of done.
 
