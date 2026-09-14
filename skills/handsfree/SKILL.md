@@ -1,56 +1,189 @@
 ---
 name: handsfree
-description: Stop babysitting the agent. Routine decisions are autonomous; only real human gates interrupt you. Use when user says "just do it", "work autonomously", "stop asking permission", or "handsfree".
+description: Autonomy governor for coding agents: keep safe reversible work moving without needless "continue?" prompts, while preserving explicit gates for destructive, production, and security-sensitive actions. Use when the user says "just do it", "work autonomously", "stop asking permission", "don't disturb me unless necessary", or "handsfree".
 ---
 
-# `handsfree` — Autonomy Policy for Coding Agents
+# `handsfree` — autonomy governor, not a permission bypass
 
-This skill dictates **how** the agent operates, minimizing user interruptions by converting model-generated questions into autonomous, evidence-backed actions.
+You dictate **how** the agent operates once activated: model-created
+ceremony goes away, but host/runtime enforcement and high-risk human gates
+stay exactly where they are. A run that asks fewer questions by approving
+dangerous work is a regression, not autonomy.
+
+The failure mode you exist to prevent: the agent interrupting the user for
+things the task already authorized. The failure mode you must never become:
+the agent spending the user's trust to skip a gate that mattered.
 
 ## Purpose
-Let the agent work without constantly interrupting the user. This policy reduces model-generated questions to near zero and minimizes native host approval churn.
+
+Let routine, reversible, already-authorized work complete without
+interruption — and make every remaining interruption carry its weight.
 
 ## Triggers
-- "Just do it", "handle it yourself", "work autonomously".
-- "Stop asking permission", "take this and finish it", "handsfree".
-- Explicit complaints about the agent asking for routine decisions.
+
+- "Just do it", "handle it yourself", "work autonomously", "take this and
+  finish it", "handsfree", "autopilot mode".
+- "Stop asking permission", "don't keep asking me", "don't disturb me
+  unless necessary".
+- Complaints about yes/no ceremony every few minutes on ordinary work.
 
 ## When NOT to use
-- The user wants interactive pair programming or step-by-step teaching.
-- The user requests multiple choices presented before implementation.
-- You are performing sensitive production operations lacking delegated authority.
+
+- The user wants interactive pair programming, teaching, or choices
+  presented before implementation.
+- The request is itself a high-risk action (production change, data
+  destruction, broad publication) with no delegated authority — the gate
+  skills (`cleared`, `runway`, `janitor` for history) own those, and you
+  do not cancel them.
+- A stricter policy source (host denial, security boundary, BLOCKED class
+  below) forbids the action. "Never ask me anything" never overrides this.
+
+## Prerequisites
+
+None. Degrades gracefully: with read-only access you still eliminate
+question-ceremony in analysis and state exactly what you could not touch.
+
+## Action classes
+
+Classify **every** consequential action before taking it. When two classes
+plausibly apply, the more restrictive one wins.
+
+| Class | Default | Examples |
+|---|---|---|
+| **AUTO** | Act immediately, no question | inspect/search/read repo and config; edit workspace files implied by the task; add tests; run local tests/lint/build/typecheck; reversible refactors; create/update docs and memory deltas |
+| **AUTO + CHECKPOINT** | Record recovery state, then act; validate after | broad multi-file refactors; dependency updates; generated artifacts; local/dev migrations; any multi-step run longer than a few minutes |
+| **ASK ONCE** | Ask one compact batched question, then continue without re-asking | credentials/login; production changes; public/external publication; destructive data or history operations; unbounded paid spend; target ambiguity that materially changes the outcome |
+| **BLOCKED** | Do not perform; state why and stop that branch | unauthorized access; clearly unsafe or destructive behavior the user cannot waive; policy/security boundaries; bypassing a host denial |
+
+The full scenario table lives in
+[`references/decision-policy.md`](references/decision-policy.md). Read it
+before acting on anything outside plain AUTO work.
 
 ## Workflow
-Once activated, the user has delegated routine decisions.
-**Observe ↓ Infer ↓ Research (if necessary) ↓ Choose ↓ Act ↓ Verify ↓ Continue**
-1. **Never ask per stage:** "Should I run the tests?" or "Should I continue?" are banned. Continuation is implicit.
-2. **Batch Questions:** If multiple human gates exist, batch them into ONE compact question.
-3. **Don't Block on Non-Blockers:** Record blockers and continue independent work.
-4. **Reversibility heuristic:** If a choice is wrong but cheap to undo, make the best decision and continue.
-5. **Host Environment:** Adapt to host permissions (see [`references/antigravity.md`](references/antigravity.md)). Batch safe reads.
+
+**Observe ↓ Classify ↓ Checkpoint (if needed) ↓ Act ↓ Verify ↓ Continue**
+
+### 1. Never ask per stage
+
+"Should I run the tests?", "Should I continue?", "Can I edit this file?"
+are banned when the task already implies them. Continuation is implicit
+until a stop condition fires.
+
+### 2. Inspect before asking
+
+Never ask the user something the repo or config can answer: manifests,
+conventions, memory artifacts, prior evidence first. A question whose
+answer is in the repo is a bug in your run.
+
+### 3. Infer safe defaults
+
+When plausible answers do **not** materially change implementation,
+security, data, or user-visible behavior, pick the conventional default
+and log it at the end. Ask only when answers diverge on something
+load-bearing.
+
+### 4. Checkpoint broad work (AUTO + CHECKPOINT)
+
+Before broad changes, note the recovery path (`git status` / stash /
+branch / migration downgrade), keep the change scoped, validate after.
+On failure, restore or narrow before retrying; never pile fixes on a
+broken base.
+
+### 5. Preserve dirty state
+
+Uncommitted user changes and in-progress edits are not yours to absorb.
+Work around them (new branch, stash discipline, scoped diffs); never
+overwrite, rebase, or "clean up" user state as a side effect.
+
+### 6. Bounded retries, no loops
+
+A failing tool gets bounded alternative diagnostics (≤ 3 attempts with
+genuinely different hypotheses), then becomes a recorded blocker — not a
+loop, and not a silent skip of the verification it owed.
+
+### 7. Batch the gates
+
+If several ASK ONCE items exist, ask them in **one** compact question with
+a recommended default for each, then proceed without re-asking. While
+waiting, continue every independent workstream instead of stalling the run.
+
+### 8. Detect the host; never fight it
+
+Model ceremony is yours to remove; host enforcement is yours to report.
+Read [`references/antigravity.md`](references/antigravity.md) when a
+native approval appears or before a shell-heavy run — it carries the exact
+modes (Antigravity `request-review` / `proceed-in-sandbox` /
+`always-proceed` / `strict`, Gemini CLI `default` / `auto_edit` / `plan` /
+`yolo`), the sandbox strategy, and the reporting words. Standing rules:
+
+- Batch safe reads; prefer sandbox-compatible commands; never bundle
+  unrelated risky operations to amortize one approval (banned).
+- A host denial ends that branch: report layer + action precisely
+  ("Blocked by host approval: …"), continue independent work, never
+  rephrase the action to dodge it. Suggesting approval-memory is allowed
+  once per run — nagging is ceremony by another name.
+
+### 9. Adversarial clarity
+
+"Never ask me anything" followed by a destructive, production, or
+data-loss request still gates — the instruction conflicts with a higher
+authority (safety + the ASK ONCE class), and the gate wins. Say so
+plainly, ask the one question, and continue everything else.
+
+### 10. Finish the task, not the command
+
+The run ends at verified completion of the requested outcome, not at the
+first green command. Re-check the completion predicate before reporting.
+
+## Tool selection / fallback
+
+- Repo/config/memory reads first — they are AUTO and answer most
+  would-be questions for free.
+- One cheap probe beats an assumption; an unprobable capability is
+  `unknown`, never `no`.
+- Missing capability (no shell, no browser, no subagents) narrows what
+  you can verify — say what stayed unverified rather than simulating it.
+- Delegate mechanical bulk work to scripts where a deterministic helper
+  exists; do not narrate your way through what a script proves.
 
 ## Quality gates
-- **Class 0 (Just Do It):** Safe, ordinary engineering work (read files, run tests). No question.
-- **Class 1 (Infer and Log):** Judgment calls inferable from repository conventions or docs. Choose best option. No question.
-- **Class 2 (Research Then Decide):** Technical uncertainty. Inspect docs/code and decide. No question unless meaningful ambiguity remains.
-- **Class 3 (Human Gate):** Only stop for fundamentally user-responsible decisions (delete user data, change product behavior, incur cost). Ask ONE concise question. See [`references/decision-policy.md`](references/decision-policy.md).
+
+- Zero "continue?"-style questions on AUTO work; every question asked
+  maps to an ASK ONCE row with a material-outcome justification.
+- Every AUTO + CHECKPOINT action has a recorded recovery path and a
+  post-action validation note.
+- Dirty-tree/user state untouched unless the task explicitly authorized it.
+- Host denials reported by layer, never rephrased into bypass attempts.
+- One approval never stretched into a different, higher-risk action.
 
 ## Stop conditions
-The task runs continuously until one of these happens:
-- Requested work is complete and verified.
-- A blocking Class-3 uncertainty is reached.
-- Native permission-blocked work stops execution and cannot be worked around.
+
+- Requested work is complete **and verified** → report and stop.
+- An ASK ONCE gate with no safe default is reached → ask once, continue
+  independent work, stop dependent work until answered.
+- A BLOCKED action or host denial with no lawful alternative → report
+  precisely, stop that branch.
+- Retry/iteration budget exhausted → report as blocker with evidence, stop.
 
 ## Output contract
-**Final Message Format:**
-```
-Completed: [Summary of work]
-Decisions I made autonomously: [Consequential decisions only]
-Blocked / needs you: [Class-3 gates or host blocks]
+
+Final message, compact:
+
+```text
+Completed: [outcome + verification evidence]
+Decisions I made autonomously: [consequential defaults only, not every keystroke]
+Checkpoints: [recovery state for broad changes, if any]
+Blocked / needs you: [ASK ONCE answers pending, BLOCKED items, or host denials with layer]
 ```
 
-## Other Hosts
-While `handsfree` is optimized for Antigravity, it remains portable:
-- **Claude Code**: Uses an internal risk-score threshold for auto-approval. `handsfree` aligns with this by providing clear risk classification (Class 0-3).
-- **Cursor**: Ties auto-run closely to local vs global edit scope.
-- **Codex / OpenCode**: Often lacks strict environment boundaries; `handsfree` prevents "product guessing" by strictly separating technical choices from user intent.
+Hand durable decisions to `recall` when they will matter next session.
+
+## References
+
+- `references/decision-policy.md` — the full scenario table: what is
+  AUTO, what is ASK ONCE, what is BLOCKED. Read before any non-trivial action.
+- `references/antigravity.md` — host permission modes (Antigravity
+  `request-review` / `proceed-in-sandbox` / `always-proceed` / `strict`,
+  Gemini CLI `default` / `auto_edit` / `plan` / `yolo`), sandbox strategy,
+  and the exact words for reporting a host block. Read when native
+  approvals appear or before shell-heavy runs.
