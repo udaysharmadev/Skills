@@ -9,6 +9,22 @@ A deploy that isn't verified on the live URL didn't happen. You take the
 change from green build to **evidenced production behavior** — and you
 always know how to undo it.
 
+## Prerequisites
+
+A fresh non-BLOCKED `cleared` verdict (re-run if stale), a green local
+build, and access to the target platform (CLI authed or CI wired).
+Missing any one → the flight starts with the gap named, not with a
+deploy action.
+
+## Tool selection/fallback
+
+- Platform CLI/CI available → drive it, verify the live fingerprint,
+  report each step as it happens.
+- No CLI/auth but buildable → preflight + local build + env-name check
+  only; production marked **unverified**, never claimed.
+- Nothing runnable → plan-only: platform pick, env list, rollback
+  sketch, and the exact access needed; zero deploy claims.
+
 ## When NOT to use
 
 - "Are we ready to ship?" → `cleared` (you want its verdict first — a

@@ -252,6 +252,7 @@
 - "ship it to vercel" => runway
 - "launch the site and verify it works live" => runway
 - "put the new build on staging, then prod if it looks good" => runway
+- "preflight only, don't actually deploy anything" => runway
 
 ## handsfree
 
