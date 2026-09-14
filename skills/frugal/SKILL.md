@@ -10,6 +10,23 @@ move.** A "cheaper" run that fails the task, retries twice, or ships
 unverified work costs more than it saved. The KPI is *successful task
 token cost* — never raw token minimization.
 
+## Prerequisites
+
+The task to economize plus its quality gate stated first (what must
+still pass after), and whatever usage signal exists (provider telemetry,
+or nothing — then savings start at **unknown**). No gate → define one
+before touching the workflow; optimizing an undefined task is just
+skipping work with extra steps.
+
+## Tool selection/fallback
+
+- Provider usage fields → measured comparisons, like with like.
+- No telemetry → byte/line proxies (files opened, lines retrieved,
+  output bytes before/after) computed deterministically, labeled
+  derived — or honestly **unknown**.
+- Counting/extracting → shell tools (grep/jq/awk), never model
+  eyeballing; the counter runs before the claim.
+
 ## When NOT to use
 
 - The task is short and context is healthy — overhead exceeds savings.

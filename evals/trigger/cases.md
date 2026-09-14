@@ -236,6 +236,7 @@
 - "reduce how many tokens our agent workflow uses" => frugal
 - "compact this session so we can keep working" => frugal
 - "token costs are getting stupid, optimize the pipeline" => frugal
+- "save tokens but don't skip any verification" => frugal
 
 ## cleared
 
