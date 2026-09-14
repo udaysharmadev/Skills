@@ -100,6 +100,8 @@ brief you'll verify against.
   a gradient that is the brand). Ban the thoughtlessness, not the
   technique: state the structural reason and the user approves
   explicitly.
+- **Vibe Coding (Decoupled Aesthetics & Logic)** — designing based on how a screen *feels* with perfect dummy data, ignoring how it behaves under pressure (long text, 1000 items, empty states). Design must survive reality.
+- **The "Blank Canvas" hallucination** — ignoring the project's existing design tokens and rewriting component styles from scratch. Existing tokens are a constraint, not a suggestion.
 - **Dark mode is a design surface, not an inversion:** check contrast
   and elevation colors separately in dark theme; pure-inverted palettes
   break shadows and brand accents.

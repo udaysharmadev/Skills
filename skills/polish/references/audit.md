@@ -39,6 +39,7 @@ dimension: what good means, and the tell that it's bad.
   will be.
 - **Empty states** — say what's empty, why, and what to do next (with an
   action). Tell: "No data." and nothing else.
+- **Stress Testing (Data Scaling)** — UI must survive real data constraints, not just the happy path. Tell: a layout that breaks when a title is 100 characters long, or a list that assumes there will only ever be 3 items.
 - **Errors** — human-readable, actionable, placed near the field/area
   they belong to. Tell: "Something went wrong" as the only error message
   in the app.
@@ -53,9 +54,10 @@ dimension: what good means, and the tell that it's bad.
   mobile strategy (not just overflow-scroll).
 - **Mobile behavior** — primary action reachable; modals usable; keyboard
   doesn't cover the focused input.
-- **Accessibility in design** — focus indicators designed (not removed),
+- **Accessibility in design (A11y)** — focus indicators designed (not removed),
   information not carried by color alone, hit areas generous, motion
   optional.
+- **Semantic Structure** — layout uses correct HTML semantics (`<nav>`, `<main>`, `h1`-`h6` in order) rather than `<div>` soup. Tell: a visually massive title that is actually a `<p>` tag.
 
 ## Web performance as design
 
