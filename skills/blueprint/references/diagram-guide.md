@@ -11,6 +11,7 @@
 | How does data move and where does it live? | Data flow / ER | `flowchart TD` / `erDiagram` |
 | What happens when X fails? | Failure path | `flowchart TD` (red edges) |
 | How is it deployed and released? | Deployment / CI | `flowchart LR` grouped by env |
+| Where are the trust boundaries / threat vectors? | Threat Model | `flowchart TD` with `subgraph` for zones |
 | Who does what over time (async)? | Event flow | `sequenceDiagram` |
 
 Pick by question, not by completeness. 3–5 diagrams usually cover it.
@@ -24,8 +25,8 @@ Pick by question, not by completeness. 3–5 diagrams usually cover it.
   dashed border for inferred, solid for verified.
 - Max ~30 nodes; beyond that, split into two diagrams with one sentence
   linking them.
-- Direction left-to-right for flows that follow time; top-down for
-  structure.
+- **Explicit Trust Boundaries:** Use subgraphs (`subgraph TrustZone`) to demarcate where data crosses from public to private, or between different permission contexts. Security must not be an afterthought.
+- Direction left-to-right for flows that follow time; top-down for structure.
 
 ## Patterns
 

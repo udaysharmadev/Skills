@@ -32,14 +32,15 @@ real external dependencies, real request paths. **Every node in every
 diagram must correspond to something you saw in the code** — a service
 that isn't running anywhere doesn't go in a box.
 
-### 2. Choose the diagrams that help
+### 2. Choose the diagrams that help (C4 Abstraction)
 
-Pick 3–5, not all of them. The menu in `references/diagram-guide.md` maps
-the question being answered to the diagram type, with Mermaid patterns.
+Avoid the "Monolithic Documentation" anti-pattern. Pick 3–5 diagrams targeted 
+at specific audiences (Context for business, Container/Component for engineering). 
+The menu in `references/diagram-guide.md` maps the question to the diagram type. 
 For each major component on a diagram, the README notes its reasoning in
 one line — responsibility, boundary, dependency direction, data it owns,
-failure mode, and security boundary where one exists. A box without a
-reason is decoration. Common picks:
+failure mode, and **explicit trust boundaries** (where security contexts change). 
+A box without a reason is decoration. Common picks:
 
 - new team onboarding → system context + container view + one request
   sequence;
