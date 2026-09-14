@@ -40,20 +40,33 @@ srcs=$(find . -type f \( -name '*.ts' -o -name '*.tsx' -o -name '*.js' -o -name 
   -not -path '*/node_modules/*' -not -path '*/.git/*' -not -name '*test*' -not -name '*spec*' \
   2>/dev/null | wc -l | tr -d ' ')
 
+# manifests present (ecosystem identity — never guess the stack)
+manifests=$(ls package.json pyproject.toml setup.py requirements.txt go.mod Cargo.toml \
+  pom.xml build.gradle build.gradle.kts Gemfile composer.json pubspec.yaml 2>/dev/null | tr '\n' ' ')
+
+# generated / vendor candidates (do not read blindly; verify before citing)
+genv=""
+for d in dist build coverage .next out vendor generated gen third_party; do
+  [ -e "$d" ] && genv="$genv$d "
+done
+minified=$(find . -type f -name '*.min.js' -not -path '*/node_modules/*' \
+  -not -path '*/.git/*' 2>/dev/null | wc -l | tr -d ' ')
+
 # git churn hotspots (last 6 months, top 8)
 churn=""
 if [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ]; then
-  churn=$(git log --format=format: --name-only --since="6 months ago" 2>/dev/null |
+  churn=$(git log --format=format: --name-only --since="6 months ago" -- . 2>/dev/null |
     grep -v '^$' | sort | uniq -c | sort -rn | head -8)
 fi
 
 if [ "$JSON" = 1 ]; then
   tojson() { python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))'; }
-  printf '{"target": "%s", "files_by_ext": %s, "largest_files": %s, "debt_markers": %s, "test_files": "%s", "source_files": "%s", "git_churn_top": %s}\n' \
-    "$TARGET" "$(echo "$dist" | tojson)" "$(echo "$large" | tojson)" \
-    "$(echo "$debt" | tojson)" "$tests" "$srcs" "$(echo "$churn" | tojson)"
+  printf '{"target": "%s", "manifests": "%s", "files_by_ext": %s, "largest_files": %s, "debt_markers": %s, "test_files": "%s", "source_files": "%s", "generated_vendor_dirs": "%s", "minified_bundles": "%s", "git_churn_top": %s}\n' \
+    "$TARGET" "$manifests" "$(echo "$dist" | tojson)" "$(echo "$large" | tojson)" \
+    "$(echo "$debt" | tojson)" "$tests" "$srcs" "$genv" "$minified" "$(echo "$churn" | tojson)"
 else
   echo "== inventory: $TARGET =="
+  [ -n "$manifests" ] && echo "manifests: $manifests" || echo "manifests: none found"
   echo "$dist" | awk '{printf "  %-8s %s files\n", $2, $1}'
   echo "== largest source files =="
   echo "$large" | sed 's/^/  /'
@@ -62,5 +75,8 @@ else
   echo "== test/source ratio =="
   emit "test files" "$tests"
   emit "source files" "$srcs"
+  echo "== generated/vendor candidates (verify before citing) =="
+  { [ -n "$genv" ] && echo "  dirs: $genv" || echo "  dirs: none"; }
+  echo "  minified bundles (*.min.js): $minified"
   [ -n "$churn" ] && { echo "== churn hotspots (6mo) =="; echo "$churn" | sed 's/^/  /'; }
 fi

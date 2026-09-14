@@ -32,6 +32,7 @@
 - "I'm new to this project, walk me through it" => spelunk
 - "map out this repository before we change anything" => spelunk
 - "what does the payments module do" => spelunk
+- "where is this codebase most likely to break if we refactor" => spelunk
 
 ## scout
 

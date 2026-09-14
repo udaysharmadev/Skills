@@ -7,6 +7,7 @@
 | Behavioral code analysis (2025 engineering blogs) | Technical debt isn't just "bad code" — it's code that actively causes friction. Churn × complexity quadrant pinpoints it. | Maps discovery to organizational impact rather than just static analysis. | SKILL.md risk-map mode, discovery-map.md hotspots |
 | Cognitive debt discussions (2025 tech leadership) | The gap between implementation and team understanding is as dangerous as tech debt. | Adds a new failure mode to hunt for during discovery. | SKILL.md risk-map mode |
 | Outside-in discovery patterns | Starting with the request lifecycle grounds exploration in real-world behavior, not abstract architecture. | Makes "teach" mode concrete rather than hand-wavy. | SKILL.md teach mode |
+| v1 campaign audit, Phase 03 (2026-09-14) | Discovery order never required tracing a path before broadening; symbol lookup had no precision ladder; deep maps lacked commit/dirty provenance; inventory missed manifests + generated/vendor candidates and leaked repo-wide churn into subdir scans | Trace-one-path-early step, precise-symbols-before-grep rung, commit/dirty provenance header, inventory manifests + generated/vendor sections, `-- .` churn scoping | SKILL.md discovery order + deep output, scripts/inventory |
 
 ## Key new intelligence encoded
 
