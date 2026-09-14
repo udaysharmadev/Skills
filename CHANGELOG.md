@@ -417,6 +417,23 @@ All notable changes to this project are documented here. Format follows
   fixed same-phase, backward-compatible, full regression clean.
   Verdict UNVERIFIED — see `docs/benchmarks/frontpage.md`.
 
+### v1 campaign — Skill Phase 23 `findable` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (all three research traces verified, PRD §8 walked).
+  One reference-only addition: Tool selection/fallback section
+  consolidating the three audit rungs (curl-rendered → validator →
+  offline-static). Zero new always-on cost.
+- Authored FD1–FD5 scenarios (SPA-no-prerender hard edge, offline
+  failure, metadata-only restraint, stuff-it adversarial) plus a
+  no-promises trigger case.
+- Outcome protocol + frozen tasks on a new `findable-site` fixture
+  (duplicate titles, staging noindex, fake review stars, blocking
+  robots, lying sitemap, double headings) via the workspace grader, no
+  harness change: deterministic greps separate real fixes from
+  untouched, restructured-when-scoped-out, and stuffed pages. Verified
+  offline end-to-end with real file operations on all gates. Verdict
+  UNVERIFIED — see `docs/benchmarks/findable.md`.
+
 ## [0.9.0] — 2026-09-14
 
 ### Productization and documentation

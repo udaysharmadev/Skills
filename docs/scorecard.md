@@ -40,7 +40,7 @@ Status vocabulary:
 | `unslop` | Complete | Traced | Justified N/A | Complete | Protocol + workspace tasks authored; outcome UNVERIFIED (zero-spend) |
 | `janitor` | Complete | Traced | Justified N/A | Complete | Protocol + git-state tasks authored; outcome UNVERIFIED (zero-spend) |
 | `frontpage` | Complete | Traced | Justified N/A | Complete | Protocol + artifact tasks authored; outcome UNVERIFIED (zero-spend) |
-| `findable` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
+| `findable` | Complete | Traced | Justified N/A | Complete | Protocol + workspace tasks authored; outcome UNVERIFIED (zero-spend) |
 | `frugal` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
 | `cleared` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
 | `runway` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |

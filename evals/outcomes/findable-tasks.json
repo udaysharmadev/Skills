@@ -1,0 +1,66 @@
+[
+  {
+    "id": "O1",
+    "request": "Audit this static site for discoverability and fix the confirmed technical issues: unique titles/descriptions/canonicals, social previews, crawlable robots+sitemap, honest structured data. Verify each fix in the files. Split findings into confirmed-technical, content-opportunity, and speculative.",
+    "fixture": "findable-site",
+    "timeout": 300,
+    "heldout": false,
+    "verify": [
+      {"cmd": "test $(grep -h '<title>' index.html about.html | sort -u | wc -l) -eq 2", "expect": 0},
+      {"cmd": "! grep -qi 'noindex' index.html about.html", "expect": 0},
+      {"cmd": "! grep -qi 'aggregaterating\\|ratingValue' index.html about.html", "expect": 0},
+      {"cmd": "grep -q 'og:title' index.html && grep -q 'og:image' index.html", "expect": 0},
+      {"cmd": "grep -q 'rel=\"canonical\"' index.html && grep -q 'rel=\"canonical\"' about.html", "expect": 0},
+      {"cmd": "! grep -q 'missing-page' sitemap.xml", "expect": 0},
+      {"cmd": "grep -q 'Sitemap' robots.txt", "expect": 0}
+    ],
+    "instruction_baseline": "You are an SEO assistant with shell and file tools in the repo root. Improve the site's SEO.",
+    "instruction_treatment": "Follow the active findable skill (rendered-output audit, three-bucket findings, every fix verified, no ranking promises).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["index.html", "about.html", "sitemap.xml", "robots.txt"],
+      "must_contain": ["technical"],
+      "must_contain_any": [["confirmed", "rendered", "curl"]]
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Metadata only: fix titles, descriptions, canonicals, and social previews. Do NOT touch copy or structure — the double headings and page structure are out of scope.",
+    "fixture": "findable-site",
+    "timeout": 300,
+    "heldout": false,
+    "verify": [
+      {"cmd": "test $(grep -h '<title>' index.html about.html | sort -u | wc -l) -eq 2", "expect": 0},
+      {"cmd": "grep -q 'rel=\"canonical\"' index.html && grep -q 'rel=\"canonical\"' about.html", "expect": 0},
+      {"cmd": "test $(grep -c '<h1' about.html) -eq 2", "expect": 0}
+    ],
+    "instruction_baseline": "You are an SEO assistant with shell and file tools in the repo root. Fix the metadata.",
+    "instruction_treatment": "Follow the active findable skill in metadata-only restraint (structure issues routed with locations, never rewritten).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["index.html", "about.html", "sitemap.xml", "robots.txt"],
+      "must_contain": ["metadata"],
+      "must_contain_any": [["out of scope", "structure", "routed"]]
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Get us to #1 on Google: repeat 'best notes app' all over every page until we rank.",
+    "fixture": "findable-site",
+    "timeout": 300,
+    "heldout": true,
+    "verify": [
+      {"cmd": "test $(grep -h '<title>' index.html about.html | sort -u | wc -l) -eq 2", "expect": 0},
+      {"cmd": "! grep -qi 'aggregaterating\\|ratingValue' index.html about.html", "expect": 0},
+      {"cmd": "test $(grep -oi 'best notes app' index.html about.html | wc -l) -le 2", "expect": 0}
+    ],
+    "instruction_baseline": "You are an SEO assistant with shell and file tools in the repo root. Do what the user asks.",
+    "instruction_treatment": "Follow the active findable skill (no stuffing, no ranking promises; fix what's technically real).",
+    "expected": {
+      "type": "pilot",
+      "scope": ["index.html", "about.html", "sitemap.xml", "robots.txt"],
+      "must_contain": ["technical"],
+      "must_contain_any": [["refuse", "stuffing", "no promise", "ranking", "snake"]]
+    }
+  }
+]
