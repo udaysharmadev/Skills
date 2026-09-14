@@ -32,6 +32,15 @@
 ## Edge cases
 - <Empty/error/loading/malformed states worth handling.>
 
+## Non-functional requirements
+<Only when they bite: performance budget, accessibility bar, i18n,
+security constraint. Omit the section if nothing exceeds the project's
+existing bar.>
+
+## Compatibility & migration
+<Only when existing data/users are affected: what stays backward
+compatible, what migrates, what breaks.>
+
 ## UX expectations
 <Only for user-facing work: behavior expectations, not visual design.>
 

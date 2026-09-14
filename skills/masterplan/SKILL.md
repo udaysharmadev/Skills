@@ -22,6 +22,17 @@ Repository access — plans must be grounded in real files. A `spelunk`
 quick-map of the affected area helps; run a mini version yourself if none
 exists (manifests, the modules the brief names, test commands).
 
+## Two planning depths
+
+- **Lightweight** (single-slice-or-two changes): current state, one or
+  two slices with files+verify, risks in a sentence. Skip the ceremony;
+  the definition of done still applies.
+- **Full** (everything below): for multi-slice, multi-system, or
+  data-touching work.
+
+Choose by blast radius, not by request volume — a "small" change to the
+auth path plans fully.
+
 ## Workflow
 
 ### 1. Load the goal
@@ -38,18 +49,25 @@ in the final plan must be one you saw. For each: current state, what
 changes, what it connects to. Where a path can't be confirmed, the plan
 says "confirm during slice N" — it does not invent a path.
 
-### 3. Record architectural decisions
+### 3. Record invariants and architectural decisions
 
-Decisions the plan commits to (library choices, data model changes, API
+Invariants first — the properties that must remain true throughout
+(existing API contract, data guarantees, performance characteristics);
+every slice is checked against them. Then decisions the plan commits to (library choices, data model changes, API
 shape, patterns), each as: decision, alternatives considered, why, and
 what would make this decision wrong. Version-sensitive technology facts
 come from `scout` research or are marked unverified — a plan built on
 stale API memory fails during implementation.
 
-### 4. Slice vertically
+### 4. Slice vertically with explicit sequencing
 
 Cut the work into **vertical slices** — each one crosses the stack as
-needed (data → API → UI) and ends testable on its own. Rules:
+needed (data → API → UI) and ends testable on its own. Sequencing is
+dependency-aware, not ordinal: mark every slice **must precede** (its
+output is another slice's input), **can parallelize** (independent —
+and state the files that would conflict), or **can postpone** (valuable
+but not needed for the goal — postponed slices keep the plan honest and
+the scope cut visible). Rules:
 
 - 5–12 slices for serious work; a 30-step plan means the slices are fake.
 - Each slice states: what it delivers, files touched (real paths),

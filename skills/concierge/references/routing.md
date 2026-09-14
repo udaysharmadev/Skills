@@ -36,6 +36,25 @@ user installed a subset — say so and proceed with the manual equivalent.
 | Deploy this (any platform) | `runway` |
 | Before context reset / handoff | `recall` (session delta) |
 
+## Situations beyond the table
+
+- **User names a skill directly** ("/masterplan this") → route there,
+  even if you'd have picked differently; note the disagreement in one
+  clause, then obey.
+- **Already mid-workflow** (a brief exists, a plan is half-executed) →
+  resume where the evidence stops: find the newest artifact in the
+  chain (briefs → plans → reports) and continue from it; do not restart
+  earlier stages.
+- **Request conflicts with a gate** ("just deploy it, skip the checks")
+  → state the gate's purpose in one line, require the user's explicit
+  confirmation to proceed without it, and record that choice. Speed
+  requests don't delete gates — they make the user own skipping them.
+- **Two intents in one message** ("prettier AND users abandon checkout")
+  → split the route: the flow problem first (friction — it may make the
+  pretty problem moot), then the surface problem.
+- **Capability missing mid-route** → route anyway; every specialist's
+  fallback contract handles it, and the user hears which rung ran.
+
 ## Rules
 
 1. **Smallest sufficient chain.** Every extra link costs tokens and adds
@@ -48,8 +67,9 @@ user installed a subset — say so and proceed with the manual equivalent.
    "Make X good" → `distill`. "Plan X" → `masterplan`.
 4. **Still ambiguous after intent words** → ask exactly one question
    ("want a critique of the idea, or a plan to build it?"), then route.
-5. **Route to a skill that isn't installed** → name it, mark it (planned),
-   and state what you'll do instead. Never silently pretend a skill ran.
+5. **Route to a skill that isn't installed** (user installed a subset) →
+   name it and state what you'll do instead. Never silently pretend a
+   skill ran.
 
 ## Handoff phrasing
 

@@ -22,6 +22,16 @@ anchor less. Keep it even when it feels slower.
 - The user wants cheerleading, not critique. Ask once; if they confirm,
   stop.
 
+## Modes
+
+| Mode | Scope | Use when |
+| --- | --- | --- |
+| **quick challenge** | 3 personas most relevant to the question, 1 round | a specific decision, not a whole idea |
+| **full hotseat** | all 7, 2 rounds, full synthesis | validating a product/project idea |
+| **technical hotseat** | Kabir, Arjun, Naina, Ishaan | architecture/implementation feasibility of a settled product idea |
+| **product hotseat** | Aanya, Meera, Rohan (+Kabir if build cost is the question) | positioning, scoping, audience |
+| **pre-mortem** | all 7 answer only: "it's 6 months later and this failed — why?" | idea already approved; surface risks before committing |
+
 ## Prerequisites
 
 None. Subagents (if available) upgrade fidelity: spawn the seven round-1
@@ -78,16 +88,21 @@ conflict. Cap: one round 2. Endless fake debate is a failure mode.
 
 ### 4. Moderated synthesis
 
-A moderator (not any persona) synthesizes:
+A moderator (not any persona) synthesizes — converging to decisions, not
+a transcript of who said what:
 
 1. **Strongest version** of the idea that survived;
-2. **Rejected assumptions** (with who rejected them and why);
-3. **Open questions** the user must answer;
-4. **Product decisions** to lock;
-5. **Technical decisions** to lock;
-6. **MVP** — the smallest lovable version;
-7. **Later** — explicitly deferred ideas;
-8. **Risks** — top 3–5, each with a mitigation.
+2. **Assumption register** — each distrusted assumption, who distrusted
+   it, and what would resolve it;
+3. **Rejected assumptions** (with who rejected them and why);
+4. **Open questions** the user must answer;
+5. **Product + technical decisions** to lock;
+6. **MVP cut line** — what survives in the smallest shippable version,
+   what waits;
+7. **Kill criteria** — what observable outcome after build would prove
+   this wrong;
+8. **Risks** — top 3–5, each with a mitigation and a second-order effect
+   worth naming.
 
 ## Honesty rules
 

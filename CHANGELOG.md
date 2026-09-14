@@ -3,6 +3,53 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning is semantic.
 
+## [0.8.1] — 2026-09-14
+
+### Phase 8, Batch A — core intelligence depth
+
+- **Maturity scorecard** (`docs/scorecard.md`): all 27 skills scored on
+  the 11-dimension rubric (median 84.5 — honest "strong", not yet
+  "professional"; gaps named per skill).
+- **concierge**: intent × lifecycle routing layer (fix vs audit vs
+  redesign vs teach vs research), evidence-reuse rules, gate-conflict
+  and mid-workflow handling — smallest-sufficient-workflow made explicit.
+- **hotseat**: persona cards rebuilt as distinct decision frameworks
+  (what each optimizes for, their bias, the question only they ask,
+  evidence they demand, red flags, what changes their mind); five modes
+  (quick challenge / full / technical / product / pre-mortem); synthesis
+  now converges via assumption register, MVP cut line, kill criteria.
+- **spelunk**: `scripts/inventory` — one deterministic invocation
+  replaces ~15 look-around calls (file distribution, largest files,
+  TODO debt, test/source ratio, churn hotspots); risk-map mode;
+  observed/inferred/unknown labeling.
+- **scout**: conflict-resolution rules (recency × authority), outdated-
+  advice detection, API stability classification, alternatives
+  comparison with explicit criteria and a stated decision rule.
+- **distill**: brief depth scaled to request type (tiny task →
+  greenfield); non-functional requirements included only when they bite;
+  backward-compatibility/migration notes when data is affected.
+- **masterplan**: two planning depths (lightweight vs full, chosen by
+  blast radius); invariants recorded before decisions; sequencing
+  upgraded to must-precede / can-parallelize / can-postpone.
+- **recall**: knowledge-type taxonomy (fact/decision/status/hypothesis/
+  lesson/constraint/preference/superseded); decision entries capture
+  consequence + supersedes; `scripts/check-memory` — structural
+  consistency validator (caps, dated entries, duplicates, STATUS
+  staleness, dump smell).
+
+Context cost: SKILL.md median 1204 → 1212 tokens (+8; depth went into
+references/scripts, per progressive disclosure).
+
+### Review status for this batch
+
+Independent fresh-context review **unavailable** (reviewer quota
+exhausted). A structured self-review was run instead — disclosed per the
+referee self-review contract — and fixed 5 findings before commit (dead
+logic in the inventory script, extension-extraction bug, stale
+"(planned)" reference, template/SKILL.md drift in distill, pronoun
+error). Trigger evals show no regression (codex smoke 0.917, same known
+confusion). A fresh-context review of Batch A should run before v1.0.
+
 ## [0.7.0] — 2026-09-14
 
 ### Added

@@ -34,6 +34,12 @@ humans can read and edit them too.
 
 ## Write rules
 
+0. **Know what kind of knowledge you are writing.** Stable fact ·
+   decision · temporary status · hypothesis · lesson · constraint ·
+   preference · open question · superseded fact — each lives in its home
+   file (facts/constraints → PROJECT_CONTEXT, decisions/supersessions →
+   DECISIONS, status/open questions → STATUS, lessons → LEARNINGS), and
+   hypotheses stay out of memory entirely until they survive testing.
 1. **Decisions and facts, not transcripts.** "Chose SQLite over Postgres
    because deployment is single-box" — yes. "User said, then I said" — no.
 2. **One entry, one thing.** No essays. If it needs paragraphs, it's two
@@ -45,6 +51,11 @@ humans can read and edit them too.
    (`- 2026-09-14 — chose SQLite: single-box deploy, no concurrency needs`).
 5. **Distinguish stable from temporary.** PROJECT_CONTEXT holds what
    should still be true in six months; everything else goes in STATUS.
+   A durable decision captures: decision, reason, date/context,
+   consequence, and what it supersedes (mark the old entry
+   `*(superseded YYYY-MM-DD by: X)*` — never delete history, supersede
+   it). A contradiction between an old fact and a new one is a
+   supersession, not a coin flip.
 6. **Stale entries get flagged or deleted**, not left to poison future
    sessions: mark `(stale as of YYYY-MM-DD — verify)` or remove.
 7. **Never write secrets** — env var names, never values; no tokens, no
@@ -82,6 +93,9 @@ vagueness — a memory that says "we made many decisions" is not memory.
 
 ## Quality gates
 
+- Run the bundled validator after writes: `scripts/check-memory` (caps,
+  dated entries, duplicates, STATUS staleness, dump smell) — structural
+  health is checkable; truth is not, and stays with you.
 - Every write deduplicated against current file contents (you read before
   you appended).
 - New content within the session-delta budget; files within soft caps

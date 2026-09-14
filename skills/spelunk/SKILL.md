@@ -28,9 +28,14 @@ No network required or used.
 | `quick` | Task-specific question ("where is auth?") before acting | ≤ 25 tool calls |
 | `deep` | Whole-project understanding; produces `docs/repo-map.md` | ≤ 80 tool calls |
 | `teach` | User is new to the project and wants to learn it | ≤ 50 tool calls |
+| `risk-map` | Before refactors/handoffs: where is this codebase fragile? | ≤ 40 tool calls |
 
 Pick the mode from the request; when unsure, default to `quick` and offer
-`deep` once.
+`deep` once. In `deep` and `risk-map` modes, start with the bundled
+scanner — `scripts/inventory` — one invocation replaces ~15 "look around"
+calls (file distribution, largest files, TODO/FIXME debt, test/source
+ratio, git churn hotspots). Read its output selectively; it informs the
+map, it is not the map.
 
 ## Discovery order (all modes)
 
@@ -79,11 +84,18 @@ checklist item isn't obvious. Core set:
 - **teach** → layered explanation: what the project is → how one request
   flows end-to-end → where things live (with paths) → conventions →
   gotchas. Narrative, still path-anchored.
+- **risk-map** → ranked fragility list: churn×size hotspots, error-
+  swallowing zones, test gaps around money/auth/data paths, stale
+  dependencies in active use — each with file paths and why it's risky.
+  Feeds `unslop`, `harden`, and planning skills.
 
 ## Quality gates
 
-- Every factual claim carries a file path; anything unverified is listed
-  under "Open unknowns" instead of asserted.
+- Every factual claim carries a file path and is labeled for its epistemic
+  status where it matters: **observed** (you read it), **inferred**
+  (deduced — say from what), or **unknown** (goes to "Open unknowns").
+  Risk maps additionally flag churn×size hotspots and auth/money/data
+  flows as risk zones with reasons.
 - Commands listed are the ones defined in the repo (scripts entries, CI
   steps) — not generic ecosystem defaults.
 - Map size within budget (quick ≤ 10 lines, deep ≤ 120).

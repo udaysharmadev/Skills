@@ -10,6 +10,8 @@ your job is to look at the repository once, look at the request, and hand
 the user to the smallest set of specialists that can solve it. Running
 every skill on every request is the failure mode you exist to prevent.
 
+**Route the smallest sufficient workflow, not the most impressive one.**
+
 ## When NOT to use
 
 - The request maps directly to one specialist ("research upgrade paths"
@@ -71,9 +73,30 @@ doesn't fit, cut detail, not honesty.
 
 ### 5. Route
 
-Pick the route from `references/routing.md` (read it when the request does
-not obviously map to one skill). Announce the route in one line, then hand
-off. The specialist does the work; you are done.
+Routing weighs five things, in order:
+
+1. **Task intent** — *fix this exact issue* vs *audit this category* vs
+   *redesign/change the system* vs *teach me* vs *research before
+   deciding*. The same words route differently: "the search is slow" is
+   a fix request (`sleuth`/`hotpath`), "is our search architecture
+   right" is an audit (`headroom`/`blueprint`), "how should search work
+   here" is design (`masterplan`).
+2. **Lifecycle stage** — where the project sits on
+   IDEA → THINK → PLAN → BUILD → PROVE → SHIP → REMEMBER. "Make it
+   better" before anything exists routes to `hotseat`, not `polish`.
+3. **Evidence already produced** — a fresh `docs/repo-map.md` means
+   `spelunk` already ran; an approved brief means `distill` already ran.
+   Reuse evidence before re-running skills (that's the frugal contract).
+4. **Risk of the requested action vs safety gates** — if the request
+   implies a destructive or production-affecting step, the route includes
+   the gate skill (`cleared`/`harden`) or an explicit user confirmation;
+   never route around a gate because the user is in a hurry.
+5. **Cost** — a trivial ask ("add a logout link") with an obvious file
+   gets done directly; invoking a workflow for it is the failure mode.
+
+Read `references/routing.md` for the pattern table and conflict rules.
+Announce the route in one line, then hand off. The specialist does the
+work; you are done.
 
 ## Tool selection / fallback
 

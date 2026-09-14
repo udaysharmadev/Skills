@@ -59,6 +59,40 @@ The answer, in 1–3 sentences, decidable.
 One line why.
 ```
 
+## Conflict resolution (when sources disagree)
+
+1. **Recency × authority:** official docs for the pinned version beat
+   any blog, however good. A 2024 blog vs 2026 official docs → docs win;
+   a 2026 blog vs 2024 docs → check the docs' version selector, then
+   treat the blog as a signal to verify, not as truth.
+2. **Date-check advice before using it:** StackOverflow answers and
+   tutorials carry their era in their code style (old APIs, removed
+   flags). If an answer predates the current major version, verify the
+   API still exists in tier 0/2 before repeating it.
+3. **Unresolvable conflicts get recorded, not averaged:** state both
+   claims, their sources and dates, mark confidence low, name the
+   experiment that would resolve it.
+
+## API stability check
+
+Before recommending any API, classify it: **stable** (documented in the
+current major's docs), **experimental** (flagged, behind a flag, or
+major-version-0), or **deprecated** (marked in changelog/docs, or
+absent from current docs while present in older ones). Experimental
+APIs get recommended only with that label and an escape hatch note;
+deprecated APIs are named as "works today, removal pending" — never as
+the recommended path.
+
+## Alternatives comparison (when the question is "which X")
+
+Compare on explicit criteria, not vibes: fit to the actual requirement,
+maintenance health (recent releases, issue responsiveness), ecosystem
+fit with what the repo already uses, migration cost from the current
+choice, and exit cost. Two or three candidates maximum — a five-way
+comparison is a decision dodge. State the decision rule you applied
+("picked the one with the lowest exit cost because the requirement is
+likely to change").
+
 ## Freshness rules
 
 - Research older than 30 days: re-verify load-bearing facts before reuse.

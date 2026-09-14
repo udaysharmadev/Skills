@@ -22,6 +22,19 @@ The triggering request. A quick look at the repository for context (what
 exists, what conventions apply) — lighter than a `spelunk` pass; read only
 what the request names or obviously touches.
 
+## Scale the brief to the request
+
+| Request type | Brief shape |
+| --- | --- |
+| **tiny task** (button rename, copy fix) | goal + acceptance criterion + where — 5–10 lines, no template ceremony |
+| **feature** | full template below |
+| **large feature / migration** | full template + NFRs, rollout constraints, backward-compatibility and data-migration notes |
+| **bug/change request** | reproduction facts + expected behavior + scope guard (what NOT to fix along the way) |
+| **greenfield product** | full template + target user + success metric; defer tech choices to `masterplan` unless the user named them |
+
+A brief for a button rename that mentions "non-goals" and "rollout" is
+enterprise cosplay — match depth to blast radius.
+
 ## Workflow
 
 ### 1. Extract the goal
@@ -55,6 +68,11 @@ example). Core sections:
 - non-goals: what's explicitly out (as valuable as scope);
 - acceptance criteria: checkable statements;
 - edge cases: empty/loading/error/malformed states worth handling;
+- non-functional requirements **only when they bite** (performance
+  budget, accessibility bar, i18n, security constraint) — omitted means
+  "nothing beyond the project's existing bar";
+- backward compatibility / migration notes when existing data or users
+  are affected;
 - UX expectations (only if user-facing);
 - verification: how "done" gets **proven** — which commands must pass,
   what a human/browser check confirms;

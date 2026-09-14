@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# inventory — deterministic first-pass repository scan for spelunk.
+# Read-only. Replaces ~15 tool calls of "look around" with one invocation.
+# Usage: skills/spelunk/scripts/inventory [dir] [--json]
+#   stdout: report (human) or JSON (--json). Diagnostics: stderr.
+set -u
+TARGET="${1:-.}"
+JSON=0
+[ "${2:-}" = "--json" ] || [ "${1:-}" = "--json" ] && { JSON=1; [ "$1" = "--json" ] && TARGET="."; }
+[ -d "$TARGET" ] || { echo "inventory: not a directory: $TARGET" >&2; exit 2; }
+cd "$TARGET" || exit 2
+
+emit() { if [ "$JSON" = 1 ]; then printf '{"%s": %s}\n' "$1" "$2"; else printf '%-22s %s\n' "$1:" "$2"; fi; }
+
+# languages / file distribution by extension (top 10)
+dist=$(find . -type f -not -path '*/node_modules/*' -not -path '*/.git/*' \
+  -not -path '*/dist/*' -not -path '*/build/*' -not -path '*/.venv/*' \
+  -not -path '*/venv/*' -not -path '*/__pycache__/*' 2>/dev/null |
+  awk -F. 'NF>1 {print $NF}' | sort | uniq -c | sort -rn | head -10)
+
+# largest tracked-ish source files (top 10, exclude obvious noise)
+large=$(find . -type f \( -name '*.ts' -o -name '*.tsx' -o -name '*.js' -o -name '*.jsx' \
+  -o -name '*.py' -o -name '*.go' -o -name '*.rs' -o -name '*.java' -o -name '*.rb' \
+  -o -name '*.php' -o -name '*.cs' -o -name '*.kt' -o -name '*.swift' -o -name '*.vue' \
+  -o -name '*.svelte' \) -not -path '*/node_modules/*' -not -path '*/.git/*' \
+  -not -path '*/dist/*' -not -path '*/build/*' 2>/dev/null -exec wc -l {} + 2>/dev/null |
+  sort -rn | head -11 | tail -10)
+
+# debt markers
+debt=$(grep -rEI '(TODO|FIXME|HACK|XXX)' --include='*.ts' --include='*.tsx' \
+  --include='*.js' --include='*.py' --include='*.go' --include='*.rs' --include='*.java' \
+  --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=dist 2>/dev/null |
+  awk -F: '{print $1}' | sort | uniq -c | sort -rn | head -8)
+
+# test-to-source heuristic
+tests=$(find . -type f \( -name '*test*' -o -name '*spec*' \) \
+  -not -path '*/node_modules/*' -not -path '*/.git/*' 2>/dev/null | wc -l | tr -d ' ')
+srcs=$(find . -type f \( -name '*.ts' -o -name '*.tsx' -o -name '*.js' -o -name '*.py' \
+  -o -name '*.go' -o -name '*.rs' -o -name '*.java' \) \
+  -not -path '*/node_modules/*' -not -path '*/.git/*' -not -name '*test*' -not -name '*spec*' \
+  2>/dev/null | wc -l | tr -d ' ')
+
+# git churn hotspots (last 6 months, top 8)
+churn=""
+if [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ]; then
+  churn=$(git log --format=format: --name-only --since="6 months ago" 2>/dev/null |
+    grep -v '^$' | sort | uniq -c | sort -rn | head -8)
+fi
+
+if [ "$JSON" = 1 ]; then
+  tojson() { python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))'; }
+  printf '{"target": "%s", "files_by_ext": %s, "largest_files": %s, "debt_markers": %s, "test_files": "%s", "source_files": "%s", "git_churn_top": %s}\n' \
+    "$TARGET" "$(echo "$dist" | tojson)" "$(echo "$large" | tojson)" \
+    "$(echo "$debt" | tojson)" "$tests" "$srcs" "$(echo "$churn" | tojson)"
+else
+  echo "== inventory: $TARGET =="
+  echo "$dist" | awk '{printf "  %-8s %s files\n", $2, $1}'
+  echo "== largest source files =="
+  echo "$large" | sed 's/^/  /'
+  echo "== debt markers (TODO/FIXME/HACK) =="
+  [ -n "$debt" ] && echo "$debt" | sed 's/^/  /' || echo "  none found"
+  echo "== test/source ratio =="
+  emit "test files" "$tests"
+  emit "source files" "$srcs"
+  [ -n "$churn" ] && { echo "== churn hotspots (6mo) =="; echo "$churn" | sed 's/^/  /'; }
+fi
