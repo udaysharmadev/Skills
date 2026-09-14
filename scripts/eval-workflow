@@ -3,6 +3,9 @@
 
 The evaluated agent sees setup + task, never assertions or answer keys.
 Results stay ungraded until deterministic or human grading occurs.
+
+Paid agents (codex) are default-deny: a live run additionally requires
+--allow-paid AND ALLOW_PAID_AGENT=1 (scripts/eval_guard.py, exit 4).
 """
 import argparse
 import hashlib
@@ -23,6 +26,8 @@ RESULTS = ROOT / "evals/results"
 TRIGGER = runpy.run_path(str(ROOT / "scripts/eval-trigger"))
 AGENTS = TRIGGER["AGENTS"]
 observe = TRIGGER["observe"]
+guard_paid_agent = TRIGGER["guard_paid_agent"]
+PAID_AGENTS = TRIGGER["PAID_AGENTS"]
 
 
 def load_scenarios():
@@ -130,6 +135,8 @@ def main():
     parser.add_argument("--agent", choices=AGENTS, default="codex")
     parser.add_argument("--scenario", help="explicit scenario id; required for a live run")
     parser.add_argument("--timeout", type=int, default=600)
+    parser.add_argument("--allow-paid", action="store_true",
+                        help="with ALLOW_PAID_AGENT=1, authorize a paid-agent run (codex)")
     args = parser.parse_args()
 
     scenarios, errors = load_scenarios()
@@ -155,6 +162,8 @@ def main():
         print(f"dry run: scenario={scenario['id']} skill={scenario['skill']} "
               f"agent={args.agent}")
         return 0
+
+    guard_paid_agent(args.agent, args.allow_paid)
 
     cfg = AGENTS[args.agent]
     if not shutil.which(cfg.get("bin", "")):
@@ -191,6 +200,7 @@ def main():
         "timestamp": datetime.now(timezone.utc).isoformat(), "git_commit": commit,
         "agent": args.agent, "agent_version": version, "model": result.get("model"),
         "invocation": "verified" if cfg["verified"] else "unverified",
+        "paid_guard": "authorized" if args.agent in PAID_AGENTS else "n/a",
         "scenario": {key: scenario[key] for key in ("id", "skill", "title", "setup", "task", "path")},
         "status": result["status"], "grading_status": "ungraded",
         "assertions": scenario["assertions"], "fixture": fixture,

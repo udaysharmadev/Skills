@@ -13,9 +13,14 @@ Usage:
   scripts/eval-trigger --suite all --agent claude --runs 1 --max-cases 12
   scripts/eval-trigger --dry-run                # no invocation
 
+Paid agents (codex) are default-deny: a live run additionally requires
+--allow-paid AND ALLOW_PAID_AGENT=1 (scripts/eval_guard.py, exit 4).
+
 Machine results: evals/results/<ts>-<agent>.json
 """
 import argparse, json, os, re, shutil, subprocess, sys, tempfile, time
+
+from eval_guard import PAID_AGENTS, guard_paid_agent
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -195,6 +200,8 @@ def main():
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--json", action="store_true", help="print result JSON to stdout")
+    ap.add_argument("--allow-paid", action="store_true",
+                    help="with ALLOW_PAID_AGENT=1, authorize a paid-agent run (codex)")
     a = ap.parse_args()
 
     skills = skill_metadata()
@@ -205,6 +212,8 @@ def main():
             state = ("unavailable" if cfg.get("unavailable")
                      else "verified" if installed and cfg["verified"]
                      else "unverified" if installed else "—")
+            if name in PAID_AGENTS:
+                state += " (gated)"
             ver = ""
             if installed:
                 try:
@@ -245,6 +254,8 @@ def main():
             print(f"  {i}. [{c['suite']}] {c['utterance'][:60]} => {c['expected']}")
         return 0
 
+    guard_paid_agent(a.agent, a.allow_paid)
+
     cfg = AGENTS[a.agent]
     if not shutil.which(cfg.get("bin", "")):
         print(f"UNAVAILABLE: {cfg['bin']} not installed — no results fabricated",
@@ -279,6 +290,7 @@ def main():
            "model": next((r["model"] for r in results if r.get("model")), None),
            "invocation_flags": "verified" if cfg["verified"]
            else "unverified", "runs": a.runs, "tier": a.tier,
+           "paid_guard": "authorized" if a.agent in PAID_AGENTS else "n/a",
            "case_count": len(cases), "cases": results}
     doc["metrics"] = score(results, skills)
     RESULTS.mkdir(exist_ok=True)
