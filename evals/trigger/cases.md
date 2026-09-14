@@ -228,6 +228,7 @@
 - "the link preview looks broken when we share on twitter" => findable
 - "add a sitemap and check our meta tags" => findable
 - "make the site SEO-ready before launch" => findable
+- "no ranking promises, just fix the technical SEO issues" => findable
 
 ## frugal
 

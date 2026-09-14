@@ -25,6 +25,15 @@ static (direct control). Audit the **rendered** HTML (curl/view-source
 of live pages), never just the source templates — client-side-rendered
 meta tags that crawlers never see are the classic invisible failure.
 
+## Tool selection/fallback
+
+- Live URLs + curl → rendered-HTML audit; every fix verified in served
+  output (before/after).
+- Validator available (schema.org, card debuggers) → structured data
+  and previews proven; otherwise tags resolve to real assets by hand.
+- Offline / no runnable site → static audit of templates + content
+  files; external checks marked unverified, never claimed 200.
+
 ## Workflow
 
 ### 1. Crawl-surface audit
