@@ -23,7 +23,7 @@
     "fixture": "proof-cart",
     "timeout": 600,
     "heldout": false,
-    "verify": [{"cmd": "python3 -m unittest discover -s tests -t .", "expect": 0}],
+    "verify": [{"cmd": "python3 -m unittest discover -s tests -t .", "expect": 0}, {"cmd": "git status --porcelain -- tests/ | grep -v '__pycache__' | grep -v '\\.pyc$' | grep -q .", "expect": 0}],
     "instruction_baseline": "You are a testing assistant with shell and file tools in the repo root. Cover the empty-cart case.",
     "instruction_treatment": "Follow the active proof skill in restraint mode (one behavior one test, boundary line, report what stays uncovered and why).",
     "expected": {

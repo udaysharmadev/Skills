@@ -43,6 +43,21 @@ fixture-hash/timestamp per trial, failures preserved.
 - unittest chosen for universality (pytest not guaranteed in trial
   environments); stack-specific runner behavior untested until trials.
 
+## Trial environment notes (first live runs, 2026-09-15, opencode)
+
+- n=1 per condition so far (protocol needs n=2 for any verdict):
+  O1 treatment PASS vs baseline FAIL (boundary line discriminated);
+  O2 both PASS (one-test restraint needs no skill advantage here).
+  Verdict stays UNVERIFIED.
+- The first live workspace trials hardened the harness, not the
+  verdicts: pristine-fixture commits (untracked files false-failed
+  scope), workdir containment (prompt pin + outer-repo monitor +
+  workdir tree after an agent edited the real repo), TMPDIR under the
+  repo (opencode auto-rejects /tmp workdirs), and O2's added-test
+  gate (doing nothing passed). Raw traces in `evals/results/`
+  (gitignored); the contaminated run-2 O1-treatment PASS is
+  explicitly invalid and excluded from any future tally.
+
 ## Context audit
 
 SKILL.md ~115 lines, 1 reference (boundary picker). Phase 14 added Tool

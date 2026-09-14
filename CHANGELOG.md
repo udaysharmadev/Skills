@@ -5,6 +5,20 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+### Outcome trial harness hardening — from first live runs (2026-09-15, opencode only, no Codex)
+
+- First live workspace trial (`proof`, opencode, trials=1) exposed four
+  trial-validity bugs, all fixed same-day with re-verification:
+  pristine-fixture commits (untracked files false-failed scope);
+  workdir containment (prompt workdir pin + outer-repo change monitor
+  + workdir tree, after one agent edited the real fixture);
+  trial TMPDIR redirected under the repo (opencode auto-rejects /tmp
+  workdirs); O2 gained an added-test gate (doing nothing passed).
+- Preliminary signal only (n=1 per condition; protocols require n=2
+  for verdicts, which stay UNVERIFIED): O1 treatment PASS vs baseline
+  FAIL; O2 both PASS. One contaminated run-2 O1-treatment PASS
+  (pre-containment) is explicitly invalid and excluded.
+
 ### Paid-agent guard — codex default-deny (2026-09-14)
 
 - Harness defaults alone spent 186 codex sessions in one day (trigger

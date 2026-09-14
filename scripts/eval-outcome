@@ -343,9 +343,25 @@ def grade_spelunk(task, raw, obs=None):
                 "failed_checks": failed_checks}
 
 
+def _root_status():
+    """Porcelain status of the outer skills repo (containment monitor)."""
+    r = subprocess.run(["git", "status", "--porcelain"], capture_output=True,
+                       text=True, cwd=ROOT)
+    return set(l for l in r.stdout.splitlines() if l.strip())
+
+
 def observe(agent, prompt, cfg, timeout, fixture=None, verify=None,
             artifacts=None):
     workdir = tempfile.mkdtemp(prefix="outcome-")
+    # Containment: the agent must work ONLY inside workdir. Pin it in
+    # the prompt (agents otherwise wander to absolute repo paths they
+    # infer) and monitor the outer repo for stray writes.
+    prompt = ("Your working repository copy is EXACTLY this directory:\n"
+              f"{workdir}\n"
+              "Do ALL file reads, writes, edits, and shell commands under "
+              "it. Never read, write, or reference files by absolute paths "
+              "outside it. Your shell starts there.\n\n" + prompt)
+    pre_outer = _root_status()
     if fixture:
         src = os.path.join(ROOT, "benchmarks", "fixtures", fixture)
         for entry in os.listdir(src):
@@ -356,6 +372,17 @@ def observe(agent, prompt, cfg, timeout, fixture=None, verify=None,
             else:
                 shutil.copy2(s, d)
     subprocess.run(["git", "init", "-q", workdir], capture_output=True)
+    if fixture:
+        # Commit the pristine fixture so later status shows ONLY agent
+        # changes. Without this, every fixture file reads as untracked
+        # and scope checks false-fail on the untouched tree (caught by
+        # the first live workspace trial, proof/opencode 2026-09-15).
+        subprocess.run(["git", "-C", workdir, "add", "-A"],
+                       capture_output=True)
+        subprocess.run(["git", "-C", workdir, "-c", "user.name=fixture",
+                        "-c", "user.email=fixture@example.com",
+                        "commit", "-qm", "pristine fixture"],
+                       capture_output=True)
     t0 = time.time()
     try:
         proc = subprocess.run(cfg["cmd"](prompt), capture_output=True,
@@ -394,6 +421,16 @@ def observe(agent, prompt, cfg, timeout, fixture=None, verify=None,
                        if "__pycache__" not in f and not f.endswith(".pyc")]
             obs["verify"] = checks
             obs["changed_files"] = changed
+            post_outer = _root_status()
+            obs["outer_repo_changed"] = sorted(post_outer - pre_outer)
+            tree = []
+            for dirp, _, fns in os.walk(workdir):
+                if ".git" in dirp.split(os.sep):
+                    continue
+                for fn in fns:
+                    tree.append(os.path.relpath(os.path.join(dirp, fn),
+                                                workdir))
+            obs["workdir_tree"] = sorted(tree)
         if artifacts:
             # Deliverable skills are graded on produced files: capture capped
             # contents of glob-matched artifacts BEFORE cleanup.
