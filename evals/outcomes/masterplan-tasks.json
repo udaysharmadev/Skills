@@ -1,0 +1,49 @@
+[
+  {
+    "id": "O1",
+    "request": "Plan adding per-order status history (pending to shipped) across the API and the UI. Work in the repo copy — every file you name must be one you verified. Keep the plan compact.",
+    "fixture": "ts-dashboard",
+    "timeout": 300,
+    "heldout": false,
+    "instruction_baseline": "You are a planning assistant with shell and file tools in the repo root. Write a sliced implementation plan naming real files, validation per slice, and rollback. Keep it compact.",
+    "instruction_treatment": "Follow the active masterplan skill (inspect reality, vertical slices with dependency notes, uncertainty first, irreversible marked). Every file named must be verified.",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["slice"],
+      "must_contain_any": [["verif", "test", "check", "validate"]],
+      "must_not": ["src/auth", "jest.config", "Dockerfile"],
+      "max_lines": 150
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Plan migrating the notes storage from SQLite to Postgres, including rollback. Work in the repo copy — every file you name must be one you verified.",
+    "fixture": "py-notes-api",
+    "timeout": 300,
+    "heldout": false,
+    "instruction_baseline": "You are a planning assistant with shell and file tools in the repo root. Write a migration plan with rollback. Keep it compact.",
+    "instruction_treatment": "Follow the active masterplan skill (migration owns its slice, down-path or IRREVERSIBLE marking, uncertainty-collapsing work first). Every file named must be verified.",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["migrat"],
+      "must_contain_any": [["rollback", "down", "revert", "irreversible", "back up", "backup"]],
+      "must_not": ["src/auth", "jest.config", "Dockerfile"],
+      "max_lines": 150
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Plan splitting the oversized main component into smaller components. Work in the repo copy — every file you name must be one you verified. Keep the plan compact.",
+    "fixture": "ts-dashboard",
+    "timeout": 300,
+    "heldout": true,
+    "instruction_baseline": "You are a planning assistant with shell and file tools in the repo root. Write a refactor plan naming real files with validation per step.",
+    "instruction_treatment": "Follow the active masterplan skill (vertical slices, dependency notes, verified paths only).",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["App.tsx", "slice"],
+      "must_not": ["src/auth", "jest.config", "Dockerfile"],
+      "max_lines": 150
+    }
+  }
+]

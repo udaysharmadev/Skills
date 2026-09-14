@@ -110,6 +110,20 @@ All notable changes to this project are documented here. Format follows
   good/bloat/tiny outputs. Verdict UNVERIFIED — see
   `docs/benchmarks/distill.md`.
 
+### v1 campaign — Skill Phase 06 `masterplan` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Closed three audit gaps: confirmed/probable/to-discover path labels
+  (a plan with no to-discover labels on a non-trivial repo is now called
+  dishonest), uncertainty-collapses-first sequencing, and IRREVERSIBLE
+  slice marking with a user checkpoint.
+- Authored MP1–MP5 scenarios (no-down-path migration, missing-module,
+  plan-theater restraint, horizontal-pressure adversarial) plus an
+  irreversibility trigger case.
+- Outcome protocol + frozen tasks (feature slicing, migration rollback,
+  held-out component split). Grader verified offline: vertical slice-plan
+  passes, horizontal phase-plan fails. Verdict UNVERIFIED — see
+  `docs/benchmarks/masterplan.md`.
+
 ## [0.9.0] — 2026-09-14
 
 ### Productization and documentation

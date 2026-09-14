@@ -22,7 +22,7 @@ Status vocabulary:
 | `spelunk` | Complete | Traced | `inventory` extended (manifests, generated/vendor, scoped churn) | Complete | Protocol + fixture grader authored; outcome UNVERIFIED (zero-spend) |
 | `scout` | Complete | Traced | `check-note` structure validator (both directions tested) | Complete | Protocol + offline-trap tasks authored; outcome UNVERIFIED (zero-spend) |
 | `distill` | Complete | Traced | Justified N/A | Complete | Protocol + scale-budget tasks authored; outcome UNVERIFIED (zero-spend) |
-| `masterplan` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
+| `masterplan` | Complete | Traced | Justified N/A | Complete | Protocol + groundedness tasks authored; outcome UNVERIFIED (zero-spend) |
 | `recall` | Complete | Traced | `check-memory` syntax-tested | Complete | Outcome proof deferred |
 | `pilot` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
 | `backend` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
