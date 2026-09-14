@@ -25,12 +25,18 @@ cannot verify changes against silence.
 
 ## The loop (per slice, in order)
 
-### 1. Inspect
+### 1. Inspect and classify
 
 Read the slice's files fresh — they may have changed since planning or
 since earlier slices. Restate in one line: what this slice delivers, how
-you'll verify it. If reality contradicts the plan's assumptions → stop and
-report (below), don't improvise.
+you'll verify it. Then classify the slice's **risk**: low (pure
+addition, no shared state), medium (touches existing behavior), high
+(data, auth, money, schema, public API, infra). Risk sets the
+verification floor — high-risk slices get the full gate treatment
+early, not just at the end — and whether you checkpoint a **rollback
+point** (commit tag or noted revert path) before starting. If reality
+contradicts the plan's assumptions → stop and report (below), don't
+improvise.
 
 ### 2. Implement
 
@@ -58,9 +64,12 @@ this review before continuing.
 
 ### 6. Continue
 
-Check the slice off in the plan file. Next slice. If a fix attempt failed
-twice on the same failure → stop and report the failure mode; a third
-blind attempt is how agents thrash.
+Check the slice off in the plan file. If implementation deviated from
+the plan (different file, extra step, dropped step), **record the
+deviation in the plan file** next to the slice — silent drift is how
+plans become fiction. Next slice. If a fix attempt failed twice on the
+same failure → stop and report the failure mode; a third blind attempt
+is how agents thrash.
 
 ## Parallelism
 
@@ -72,7 +81,9 @@ support → sequential; the loop is identical.
 ## Blocked or contradictory reality
 
 Stop and report when: a planned file doesn't exist as described, tests
-that should pass can't, or the slice as written can't deliver its stated
+that should pass can't (including failures that pre-date your slice —
+verify against the baseline, don't inherit someone else's breakage as
+your own or ignore it), or the slice as written can't deliver its stated
 outcome. Route back to `masterplan` for replanning the affected slices.
 Silent scope improvisation is the failure mode this exists to prevent.
 

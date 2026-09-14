@@ -3,6 +3,31 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning is semantic.
 
+## [0.8.2] — 2026-09-14
+
+### Phase 8, Batch B — building & architecture depth
+
+- **pilot**: per-slice change-risk classification (low/medium/high by
+  blast radius — data/auth/money/schema/infra) setting the verification
+  floor; rollback points before high-risk slices; plan-deviation
+  recording in the plan file; pre-existing test failures distinguished
+  from self-caused ones.
+- **backend**: circuit-breaker behavior for failing dependencies;
+  multi-tenancy as a data-layer invariant (tenant scoping from the
+  authenticated principal, never a client id; RLS or checked
+  repository layer); storage/files section (server-side validation,
+  private-by-default object storage, signed URLs, streaming).
+- **blueprint**: per-component architecture reasoning in the README
+  (responsibility, boundary, dependency direction, data owned, failure
+  mode, security boundary); `scripts/validate-mermaid` — static syntax
+  checker for .mmd sources (diagram type, balanced delimiters, duplicate
+  node ids, empty labels, tabs); HTML template gains Decisions and
+  Glossary sections.
+- **headroom**: explicit capacity-estimation arithmetic method (peak
+  factor, fan-out, storage growth, headroom rule); traffic-pattern and
+  durability dimensions; hot keys; load shedding with a shed-order
+  decision.
+
 ## [0.8.1] — 2026-09-14
 
 ### Phase 8, Batch A — core intelligence depth

@@ -8,12 +8,34 @@ them (that's proportionality, not laziness).
 
 - **Traffic** — requests/sec now and expected peak; the number everything
   else keys off. Ask; estimate only with shown arithmetic.
+- **Traffic pattern** — flat, diurnal (peak ≈ 5–10× average), or spiky
+  (viral/batch)? Capacity is sized for the pattern, not the mean; queues
+  and load shedding exist for the spikes.
 - **Read/write ratio** — decides caching, replicas, denormalization.
   95% reads and 50/50 are different architectures.
 - **Latency targets** — interactive (<200ms p50?) vs background? Sets
   how much complexity sync paths may carry.
 - **Throughput / data size** — GBs vs TBs changes storage choices more
   than any feature comparison chart.
+- **Durability** — how much data loss is acceptable in a disaster (RPO)?
+  "Zero" prices the storage architecture before anything else does.
+
+## Capacity estimation (when numbers exist)
+
+Do the arithmetic explicitly, one line per step, units on everything:
+
+```text
+avg request = 3 reads + 0.2 writes
+peak factor = 5× (diurnal assumption — label it)
+users → sessions/hr → req/s at peak:  10k users × 0.5 req/session/hr
+  × 5 peak ≈ 1.4 req/s  ← tiny; a $10 managed DB carries this
+storage growth = rows/day × row size × 365 (+ indexes ≈ 1.5×)
+fan-out = one user action → N service calls (N multiplies load downstream)
+```
+
+If the arithmetic shows headroom under 3×, the "Scale" tier stops being
+hypothetical and Next-level items get concrete triggers. If it shows
+100× headroom, say so — that is the proportionality rule winning.
 
 ## Data
 
@@ -34,8 +56,13 @@ them (that's proportionality, not laziness).
   Not for making a fast request slow on purpose.
 - **Retries / idempotency** — anything that retries must be safe to
   repeat. Cross-cutting; see `backend`'s disciplines.
-- **Backpressure** — what happens when producers outpace consumers?
-  Rejected work beats silently growing lag.
+- **Backpressure / load shedding** — what happens when producers
+  outpace consumers? Rejected work beats silently growing lag; decide
+  WHO gets shed (low-priority traffic first) before the overload, not
+  during it.
+- **Hot keys / hot rows** — one celebrity user, one popular product, one
+  counter row: caching and queueing fail at the hot key before they fail
+  in aggregate. Name the likely hot keys and their plan.
 
 ## Availability
 

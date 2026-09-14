@@ -36,7 +36,10 @@ that isn't running anywhere doesn't go in a box.
 
 Pick 3–5, not all of them. The menu in `references/diagram-guide.md` maps
 the question being answered to the diagram type, with Mermaid patterns.
-Common picks:
+For each major component on a diagram, the README notes its reasoning in
+one line — responsibility, boundary, dependency direction, data it owns,
+failure mode, and security boundary where one exists. A box without a
+reason is decoration. Common picks:
 
 - new team onboarding → system context + container view + one request
   sequence;
@@ -48,7 +51,12 @@ Common picks:
 
 One `.mmd` file per diagram in `docs/architecture/`, ≤ ~30 nodes each
 (split rather than shrink text). Labels name real things (`api/index.ts`,
-`Postgres`, `Stripe webhook`) — no "Service Layer Abstraction".
+`Postgres`, `Stripe webhook`) — no "Service Layer Abstraction". Validate
+each with the bundled checker: `scripts/validate-mermaid docs/architecture/*.mmd`
+(catches unknown diagram types, unbalanced brackets, duplicate node ids
+— the failures that break rendered docs). Static checks don't prove
+rendering: render once via mermaid-cli when available and say whether
+you did.
 
 ### 4. Assemble the deliverable
 

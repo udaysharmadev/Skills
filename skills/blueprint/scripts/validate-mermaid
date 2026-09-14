@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""validate-mermaid — static syntax checks for .mmd diagram sources.
+
+Catches the failures that break rendered architecture docs without
+needing the mermaid toolchain: missing/unknown diagram type, unbalanced
+brackets/quotes, tab indentation, duplicate node ids, empty labels.
+Deterministic, read-only. It cannot prove the diagram RENDERS — for
+that, render once with mermaid-cli when available and say so.
+
+Usage: skills/blueprint/scripts/validate-mermaid <file.mmd>... [--json]
+Exit 0 = all checks pass; 1 = findings; 2 = usage error.
+"""
+import json, re, sys
+from pathlib import Path
+
+KNOWN_TYPES = ("flowchart", "graph", "sequenceDiagram", "classDiagram",
+               "stateDiagram", "erDiagram", "journey", "gantt", "pie",
+               "mindmap", "timeline")
+
+
+def check_file(path: Path):
+    findings = []
+    lines = path.read_text().splitlines()
+    if not lines:
+        return [{"check": "empty", "detail": "no content"}]
+    first = lines[0].strip()
+    if first.startswith("%%"):
+        first = next((l.strip() for l in lines if l.strip() and not l.startswith("%%")), "")
+    if not any(first.startswith(t) for t in KNOWN_TYPES):
+        findings.append({"check": "diagram-type", "detail":
+                         f"first statement is not a known type: {first[:40]!r}"})
+    body = "\n".join(lines)
+    for opener, closer, name in (("{", "}", "braces"), ("[", "]", "square brackets"),
+                                 ("(", ")", "parens"), ('"', '"', "quotes")):
+        if name != "quotes" and body.count(opener) != body.count(closer):
+            findings.append({"check": "balanced", "detail":
+                             f"unbalanced {name}: {body.count(opener)} vs {body.count(closer)}"})
+    if name == "quotes" and body.count('"') % 2:
+        findings.append({"check": "balanced", "detail": "unbalanced quotes"})
+    for i, l in enumerate(lines, 1):
+        if "\t" in l:
+            findings.append({"check": "whitespace", "detail": f"tab on line {i} — mermaid prefers spaces"})
+    # duplicate node ids: word[ or word( or word{ at line starts
+    ids = re.findall(r"^\s*([A-Za-z_][A-Za-z0-9_]*)\s*(?:[\[\(\{])", body, re.M)
+    seen, dups = set(), set()
+    for i in ids:
+        if i in seen:
+            dups.add(i)
+        seen.add(i)
+    for d in sorted(dups):
+        findings.append({"check": "duplicate-node", "detail": f"node id defined twice: {d}"})
+    if re.search(r"[\[\(]\s*[\]\)]", body):
+        findings.append({"check": "empty-label", "detail": "node with empty label [] or ()"})
+    return findings
+
+
+def main():
+    args = [a for a in sys.argv[1:] if a != "--json"]
+    if not args:
+        print("usage: validate-mermaid <file.mmd>... [--json]", file=sys.stderr)
+        return 2
+    all_findings = {}
+    for a in args:
+        p = Path(a)
+        if not p.is_file():
+            all_findings[str(p)] = [{"check": "missing", "detail": "file not found"}]
+            continue
+        f = check_file(p)
+        if f:
+            all_findings[str(p)] = f
+    if "--json" in sys.argv:
+        print(json.dumps({"files_checked": len(args), "findings": all_findings}, indent=2))
+    elif not all_findings:
+        print(f"validate-mermaid: {len(args)} file(s) pass static checks")
+    else:
+        for path, fs in all_findings.items():
+            for f in fs:
+                print(f"FAIL {path}: {f['check']}: {f['detail']}")
+    return 1 if all_findings else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

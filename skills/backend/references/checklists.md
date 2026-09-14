@@ -76,6 +76,31 @@ each prevents.
 
 - Timeouts and a small retry budget on every outbound call; no unbounded
   hangs.
+- Circuit behavior on repeated failure: stop calling a failing
+  dependency for a bounded cool-down (fail fast + surface degraded
+  status) instead of piling latency onto every request; per-dependency,
+  not global.
+- Webhooks: verify signatures before trusting payloads; respond fast,
+  process async; treat delivery as at-least-once.
+
+## Multi-tenancy
+
+- Tenant scoping is a data-layer invariant, not a UI filter: every query
+  for tenant-owned data carries the tenant condition, enforced by row
+  level security or a checked repository layer — one unscoped query is
+  a cross-tenant leak.
+- Tenant context arrives from the authenticated principal, never from a
+  client-supplied id alone.
+- Cross-tenant features (admin, support tooling) are explicit, audited
+  surfaces with their own authorization.
+
+## Storage and files
+
+- Uploads: validate type/size/content server-side; store outside the
+  webroot or in object storage with private-by-default access; never
+  trust client filenames (path traversal).
+- Serve user content from signed/expiring URLs, not public buckets.
+- Large files stream; don't buffer whole uploads in memory.
 - Webhooks: verify signatures before trusting payloads; respond fast,
   process async; treat delivery as at-least-once.
 - External responses validated (shape/enum) before use — upstream API
