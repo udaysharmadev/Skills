@@ -139,7 +139,10 @@ work; do not shadow it or duplicate its output.
 Each specialist has an implied completion predicate — it returns when its
 part is done, not before and not by drifting into the next domain. If a
 specialist's scope expands mid-work into a different domain, it should name
-that and return; concierge re-routes.
+that and return; concierge re-routes. Full predicate table lives in
+`references/routing.md`. Loop rule: the same domain gets at most two
+dispatches per task; a second return for the same reason ends routing with
+the blocking question stated, not a third dispatch.
 
 ```text
 route: scout → distill

@@ -12,6 +12,9 @@
 - "what can these skills do for this repo" => concierge
 - "I want to build an attendance app, where do I start" => concierge
 - "which skill should handle this" => concierge
+- "bro add dashboard make it good" => concierge
+- "rename the login button to Sign in" => concierge
+- "we already have an approved plan, just build it" => concierge
 
 ## hotseat
 

@@ -56,3 +56,8 @@ user's *intent words*. Format matches cases.md (run via
 
 - "does drizzle still support the $dynamic API in 0.44" => scout
 - "find where drizzle is configured in this repo" => spelunk
+
+## concierge vs handsfree
+
+- "which skill should handle this migration" => concierge
+- "stop asking me to confirm every step, just finish it" => handsfree

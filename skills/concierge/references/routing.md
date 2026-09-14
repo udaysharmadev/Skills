@@ -20,6 +20,7 @@ blocks a correct next action. The same topic routes differently:
 | Design settled — needs implementation | `pilot` |
 | Correctness missing — code exists, prove it works | `proof` / `roadtest` |
 | Risk/safety missing — auth/money/prod-facing change | `harden` / `cleared` |
+| Progress blocked by approval ceremony, not by missing information | `handsfree` |
 
 ## Request patterns
 
@@ -50,6 +51,9 @@ blocks a correct next action. The same topic routes differently:
 | Token usage / context costs too high | `frugal` |
 | "Are we ready to ship / go live" | `cleared` |
 | Deploy this (any platform) | `runway` |
+| "stop asking me to confirm every step" / autonomy complaint | `handsfree` |
+| Trivial fully-specified micro-change ("rename this button") | direct — no skill; do the change |
+| General knowledge / reminder / translation (no repo, no code) | none — answer directly, no skill |
 | Before context reset / handoff | `recall` (session delta) |
 
 ## Evidence reuse
@@ -99,6 +103,10 @@ appropriate for the task's risk (auth/money → shorter; research notes → long
 6. **Parallel work only when independent.** Researching docs and mapping a
    repo may run concurrently. Editing tightly-coupled files through separate
    subagents creates merge conflicts and reconciliation cost.
+7. **Loop detection.** One re-route per domain per task. If a specialist
+   returns the work a second time for the same reason, stop dispatching
+   and report the loop with the blocking question — a third dispatch to
+   the same domain is the failure mode, not persistence.
 
 ## Handoff phrasing
 
@@ -117,15 +125,33 @@ Each specialist returns control when:
 
 | Specialist | Returns when |
 | --- | --- |
+| `concierge` | Route announced and specialist took over |
+| `hotseat` | Synthesis delivered (or idea killed and recorded) |
 | `spelunk` | Enough architectural context to answer the question or start the task |
 | `scout` | Version-sensitive technical decision is grounded in evidence |
 | `distill` | Specification is unambiguous enough to plan/build |
 | `masterplan` | A slice-based plan exists that an implementer can execute |
+| `recall` | Durable facts/decisions/status recorded; session delta written |
 | `pilot` | The plan's current slice is implemented and verified |
+| `backend` | Server contracts, data integrity, auth and migrations verified for the slice |
+| `blueprint` | Diagrams answer the asked question; every element traces to real code/config |
+| `headroom` | NOW / NEXT / SCALE recommendation exists with a measurable trigger each |
+| `polish` | Interface states (incl. empty/loading/error, desktop + mobile) verified rendered |
+| `friction` | Task walkthrough complete; findings ranked by impact × frequency × recoverability |
+| `ditto` | Reference fidelity verified across viewports after compare/correct loops |
 | `proof` | Tests cover the stated risk and pass reliably |
 | `roadtest` | Critical paths verified at the available tier; evidence captured |
+| `sleuth` | Causal chain (symptom → mechanism → root cause) confirmed + regression locked |
+| `referee` | Findings reported by severity; intent vs quality verdict delivered |
+| `hotpath` | Before/after measurement exists; change kept or reverted on the delta |
 | `harden` | Threat model exists; findings have evidence and remediation |
+| `unslop` | Batch verified behavior-preserving; measurable-effects log updated |
+| `janitor` | Git/GitHub state diagnosed; history operations gated and authorized |
+| `frontpage` | README claims verified against the repo; snippets executed |
+| `findable` | Crawl → render → index chain diagnosed; fixes are confirmed issues only |
+| `frugal` | Successful-task cost reported as MEASURED / DERIVED / ESTIMATED / UNKNOWN |
 | `cleared` | Go/no-go verdict with evidence per relevant dimension |
 | `runway` | Correct version fingerprint confirmed live; critical paths smoke-tested |
+| `handsfree` | Requested outcome complete and verified, or the one blocking gate stated |
 
 A specialist that keeps expanding scope without returning is a routing failure.
