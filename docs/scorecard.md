@@ -17,7 +17,7 @@ Status vocabulary:
 
 | Skill | Implementation | Research | Tooling | Documentation | Evaluation status |
 | --- | --- | --- | --- | --- | --- |
-| `concierge` | Complete | Traced | Justified N/A | Complete | Routing evidence exists; outcome proof deferred |
+| `concierge` | Complete | Traced | Justified N/A | Complete | **MIXED** — codex O1 4/4 vs baseline 1/4; O2/O3 no lift available; see `docs/benchmarks/concierge.md` |
 | `hotseat` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
 | `spelunk` | Complete | Traced | `inventory` smoke-tested | Complete | Outcome proof deferred |
 | `scout` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |

@@ -16,7 +16,7 @@ evidence for release-critical claims. Last swept: 2026-09-14.
 | C-007 | Compatibility beyond Codex/OpenCode routing smoke | UNVERIFIED | `docs/compatibility.md` (Claude hangs, Cursor/Antigravity unavailable) | — | per-runtime harness | runtime availability changes |
 | C-008 | skills.sh badge resolves | UNVERIFIED | — (indexing/security review pending; badge must not ship broken) | — | install from skills.sh, confirm listing | listing appears |
 | C-009 | Context footprint: SKILL.md ~159KB total, frontmatter ~3525 tok always-on | DERIVED | `scripts/check-context` (byte-estimate method stated in script) | 2026-09-14 | `scripts/check-context` | any skill edit |
-
+| C-010 | `concierge` outcome evidence: MIXED (codex O1 treatment 4/4 vs baseline 1/4; O2/O3 no lift available) | MEASURED | `docs/benchmarks/concierge.md` trial table (raw traces gitignored in `evals/results/`) | 2026-09-14 | `scripts/eval-outcome --skill concierge --agent codex --trials 3` | model/agent version change |
 Prohibited until a row above (or a new row with evidence) allows it:
 stars, installs, users, testimonials, benchmark wins, "works on X"
 compatibility, token-saving percentages.

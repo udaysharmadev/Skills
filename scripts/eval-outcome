@@ -1,0 +1,217 @@
+#!/usr/bin/env python3
+"""eval-outcome — baseline-vs-skill outcome trials for one skill.
+
+Same task, same agent/model/tools/environment; the only intended
+difference is whether the skill's runtime files are in context.
+Baseline gets the skill catalog (names + descriptions — exactly what a
+runtime shows); treatment additionally gets the skill's SKILL.md body
+plus its references. Deterministic grading first; raw outputs preserved
+including failures. Results: evals/results/<ts>-outcome-<skill>-<agent>.json
+(gitignored).
+
+Usage:
+  scripts/eval-outcome --skill concierge --agent codex --trials 3
+  scripts/eval-outcome --skill concierge --agent codex --trials 1 --heldout
+"""
+import argparse, json, os, re, shutil, subprocess, sys, tempfile, time
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(ROOT, "scripts"))
+RESULTS = os.path.join(ROOT, "evals", "results")
+
+AGENTS = {
+    "codex": {"bin": "codex", "cmd": lambda p: ["codex", "exec", p]},
+    "opencode": {"bin": "opencode", "cmd": lambda p: ["opencode", "run", p]},
+}
+
+ARROW = re.compile(r"\s*(?:→|->|>|,|;)\s*")
+
+
+def frontmatter(path):
+    """Return (name, description) — description may span continuation lines."""
+    name, desc, in_fm, collecting = None, [], False, False
+    with open(path, encoding="utf-8") as f:
+        for i, raw in enumerate(f):
+            line = raw.rstrip("\n")
+            if i == 0 and line != "---":
+                break
+            if i > 0 and line == "---":
+                break
+            if i == 0:
+                in_fm = True
+                continue
+            m = re.match(r"^([A-Za-z][A-Za-z0-9_-]*):\s*(.*)$", line)
+            if m:
+                collecting = m.group(1) == "description"
+                if m.group(1) == "name":
+                    name = m.group(2).strip()
+                elif collecting and m.group(2):
+                    desc.append(m.group(2).strip())
+            elif collecting and line.strip():
+                desc.append(line.strip())
+    return name, " ".join(desc)
+
+
+def catalog():
+    skills = []
+    for d in sorted(os.listdir(os.path.join(ROOT, "skills"))):
+        p = os.path.join(ROOT, "skills", d, "SKILL.md")
+        if os.path.isfile(p):
+            n, desc = frontmatter(p)
+            skills.append((n or d, desc))
+    return skills
+
+
+def skill_context(slug):
+    """SKILL.md body + references for the treatment condition."""
+    base = os.path.join(ROOT, "skills", slug)
+    parts = []
+    with open(os.path.join(base, "SKILL.md"), encoding="utf-8") as f:
+        text = f.read()
+    body = re.sub(r"\A---\n.*?\n---\n", "", text, count=1, flags=re.S)
+    parts.append(f"# {slug} SKILL.md\n{body}")
+    refdir = os.path.join(base, "references")
+    if os.path.isdir(refdir):
+        for fn in sorted(os.listdir(refdir)):
+            if fn.endswith(".md"):
+                with open(os.path.join(refdir, fn), encoding="utf-8") as f:
+                    parts.append(f"# {slug} references/{fn}\n{f.read()}")
+    return "\n\n".join(parts)
+
+
+def load_tasks(slug, heldout):
+    path = os.path.join(ROOT, "evals", "outcomes", f"{slug}-tasks.json")
+    with open(path, encoding="utf-8") as f:
+        tasks = json.load(f)
+    return [t for t in tasks if t.get("heldout", False) == heldout]
+
+
+def normalize_route(raw):
+    m = re.search(r"^route:\s*(.+)$", raw, re.M | re.I)
+    if not m:
+        return None
+    chain = m.group(1).strip().strip("`").lower()
+    if chain in ("direct", "none"):
+        return [chain]
+    return [s.strip(" `") for s in ARROW.split(chain) if s.strip(" `")]
+
+
+def grade(task, route):
+    """Deterministic grading. Returns (pass: bool, notes: dict)."""
+    if route is None:
+        return False, {"reason": "no parseable route: line"}
+    exp = task["expected"]
+    if exp == ["direct"]:
+        return route == ["direct"], {"route": route}
+    allowed = set(exp.get("allowed", []))
+    required = set(exp.get("required", []))
+    route_set = set(route)
+    outside = sorted(route_set - allowed - {"direct", "none"})
+    ordered = [s for s in route if s in allowed]
+    order_ok = ordered == sorted(ordered, key=lambda s: exp["order"].index(s)) \
+        if all(s in exp.get("order", []) for s in ordered) else True
+    ok = (not outside and required <= route_set and order_ok
+          and len(route) <= exp.get("max_len", 6))
+    return ok, {"route": route, "outside": outside, "order_ok": order_ok}
+
+
+def observe(agent, prompt, cfg, timeout):
+    workdir = tempfile.mkdtemp(prefix="outcome-")
+    subprocess.run(["git", "init", "-q", workdir], capture_output=True)
+    t0 = time.time()
+    try:
+        proc = subprocess.run(cfg["cmd"](prompt), capture_output=True,
+                              text=True, timeout=timeout, cwd=workdir,
+                              stdin=subprocess.DEVNULL)
+        out = (proc.stdout or "") + (proc.stderr or "")
+        return {"status": "ok" if proc.returncode == 0 else "error",
+                "exit": proc.returncode, "output": out[:4000],
+                "duration": round(time.time() - t0, 1)}
+    except subprocess.TimeoutExpired:
+        return {"status": "error", "error": "timeout",
+                "duration": round(time.time() - t0, 1)}
+    finally:
+        shutil.rmtree(workdir, ignore_errors=True)
+
+
+def build_prompt(task, cat, treatment_text):
+    lines = ["You are a coding assistant with these skills installed (name: when to use):"]
+    lines += [f"- {n}: {d}" for n, d in cat]
+    if treatment_text:
+        lines += ["\nThe following skill is active — follow it:\n", treatment_text]
+    lines += [f"\nUser request: \"{task['request']}\"",
+              "Reply with exactly two lines.",
+              "Line 1: `route: A → B → C` listing only needed skills in order,",
+              "or `route: direct` (do it now, no skill needed), or `route: none` (no skill applies).",
+              "Line 2: one sentence why."]
+    return "\n".join(lines)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--skill", required=True)
+    ap.add_argument("--agent", default="codex", choices=list(AGENTS))
+    ap.add_argument("--trials", type=int, default=3)
+    ap.add_argument("--timeout", type=int, default=180)
+    ap.add_argument("--heldout", action="store_true")
+    a = ap.parse_args()
+
+    cfg = AGENTS[a.agent]
+    if shutil.which(cfg["bin"]) is None:
+        print(f"UNAVAILABLE: {cfg['bin']} not installed", file=sys.stderr)
+        return 3
+
+    try:
+        aver = subprocess.run([cfg["bin"], "--version"], capture_output=True,
+                              text=True, timeout=15).stdout.strip()[:80]
+    except Exception:
+        aver = "unknown"
+    commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT,
+                            capture_output=True, text=True).stdout.strip()
+    cat = catalog()
+    treat = skill_context(a.skill)
+    tasks = load_tasks(a.skill, a.heldout)
+    if not tasks:
+        print("no tasks for this selection", file=sys.stderr)
+        return 2
+
+    rec = {"schema": "outcome/1", "skill": a.skill, "agent": a.agent,
+           "agent_version": aver, "commit": commit,
+           "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+           "heldout": a.heldout, "trials": []}
+    for task in tasks:
+        for cond, ctx in (("baseline", None), ("treatment", treat)):
+            for t in range(a.trials):
+                obs = observe(a.agent, build_prompt(task, cat, ctx), cfg, a.timeout)
+                route = normalize_route(obs.get("output", ""))
+                passed, notes = grade(task, route)
+                rec["trials"].append({"task": task["id"], "condition": cond,
+                                     "trial": t + 1, "pass": passed,
+                                     "notes": notes, "obs": obs})
+                print(f"{task['id']} {cond} t{t+1}: "
+                      f"{'PASS' if passed else 'FAIL'} route={route} "
+                      f"({obs.get('duration', '?')}s)")
+                sys.stdout.flush()
+
+    os.makedirs(RESULTS, exist_ok=True)
+    ts = time.strftime("%Y%m%d-%H%M%S")
+    out = os.path.join(RESULTS, f"{ts}-outcome-{a.skill}-{a.agent}"
+                                f"{'-heldout' if a.heldout else ''}.json")
+    with open(out, "w", encoding="utf-8") as f:
+        json.dump(rec, f, indent=2)
+    print(f"wrote {out}")
+
+    # summary: pass rate per task/condition + mean chain length
+    for task in tasks:
+        for cond in ("baseline", "treatment"):
+            rows = [r for r in rec["trials"]
+                    if r["task"] == task["id"] and r["condition"] == cond]
+            pr = sum(r["pass"] for r in rows) / max(len(rows), 1)
+            lens = [len(r["notes"].get("route") or []) for r in rows]
+            ml = sum(lens) / max(len(lens), 1)
+            print(f"{task['id']} {cond}: pass={pr:.2f} mean_len={ml:.2f}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -34,6 +34,20 @@ All notable changes to this project are documented here. Format follows
   compatibility install note (28-skill install re-verification tracked as
   C-004, still pending).
 
+### v1 campaign — Skill Phase 01 `concierge` (first executed outcome evidence)
+
+- Closed three audit gaps without touching the rejected manifest idea:
+  28/28 completion-predicate table, `handsfree` / direct / none pattern
+  rows, and a loop ceiling (same domain ≤ 2 dispatches) in
+  `skills/concierge/`.
+- Added `scripts/eval-outcome`: stdlib-only baseline-vs-treatment runner
+  with deterministic grading, provenance, and gitignored raw traces.
+- Executed `concierge` Layer C: codex O1 treatment 4/4 vs baseline 1/4
+  (failures = `backend` over-route), O2 direct 7/7 both, held-out O3 both
+  pass with treatment matching the documented chain; opencode replication
+  2/2 both on O1 (baseline minimal, treatment full). Verdict: **MIXED** —
+  see `docs/benchmarks/concierge.md`. Claim C-010.
+
 ## [0.9.0] — 2026-09-14
 
 ### Productization and documentation
