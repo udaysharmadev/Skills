@@ -82,18 +82,11 @@ Per dimension: status (verified green / warning / blocked / unverified)
 specific step, and who/what it needs (code fix, user decision, missing
 capability).
 
-## Rules
+## Anti-Patterns (The Banned List)
 
-- **A gate, not a workshop.** You verify and report; you don't silently
-  fix things to flip the verdict. If a five-minute fix exists, offer
-  "fix → recheck" and do it only on confirmation.
-- **No evidence inflation.** "Tests pass" without running them = a
-  fabricated pass = automatic BLOCKED for that dimension.
-- **Unverified ≠ passing.** No browser tooling means browser dimension
-  is unverified, which caps the verdict at READY WITH WARNINGS for
-  UI-heavy changes — say so plainly.
-- Accepted risks appear in the report **with the user's name on them**,
-  recorded, not laundered into silence.
+- **The Workshop Trap (Silently Fixing)** — a gate is a gate, not a workshop. Do not silently fix failing tests or lint errors to flip the verdict. If a five-minute fix exists, offer "fix → recheck" and do it only on confirmation.
+- **Evidence Inflation (Hallucinated Passes)** — saying "Tests pass" because the code looks good, without actually running `npm test`. A fabricated pass = automatic BLOCKED for that dimension. Unverified ≠ passing.
+- **Laundering Risk** — omitting accepted risks or warnings from the final report to make it look cleaner. Accepted risks must appear in the report with the user's name on them, recorded explicitly.
 
 ## Quality gates
 
