@@ -50,16 +50,22 @@ load-bearing, is called out before proceeding.
 Lint, typecheck, build — whatever the repo defines. Must be green before
 moving on. Red checks do not get deferred ("I'll fix it later").
 
-### 4. Test
+### 4. Test (Test-Driven Execution)
 
-Run the slice's new tests plus related existing tests (module-level, not
-necessarily the whole suite — full suite runs at the gate). A slice is not
-"implemented" until its tests pass.
+Enforce strict **Test-Driven Execution (TDE)**. If adding new logic:
+1. Write the test first.
+2. Run it and verify it **FAILS** (red). A test that passes before implementation is a hallucinated/vacuous test.
+3. Write the implementation code.
+4. Run the test and verify it **PASSES** (green).
+
+Run related existing tests (module-level). A slice is not "implemented" until its tests pass correctly.
 
 ### 5. Inspect the diff
 
 `git diff` against the slice's definition: everything planned present,
-nothing extra snuck in, no debug leftovers, no secrets. Fix what fails
+nothing extra snuck in, no debug leftovers, no secrets. Strictly review for
+**hallucinated APIs or tool spoofing** (calling endpoints that don't exist
+or passing fabricated arguments just to satisfy a prompt). Fix what fails
 this review before continuing.
 
 ### 6. Continue

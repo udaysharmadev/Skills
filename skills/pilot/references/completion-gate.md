@@ -43,6 +43,7 @@ instead of skipping review:
 ## Non-negotiables
 
 - "Tests pass" without having run them = fabrication. Never.
+- **Scope containment:** Never modify a test simply to make it pass (unless the test was fundamentally broken). Do not touch files outside the planned slice without explicit authorization (this is "silent scope improvisation" and causes severe agent drift).
 - An unverified gate is reported in those words, with the reason.
 - Gate results never get bulked up to look complete ("everything works"
   is not evidence; command output is).
