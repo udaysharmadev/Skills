@@ -17,6 +17,12 @@ stack. A Node-shaped answer for a Django project is a failure.
 - Documenting existing architecture → `blueprint`.
 - A bug hunt with unclear cause → root-cause discipline before changes.
 
+## Prerequisites
+
+The task touches server behavior (API, data, auth, jobs, migrations), and
+you have the repo. Stack detection below runs before any code — a
+Node-shaped answer for a Django project is a failure, not a starting point.
+
 ## Stack detection (before writing anything)
 
 One quick pass, spelunk-style but server-scoped:
@@ -65,6 +71,17 @@ the sections your task touches. The invariants that always apply:
 - Exercise changed endpoints directly (harness/curl/HTTP client) when
   test coverage is thin — observed responses beat assumed ones.
 - Run the existing suite; report anything you broke before anything else.
+
+## Tool selection / fallback
+
+- Project-native first: the repo's test runner, migration tool, and HTTP
+  harness beat anything you install.
+- No test runner → exercise endpoints directly (stdlib HTTP client, curl)
+  and record transcripts as the evidence.
+- No database available → implement against the migration tool's
+  dry-run/scratch mode; what couldn't run is marked **unverified** with
+  the exact reason, never assumed.
+- No subagents → sequential implementation; the disciplines don't change.
 
 ## Quality gates
 

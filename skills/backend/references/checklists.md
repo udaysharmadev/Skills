@@ -45,6 +45,10 @@ each prevents.
   read-modify-write on contested rows.
 - Uniqueness enforced by the database (constraints), not application
   checks — the app-level check is UX, the constraint is correctness.
+- Deadlocks designed out, not debugged later: acquire locks in a
+  consistent order, keep contested transactions short, and retry the
+  whole transaction on deadlock/abort (with a cap) rather than part of
+  it — partial retry after a deadlock is silent corruption.
 
 ## AuthN / AuthZ / sessions
 
@@ -73,15 +77,25 @@ each prevents.
   poison messages; visibility into failure counts.
 - Job payloads carry IDs, not blobs — the handler re-reads current state
   instead of acting on stale snapshots.
+- DB + event atomicity goes through a transactional outbox: write the
+  event row in the same transaction as the state change, relay
+  asynchronously. Never publish-then-commit (ghost events on rollback)
+  or commit-then-publish (silent loss on crash).
 
 ## External APIs and webhooks
 
 - Timeouts and a small retry budget on every outbound call; no unbounded
-  hangs.
+  hangs. Retry ownership is explicit: the caller owns retries within its
+  budget and propagates deadlines downstream — callees never silently
+  retry non-idempotent operations on the caller's behalf.
 - Circuit behavior on repeated failure: stop calling a failing
   dependency for a bounded cool-down (fail fast + surface degraded
   status) instead of piling latency onto every request; per-dependency,
   not global.
+- Backpressure over collapse: bounded queues, shed excess load with an
+  explicit signal (`429` + `Retry-After` where HTTP fits), degrade
+  read-only paths before write paths. A circuit protects you from a sick
+  dependency; backpressure protects you from a healthy flood.
 - Webhooks: verify signatures before trusting payloads; respond fast,
   process async; treat delivery as at-least-once.
 - **Agent Integration (MCP):** When exposing internal APIs for agent consumption, 
@@ -106,8 +120,6 @@ each prevents.
   trust client filenames (path traversal).
 - Serve user content from signed/expiring URLs, not public buckets.
 - Large files stream; don't buffer whole uploads in memory.
-- Webhooks: verify signatures before trusting payloads; respond fast,
-  process async; treat delivery as at-least-once.
 - External responses validated (shape/enum) before use — upstream API
   changes are an input, not an exception.
 

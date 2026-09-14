@@ -108,6 +108,7 @@
 - "we need webhook handling for stripe events" => backend
 - "the orders table needs a migration to add a status column" => backend
 - "make sure users can only edit their own posts" => backend
+- "charge the card but never double-charge when the client retries" => backend
 
 ## blueprint
 
