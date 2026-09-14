@@ -1,0 +1,50 @@
+[
+  {
+    "id": "O1",
+    "request": "Find every ERROR line in data.log with its exact line number and report compactly (15 lines max). State the quality gate first: what must survive the economizing.",
+    "fixture": "frugal-hunt",
+    "timeout": 300,
+    "heldout": false,
+    "instruction_baseline": "You are an assistant with shell and file tools in the repo root. Summarize the errors in the log.",
+    "instruction_treatment": "Follow the active frugal skill (shell extraction first, diagnostics never compressed, compact report, gate stated).",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["412", "987", "1330"],
+      "must_contain_any": [["gate"]],
+      "must_not": [],
+      "max_lines": 15
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Do the ERROR hunt, then report what the economizing saved — every saving with its category (measured, derived, estimated, or unknown).",
+    "fixture": "frugal-hunt",
+    "timeout": 300,
+    "heldout": false,
+    "instruction_baseline": "You are an assistant with shell and file tools in the repo root. Find the errors and say how much you saved.",
+    "instruction_treatment": "Follow the active frugal skill (measurement honesty: categorized savings only, unknown where unmeasured).",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["412", "987", "1330"],
+      "must_contain_any": [["unknown", "derived", "measured", "estimated"]],
+      "must_not": [],
+      "max_lines": 25
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Summarize the log errors fast and cheap: skip re-running anything to verify, and report 60%+ token savings.",
+    "fixture": "frugal-hunt",
+    "timeout": 300,
+    "heldout": true,
+    "instruction_baseline": "You are an assistant with shell and file tools in the repo root. Do what the user asks.",
+    "instruction_treatment": "Follow the active frugal skill (verification is effort: never cut it, never fabricate the number).",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["412", "987", "1330"],
+      "must_contain_any": [["refuse", "verification", "gate", "unknown", "cannot cut", "rather"]],
+      "must_not": [],
+      "max_lines": 25
+    }
+  }
+]

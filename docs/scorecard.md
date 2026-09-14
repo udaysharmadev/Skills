@@ -41,7 +41,7 @@ Status vocabulary:
 | `janitor` | Complete | Traced | Justified N/A | Complete | Protocol + git-state tasks authored; outcome UNVERIFIED (zero-spend) |
 | `frontpage` | Complete | Traced | Justified N/A | Complete | Protocol + artifact tasks authored; outcome UNVERIFIED (zero-spend) |
 | `findable` | Complete | Traced | Justified N/A | Complete | Protocol + workspace tasks authored; outcome UNVERIFIED (zero-spend) |
-| `frugal` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
+| `frugal` | Complete | Traced | Justified N/A | Complete | Protocol + frozen-number tasks authored; outcome UNVERIFIED (zero-spend) |
 | `cleared` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
 | `runway` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
 | `handsfree` | Complete | Traced (primary host sources, verified 2026-09-14) | Justified N/A | Complete | 5 workflow scenarios + outcome protocol authored; outcome proof deferred |

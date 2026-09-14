@@ -434,6 +434,23 @@ All notable changes to this project are documented here. Format follows
   offline end-to-end with real file operations on all gates. Verdict
   UNVERIFIED — see `docs/benchmarks/findable.md`.
 
+### v1 campaign — Skill Phase 24 `frugal` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (all three research traces verified, PRD §8 walked).
+  Two reference-only additions: Prerequisites (task + gate + signal)
+  and Tool selection/fallback (telemetry → proxies → unknown ladder).
+  Zero new always-on cost.
+- Authored FG1–FG5 scenarios (no-telemetry honesty, gate-missing
+  failure, verification-protecting restraint, 63-percent adversarial)
+  plus a no-skipped-verification trigger case. Signature F1–F3 remain
+  as cross-checks.
+- Outcome protocol + frozen tasks on a new `frugal-hunt` fixture (1500-line
+  log, ERRORs frozen at 412/987/1330) via the fact grader, no harness
+  change: exact numbers + honesty groups + compactness budgets catch
+  lossy summaries, whole-log dumps, and bare percentages. Verified
+  offline on all gates. Verdict UNVERIFIED — see
+  `docs/benchmarks/frugal.md`.
+
 ## [0.9.0] — 2026-09-14
 
 ### Productization and documentation
