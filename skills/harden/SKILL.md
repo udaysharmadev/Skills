@@ -23,10 +23,11 @@ every fix is retested.
 Before any checklist: what does the system hold (PII? money? health?
 secrets?), who would attack it (opportunistic bots, competitors,
 disgruntled users, organized actors), where the trust boundaries are
-(public input, file uploads, webhooks, admin, AI features accepting
-text), and the blast radius if each fails. The threat model decides
-which checklist sections are top-priority — a recipe blog and a
-payments processor do not get the same audit.
+(public input, file uploads, webhooks, admin, **AI features accepting text
+or external data — Indirect Prompt Injection per OWASP GenAI Top 10**), 
+and the blast radius if each fails. Is there **Excessive Agency** (an AI with 
+unmonitored write access)? The threat model decides which checklist sections 
+are top-priority — a recipe blog and a payments processor do not get the same audit.
 
 ## Modes (scope decides, threat model confirms)
 
@@ -73,9 +74,7 @@ accepted-risk by user). The precondition is what separates a real
 exposure from a scary-sounding impossible one.
 
 Severity honesty rules: exploitability × impact decides — a "critical"
-CVE in an unreachable code path is medium here; speculative findings say
-`confidence: speculative` instead of dressing up as facts. No invented
-CVSS scores, no fear-language without evidence.
+CVE in an unreachable code path is a false alarm here. **Ban CVSS Theater:** Do not list 50 theoretical vulnerabilities from an `npm audit` if they are not actually exploitable in this specific context (e.g., a regex DoS in a dev-only build script). Speculative findings say `confidence: speculative` instead of dressing up as facts. No invented CVSS scores, no fear-language without evidence.
 
 ## Rules of engagement
 
