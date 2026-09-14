@@ -44,6 +44,8 @@ test at that boundary and stop. Two classic errors:
 
 ### 3. Write tests that survive refactors
 
+- **Mutation Validation (Anti-Vacuous):** A test that always passes is worse than no test. Before claiming a test is green, deliberately break the implementation (or use mutation testing if available) to prove the test **fails** (Red-Green TDE).
+- **Property-Based Testing (PBT):** For core invariants (e.g., serialization, idempotency), prefer generating properties (`decode(encode(x)) == x`) over a handful of static, AI-biased examples.
 - Names state behavior: `rejects orders over the credit limit`, not
   `processOrder_v2_works`.
 - Arrange–act–assert, one behavior per test.
@@ -52,13 +54,12 @@ test at that boundary and stop. Two classic errors:
 - Assertions on observable outcomes (returned data, state, side effects
   the user cares about) — not on internal call sequences.
 
-### 4. Mocking discipline
+### 4. Mocking discipline (Anti-Over-Mocking)
 
 Mock only boundaries you don't own and can't run (network, clock, RNG,
 third-party APIs). Never mock the unit under test, the database in a
 database test, or so much that the test verifies the mock arrangement
-rather than the behavior. A test that fails only because a mock drifted
-is a liability — delete or ground it in a contract test.
+rather than the behavior. Use **production-shaped data** (or captured real traffic) instead of simplistic, hallucinated stubs. A test that fails only because a mock drifted is a liability — delete or ground it in a contract test.
 
 ### 5. Run and classify
 
