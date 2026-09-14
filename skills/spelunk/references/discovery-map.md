@@ -81,10 +81,19 @@ fiber, Actix/Axum.
 ## 10. Hotspots (git available)
 
 ```bash
+# Top churn:
 git log --format=format: --name-only since="6 months ago" \
   | grep -v '^$' | sort | uniq -c | sort -rg | head -10
 ```
 
-Largest files: `git ls-files | xargs wc -l 2>/dev/null | sort -rn | head -10`
+```bash
+# Top complexity proxy (size):
+git ls-files | xargs wc -l 2>/dev/null | sort -rn | head -10
+```
 
-High churn + large = risk zone worth flagging in the map's summary line.
+Map files against the churn-vs-complexity quadrant:
+- **High churn + high size** = active friction zone. Top refactoring priority.
+- **Low churn + high size** = landmine. Stable but dangerous to touch.
+- **High churn + low size** = config/route files. Normal, but watch for coupling.
+
+Flag the active friction zones in the map's summary line.
