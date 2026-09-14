@@ -67,6 +67,7 @@
 - "catch me up on where this project stands" => recall
 - "save this lesson before we lose the context window" => recall
 - "write a handoff summary for tomorrow" => recall
+- "just this decision, nothing else, keep it short" => recall
 
 ## Direct routes (small-sounding asks that a specialist owns)
 

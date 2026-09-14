@@ -10,6 +10,22 @@ skill fixes that with four small files and brutal editing discipline. A
 memory system that injects everything every turn is a token leak, not
 memory.
 
+## Prerequisites
+
+The four files present (or a first write to create them) plus a task
+that genuinely needs past context — a decision to record, a handoff to
+write, a catch-up to give. Ephemeral facts and repo-derivable trivia
+never reach a write.
+
+## Tool selection/fallback
+
+- `scripts/check-memory` → run after every write batch; fix what it
+  flags (caps, dates, duplicates, staleness) before proceeding.
+- Files contradictory or polluted → one compaction pass first; never
+  write into a mess.
+- No files yet → create on first write in `references/file-formats.md`
+  shape; the validator confirms the shape after.
+
 ## When NOT to use
 
 - The fact is ephemeral (current branch, WIP noise) — it lives in git and
