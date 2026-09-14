@@ -35,6 +35,7 @@ if runs repeat over time.
 - console: 2 unhandled promise rejections on /checkout (evidence: …)
 - network: POST /api/orders → 500 (trace id in network.log)
 - responsive: checkout form unusable at 390px (screenshot 03)
+- automation: healed locator on 'Submit' button (data-testid missing, fell back to XPath)
 
 ## Unverified
 - payment provider redirect — sandbox unavailable this run

@@ -85,6 +85,8 @@ evidence files.
 - Fresh state per path (new session/storage) unless the path is
   specifically about persistence.
 - Don't test what can't run: mark it unverified with the reason.
+- **Anti-Pattern: Silent Self-Healing** — if you (the agent) have to guess a new locator because a `data-testid` or role is missing, you must **log the healed locator as a finding** for human review. Do not silently paper over broken semantic HTML.
+- **Stable Locators First** — interact using user-centric locators (`getByRole`, text, `data-testid`). AI-guessed XPath or brittle CSS chains are forbidden.
 
 ## Quality gates
 
