@@ -116,6 +116,7 @@
 - "I need diagrams showing how the services connect" => blueprint
 - "create onboarding docs explaining how the system works" => blueprint
 - "draw the request flow for checkout" => blueprint
+- "diagram how the system should look after the refactor, marked as proposed" => blueprint
 
 ## headroom
 
