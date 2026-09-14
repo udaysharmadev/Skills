@@ -59,6 +59,11 @@ Report the delta. If the gain is marginal and the change adds complexity
 — revert it and say so; complexity is a cost paid forever. Move to the
 next hot path or stop when the target is met.
 
+## Anti-Patterns (The Banned List)
+
+- **Hallucinated Profiling** — guessing that a loop or function is the bottleneck based on intuition or AI training bias, without running a real profiler or inspecting actual APM/trace data. An unmeasured bottleneck is a hallucination.
+- **The Micro-Tuning Trap** — wasting effort on granular, incremental adjustments (e.g., swapping `map` for `for`, or micro-caching variables) when the actual latency lives in structural boundaries (database N+1, network round-trips). Fix the architecture before you fix the syntax.
+
 ## Rules
 
 - Produce the report from the bundled helper: `scripts/measure-report

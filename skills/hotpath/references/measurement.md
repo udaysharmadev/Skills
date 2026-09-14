@@ -66,3 +66,4 @@ number.
    anecdote.
 4. Realistic data volume — seeding up to production-like scale is part
    of the work, stated in the report.
+5. **Regime Shifts over Micro-Tuning** — optimization breakthroughs come from structural changes (caching layers, data modeling, batching) not continuous granular parameter tweaking. Follow the trace, not the syntax.
