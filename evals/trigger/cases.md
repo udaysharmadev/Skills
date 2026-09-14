@@ -100,6 +100,7 @@
 - "execute the plan slice by slice" => pilot
 - "implement slice 2 from docs/plans/dark-mode.md" => pilot
 - "keep going with the implementation from where we left off" => pilot
+- "the plan says X but the code says Y, what now" => pilot
 
 ## backend
 

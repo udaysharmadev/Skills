@@ -7,6 +7,7 @@
 | SWE-agent Execution Patterns (2025/2026) | Test-Driven Execution (TDE) is required to stop agents from writing vacuous tests that pass automatically, hiding hallucinated logic. | Changes the testing sequence to require a failing test (red) before implementation (green). | SKILL.md §4 |
 | Agent Hallucination Mitigation Studies | The most dangerous executor hallucination is "silent scope improvisation" — patching unrelated files or weakening tests just to make the current pipeline green. | Explicitly bans scope drift and test-weakening in the completion gate. | references/completion-gate.md |
 | Structural Integrity Verification | Agents often spoof tool arguments or hallucinate APIs when they get stuck. Diff inspection must specifically target these fabrications, not just look for "debug leftovers". | Upgrades the diff inspection step to explicitly hunt for spoofed APIs and hallucinated signatures. | SKILL.md §5 |
+| v1 campaign audit, Phase 07 (2026-09-14) | No decision log (deviations recorded, reasoning lost); checkpoints could absorb dirty user state; every surprise ping-ponged to planning; slice-vs-suite test boundary vs `proof` unstated | Running decision log in the plan file, dirty-tree checkpoint rule, replan materiality test (in-slice → record+continue, architecture/scope → replan), proof-boundary line | SKILL.md §§1, 4, 6, blocked-reality |
 
 ## Key new intelligence encoded
 

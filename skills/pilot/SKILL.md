@@ -34,7 +34,10 @@ addition, no shared state), medium (touches existing behavior), high
 (data, auth, money, schema, public API, infra). Risk sets the
 verification floor — high-risk slices get the full gate treatment
 early, not just at the end — and whether you checkpoint a **rollback
-point** (commit tag or noted revert path) before starting. If reality
+point** (commit tag or noted revert path) before starting. Checkpointing
+never touches the user's uncommitted work: if the tree is dirty, use a
+stash, a branch, or a noted revert path — never absorb, overwrite, or
+"clean up" user changes as a side effect. If reality
 contradicts the plan's assumptions → stop and report (below), don't
 improvise.
 
@@ -60,6 +63,10 @@ Enforce strict **Test-Driven Execution (TDE)**. If adding new logic:
 
 Run related existing tests (module-level). A slice is not "implemented" until its tests pass correctly.
 
+Slice tests prove the slice; the lasting regression strategy belongs to
+`proof` — write the tests this slice needs, not the suite the project
+wishes it had.
+
 ### 5. Inspect the diff
 
 `git diff` against the slice's definition: everything planned present,
@@ -73,7 +80,11 @@ this review before continuing.
 Check the slice off in the plan file. If implementation deviated from
 the plan (different file, extra step, dropped step), **record the
 deviation in the plan file** next to the slice — silent drift is how
-plans become fiction. Next slice. If a fix attempt failed twice on the
+plans become fiction. Keep a running **decision log** in the plan file:
+each fix attempt, workaround, and judgment call as one line (what was
+tried → what happened → what was decided). The log is what makes the
+next session — or `sleuth`, or the reviewer — understand why the code
+looks the way it does. Next slice. If a fix attempt failed twice on the
 same failure → stop and report the failure mode; a third blind attempt
 is how agents thrash.
 
@@ -90,8 +101,12 @@ Stop and report when: a planned file doesn't exist as described, tests
 that should pass can't (including failures that pre-date your slice —
 verify against the baseline, don't inherit someone else's breakage as
 your own or ignore it), or the slice as written can't deliver its stated
-outcome. Route back to `masterplan` for replanning the affected slices.
-Silent scope improvisation is the failure mode this exists to prevent.
+outcome. Apply the materiality test before routing back: if the fix
+stays within the slice's files and the plan's architecture, record the
+deviation and continue — only architecture or scope changes go back to
+`masterplan` for replanning. Ping-ponging every surprise back to
+planning is how execution stalls. Silent scope improvisation is the
+failure mode this exists to prevent.
 
 ## The completion gate
 
