@@ -44,9 +44,13 @@ Runs after O1/O2 analysis; never tuned against.
 
 ## Reproduce
 
+codex is gated by the paid-agent guard (see `evals/adapters/README.md`):
+both `--allow-paid` and `ALLOW_PAID_AGENT=1` are required, set only by
+the human authorizing that run.
+
 ```bash
-scripts/eval-outcome --skill concierge --agent codex --trials 3
-scripts/eval-outcome --skill concierge --agent codex --trials 1 --heldout
+ALLOW_PAID_AGENT=1 scripts/eval-outcome --skill concierge --agent codex --trials 3 --allow-paid
+ALLOW_PAID_AGENT=1 scripts/eval-outcome --skill concierge --agent codex --trials 1 --heldout --allow-paid
 ```
 
 Raw traces: `evals/results/` (gitignored). Curated verdict:

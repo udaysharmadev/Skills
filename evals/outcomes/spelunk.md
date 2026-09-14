@@ -42,9 +42,13 @@ perfect → NO CLEAR LIFT. Treatment worse → REGRESSION. Efficiency
 
 ## Reproduce (requires an explicit trial budget — see policy)
 
+codex additionally requires the paid-agent guard keys (`--allow-paid` +
+`ALLOW_PAID_AGENT=1`, set only by the human authorizing that run — see
+`evals/adapters/README.md`).
+
 ```bash
-scripts/eval-outcome --skill spelunk --agent <agent> --trials 2
-scripts/eval-outcome --skill spelunk --agent <agent> --trials 1 --heldout
+scripts/eval-outcome --skill spelunk --agent <agent> --trials 2 [--allow-paid]
+scripts/eval-outcome --skill spelunk --agent <agent> --trials 1 --heldout [--allow-paid]
 ```
 
 Raw traces: `evals/results/` (gitignored). Curated verdict:

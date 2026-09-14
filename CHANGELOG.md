@@ -5,6 +5,21 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+### Paid-agent guard — codex default-deny (2026-09-14)
+
+- Harness defaults alone spent 186 codex sessions in one day (trigger
+  sweeps + `concierge`/`hotseat` outcome trials). Added
+  `scripts/eval_guard.py`: `eval-trigger`, `eval-workflow`, and
+  `eval-outcome` now refuse `codex` — exit 4, nothing invoked, no
+  results written — unless the human sets BOTH `--allow-paid` AND
+  `ALLOW_PAID_AGENT=1` on that run. Either key alone unlocks nothing;
+  automation must never set the keys itself. `--check` / `--list` /
+  `--dry-run` stay ungated (they invoke nothing). Free adapters
+  (`opencode`) are unaffected; authorized runs record
+  `paid_guard: "authorized"` for audit. Binding semantics in
+  `evals/adapters/README.md`; agent-facing rule added to AGENTS.md
+  non-negotiables.
+
 ### v1 campaign — Phase 0 truth-freeze, Foundation Phase 1, `handsfree` depth
 
 - Added `docs/audits/current-state.md`: frozen truth at `96b4646` with

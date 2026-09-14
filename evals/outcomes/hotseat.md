@@ -37,9 +37,13 @@ at ceiling → NO CLEAR LIFT. Treatment worse → REGRESSION.
 
 ## Reproduce
 
+codex is gated by the paid-agent guard (see `evals/adapters/README.md`):
+both `--allow-paid` and `ALLOW_PAID_AGENT=1` are required, set only by
+the human authorizing that run.
+
 ```bash
-scripts/eval-outcome --skill hotseat --agent codex --trials 2
-scripts/eval-outcome --skill hotseat --agent codex --trials 1 --heldout
+ALLOW_PAID_AGENT=1 scripts/eval-outcome --skill hotseat --agent codex --trials 2 --allow-paid
+ALLOW_PAID_AGENT=1 scripts/eval-outcome --skill hotseat --agent codex --trials 1 --heldout --allow-paid
 ```
 
 Raw traces: `evals/results/` (gitignored). Curated verdict:

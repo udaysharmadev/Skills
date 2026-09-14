@@ -10,6 +10,7 @@ This repository is an Agent Skills bundle. Everything in [PRD.md](PRD.md) applie
 4. **Respect the skill-file contract** (PRD §8): every `SKILL.md` states purpose, triggers, when NOT to use, prerequisites, workflow, tool selection/fallback, quality gates, stop conditions, output contract, and pointers to references. Body ≤ 500 lines; detail goes in `references/`.
 5. **Naming:** single lowercase word per skill (PRD §16). `scripts/check-names` enforces it.
 6. **Progressive disclosure:** frontmatter description carries the trigger signal; the body carries the workflow; `references/` carries the depth. Do not inline checklists that belong in a reference file.
+7. **Paid agents are default-deny.** The eval harness refuses `codex` (and any future billed adapter) unless the human sets BOTH `--allow-paid` and `ALLOW_PAID_AGENT=1` on that run — `scripts/eval_guard.py` exits 4 otherwise. Never set those keys yourself and never invoke a paid agent CLI directly (e.g. `codex exec` in a shell) unless the user explicitly authorized that spend in the current session.
 
 ## Before opening a PR
 
