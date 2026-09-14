@@ -63,6 +63,12 @@ output, restated instructions). Optimization targets optional and waste
 ONLY — the budget model is what stops "save tokens" from quietly
 becoming "skip the evidence".
 
+## Anti-Patterns (The Banned List)
+
+- **Context Dumping (Blind Ingestion)** — dumping a 10,000-line log file or an entire un-grepped repository into the context window. This causes "Lost in the Middle" reasoning failures and burns the budget. Use `grep`, `jq`, or `awk` to extract what matters before reading.
+- **Lossy Compression** — attempting to save tokens by summarizing a stack trace into "there was a type error," destroying the exact line numbers needed to fix the bug. Never compress the diagnostic payload.
+- **Chatty Reasoning** — writing three paragraphs of "Thinking out loud..." to the user before running a one-line command. Keep thoughts internal or compact.
+
 ### Execute, don't reason
 
 - **Scripts over eyeballing** — counting occurrences, diffing trees,
