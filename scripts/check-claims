@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# check-claims — every row in docs/claims.md must be well-formed per
+# shared/schemas/claim.md, and MEASURED/FACT rows must point at evidence.
+# Release-critical: no public number without a row.
+set -u
+cd "$(dirname "$0")/.."
+
+fail=0
+claims="docs/claims.md"
+
+if [ ! -f "$claims" ]; then
+  echo "FAIL: docs/claims.md missing — no public metric may ship without it"
+  exit 1
+fi
+
+# data rows: lines starting with "| C-"
+rows=$(grep -cE '^\| C-[0-9]+' "$claims" || true)
+if [ "$rows" -eq 0 ]; then
+  echo "FAIL: docs/claims.md contains no claim rows"
+  exit 1
+fi
+
+while IFS= read -r line; do
+  id=$(echo "$line" | awk -F'|' '{print $2}' | tr -d ' ')
+  class=$(echo "$line" | awk -F'|' '{print $4}' | tr -d ' ')
+  evidence=$(echo "$line" | awk -F'|' '{print $5}' | sed 's/^ *//; s/ *$//')
+  verified=$(echo "$line" | awk -F'|' '{print $6}' | tr -d ' ')
+  case "$class" in
+    FACT|MEASURED|DERIVED|ESTIMATED|TARGET|UNVERIFIED) ;;
+    *) echo "FAIL $id: unknown class '$class'"; fail=1; continue ;;
+  esac
+  case "$class" in
+    FACT|MEASURED|DERIVED)
+      if [ "$evidence" = "—" ] || [ -z "$evidence" ]; then
+        echo "FAIL $id ($class): missing evidence path"
+        fail=1
+      fi
+      if [ "$verified" = "—" ] || [ -z "$verified" ]; then
+        echo "FAIL $id ($class): missing verified date"
+        fail=1
+      fi
+      ;;
+  esac
+done <<EOF
+$(grep -E '^\| C-[0-9]+' "$claims")
+EOF
+
+# banned hype: these words must not appear in README without a claim row
+for word in "supercharge" "revolutionize" "unlock the power" "10x developer"; do
+  if grep -qi -- "$word" README.md; then
+    echo "FAIL README.md contains hype phrase '$word' with no claim row"
+    fail=1
+  fi
+done
+
+if [ "$fail" -eq 0 ]; then
+  echo "OK: $rows claim row(s) well-formed"
+fi
+exit "$fail"

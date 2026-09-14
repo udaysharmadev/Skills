@@ -18,6 +18,12 @@ jobs:
         run: scripts/check-names
       - name: check-links
         run: scripts/check-links
+      - name: validate-frontmatter
+        run: scripts/validate-frontmatter
+      - name: check-claims
+        run: scripts/check-claims
+      - name: check-readme-sync
+        run: scripts/check-readme-sync
       - name: eval fixtures well-formed
         run: scripts/run-evals
       - name: generated docs up to date

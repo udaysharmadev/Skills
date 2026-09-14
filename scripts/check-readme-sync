@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# check-readme-sync — README must name all 28 skills, carry no stale
+# 27-skill count, and show the exact verified install command form.
+set -u
+cd "$(dirname "$0")/.."
+
+fail=0
+
+count=0
+for dir in skills/*/; do
+  [ -d "$dir" ] || continue
+  slug=$(basename "$dir")
+  count=$((count + 1))
+  if ! grep -q -- "$slug" README.md; then
+    echo "FAIL README.md never mentions skill '$slug'"
+    fail=1
+  fi
+done
+
+if grep -qE '27[- ]skill|27 skills' README.md; then
+  echo "FAIL README.md carries stale 27-skill count (bundle is 28)"
+  fail=1
+fi
+
+if ! grep -qF 'npx skills add udaysharmadev/Skills --all' README.md; then
+  echo "FAIL README.md missing the verified one-command install"
+  fail=1
+fi
+
+if [ "$fail" -eq 0 ]; then
+  echo "OK: README names all $count skills, count current, install present"
+fi
+exit "$fail"
