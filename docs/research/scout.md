@@ -7,6 +7,7 @@
 | SWE-agent 2026 architectural analysis | API version mismatches and hallucinations are a systemic architecture issue, not just bad prompting. "No Source = No Claim" is the standard mitigation. | Agents must treat un-grounded memory as unsafe for API signatures. | SKILL.md §rules |
 | Structured Grounding research (Source-Driven Development) | Agents need explicit source hierarchies where official structured specs (like MCP or OpenAPI) override model weights. | Formalizes the "source ladder" and penalizes general web knowledge. | references/source-ladder.md |
 | Structure-Aware Chunking best practices | Agents fetching full monolithic index pages lose context; they must fetch the specific endpoint documentation. | Directs the web fetch strategy to target specific sub-pages. | SKILL.md §rules |
+| v1 campaign audit, Phase 04 (2026-09-14) | Claim-level verdicts missing (global confidence only); conflict rules lived in the reference unreferenced; note structure unchecked by tooling | Per-fact tier+date rule, SKILL.md pointer to ladder conflict resolution, `scripts/check-note` structure validator wired into the workflow | SKILL.md §rules + §workflow, skills/scout/scripts/check-note |
 
 ## Key new intelligence encoded
 

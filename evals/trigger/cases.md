@@ -41,6 +41,7 @@
 - "how do I integrate stripe webhooks properly" => scout
 - "does zustand still work with react server components" => scout
 - "research which headless CMS fits this project" => scout
+- "the docs say X but the changelog says Y for our version, which is right" => scout
 
 ## distill
 

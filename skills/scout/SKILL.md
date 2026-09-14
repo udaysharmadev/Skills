@@ -63,6 +63,13 @@ confidence. The full ladder with trust tiers and citation formats lives in
 - **Community evidence is labeled** as such, with source and date.
 - **Uncertainty is a section, not a vibe.** List what remains unknown or
   contradicted across sources.
+- **One fact, one verdict.** Every load-bearing fact carries its tier and
+  check date (`[tier 2 · 2026-09-14]`); a fact without both is a draft,
+  not evidence.
+- **Conflicts resolve by rule, never by averaging.** Apply the Conflict
+  resolution section in `references/source-ladder.md` (recency ×
+  authority, date-check advice, record don't average) and cite which rule
+  decided.
 
 ## Offline mode (no web capability)
 
@@ -77,7 +84,8 @@ to confirm. This is a legitimate degraded mode; guessing is not.
 2. Run the ladder until answered or exhausted.
 3. Write the note (template in `references/source-ladder.md`) to
    `docs/research/<topic>.md` with provenance header.
-4. In chat: recommendation first, then the 3–5 load-bearing facts with
+4. Run `scripts/check-note` on the note — structure gate before delivery.
+5. In chat: recommendation first, then the 3–5 load-bearing facts with
    sources, then confidence.
 
 ## Quality gates
