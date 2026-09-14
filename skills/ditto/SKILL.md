@@ -41,12 +41,9 @@ states visible, and layout behavior. Guess nothing — unreadable text in
 a screenshot gets flagged and replaced with obviously-placeholder
 content, not invented copy.
 
-### 3. Infer the design system
+### 3. Infer or Map the design system
 
-Extract, don't eyeball: colors (sampled hex), type scale (family, sizes,
-weights), spacing rhythm, radii, shadows, breakpoints. This becomes
-tokens/variables in the implementation — magic numbers scattered across
-CSS make correction rounds impossible.
+Extract, don't eyeball. If the project has an existing design system (in the repo or via an MCP server like StitchMCP), **map the screenshot elements to the existing tokens** (`color/background/primary`, not raw hex values). If no system exists, infer the smallest possible set of semantic tokens: colors, type scale (family, sizes, weights), spacing rhythm, radii, shadows, breakpoints. This becomes variables in the implementation — magic numbers scattered across CSS make correction rounds impossible.
 
 ### 4. Implement
 
@@ -56,12 +53,7 @@ source only shows one viewport (marked as inferred).
 
 ### 5. Compare — the loop that is the skill
 
-Fidelity is measured across nine dimensions, each marked in the final
-report: **structure** (arrangement), **geometry** (dimensions/alignment),
-**typography** (family, scale, weights), **color** (values, contrast),
-**spacing** (rhythm), **assets** (images/icons — placeholders noted),
-**responsive** behavior, **interaction** (hover/focus where observable),
-**states** (empty/loading/error if the source shows them).
+Fidelity is measured across nine dimensions via structural analysis (not just pixel matching, which fails across responsive viewports): **structure** (DOM/layout integrity), **geometry** (dimensions/alignment), **typography** (family, scale, weights), **color** (values mapped to tokens, contrast), **spacing** (rhythm), **assets** (images/icons — placeholders noted), **responsive** behavior, **interaction** (hover/focus where observable), **states** (empty/loading/error if the source shows them).
 
 1. Screenshot the implementation at the same viewport(s) as the source.
 2. Compare: side-by-side plus overlay/ablation pass; diff systematically
