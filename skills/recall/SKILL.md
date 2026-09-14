@@ -34,12 +34,10 @@ humans can read and edit them too.
 
 ## Write rules
 
-0. **Know what kind of knowledge you are writing.** Stable fact ·
-   decision · temporary status · hypothesis · lesson · constraint ·
-   preference · open question · superseded fact — each lives in its home
-   file (facts/constraints → PROJECT_CONTEXT, decisions/supersessions →
-   DECISIONS, status/open questions → STATUS, lessons → LEARNINGS), and
-   hypotheses stay out of memory entirely until they survive testing.
+0. **Enforce the Knowledge Hierarchy.** Fact (true until codebase changes) → 
+   Decision (true until context changes, explicitly modeled state machine) → 
+   Lesson (portable, true everywhere). Status is transient. Hypotheses stay 
+   out of memory entirely until they survive testing.
 1. **Decisions and facts, not transcripts.** "Chose SQLite over Postgres
    because deployment is single-box" — yes. "User said, then I said" — no.
 2. **One entry, one thing.** No essays. If it needs paragraphs, it's two
@@ -49,15 +47,15 @@ humans can read and edit them too.
    memory.
 4. **Provenance on load-bearing entries:** date + one line of why
    (`- 2026-09-14 — chose SQLite: single-box deploy, no concurrency needs`).
-5. **Distinguish stable from temporary.** PROJECT_CONTEXT holds what
-   should still be true in six months; everything else goes in STATUS.
-   A durable decision captures: decision, reason, date/context,
-   consequence, and what it supersedes (mark the old entry
-   `*(superseded YYYY-MM-DD by: X)*` — never delete history, supersede
-   it). A contradiction between an old fact and a new one is a
-   supersession, not a coin flip.
-6. **Stale entries get flagged or deleted**, not left to poison future
-   sessions: mark `(stale as of YYYY-MM-DD — verify)` or remove.
+5. **Decisions are governed state machines.** PROJECT_CONTEXT holds what
+   should still be true in six months. DECISIONS models active choices as 
+   `[Active]` -> `[Superseded]` -> `[Deprecated]`. A durable decision captures: 
+   decision, reason, date/context, consequence, and what it supersedes. A 
+   contradiction between an old fact and a new one is a supersession (state change), 
+   not a coin flip.
+6. **Transient state requires a TTL.** Status entries (Blockers/Next) must 
+   have a Time-To-Live (`[TTL: YYYY-MM-DD]`). Stale TTLs get escalated or dropped, 
+   never left to rot.
 7. **Never write secrets** — env var names, never values; no tokens, no
    credentials, no personal data the user didn't ask to store.
 

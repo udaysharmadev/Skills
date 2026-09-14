@@ -35,17 +35,22 @@ belongs in STATUS, not here.
 # Decisions
 <!-- newest first — one entry per decision, always with the why -->
 
-## 2026-09-12 — Auth: magic links, no passwords
+## [Active] 2026-09-12 — Auth: magic links, no passwords
 - Chose magic-link email auth over passwords+OAuth.
 - Why: no password storage liability, single flow to maintain.
 - Rejected: OAuth-only (email deliverability risk identical, plus
   provider lock-in).
 - Revisit when: enterprise users ask for SSO.
+
+## [Superseded] 2026-08-01 — Auth: OAuth-only
+- *(superseded 2026-09-12 by: magic links)*
 ```
 
-Rules: newest first. The `Revisit when` line is what makes a decision
-living instead of fossilized. Superseded decisions get one italic line:
-`*(superseded 2026-09-14 by: X)*` — history, not deletion.
+Rules: newest first. Every decision acts as a governed state machine 
+(`[Active]` -> `[Superseded]` or `[Deprecated]`). The `Revisit when` line 
+is what makes a decision living instead of fossilized. Superseded decisions 
+get their content pruned but the header and replacement pointer stay: 
+history, not deletion.
 
 ## STATUS.md
 
@@ -61,14 +66,16 @@ living instead of fossilized. Superseded decisions get one italic line:
 - Avatar upload: presigned URLs work, client resize missing
 
 ## Blocked
-- Waiting on DNS propagation for staging domain (checked 09-14)
+- Waiting on DNS propagation for staging domain [TTL: 2026-09-16]
 
 ## Next
 - Avatar upload slice 3 (client-side resize) — brief in docs/briefs/avatar-upload.md
 ```
 
 Rules: ≤ 40 lines total. Replaced wholesale on each session delta, with
-the update date bumped. Detail lives in `docs/` artifacts — STATUS points
+the update date bumped. Blockers and Next steps must carry a `[TTL: YYYY-MM-DD]` 
+(Time-To-Live). If a TTL expires without resolution, it gets formally 
+escalated or dropped. Detail lives in `docs/` artifacts — STATUS points
 at them.
 
 ## LEARNINGS.md
