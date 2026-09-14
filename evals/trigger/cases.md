@@ -23,6 +23,7 @@
 - "validate my startup idea before I waste a weekend on it" => hotseat
 - "thinking about adding AI chat to my portfolio site, thoughts" => hotseat
 - "here's my product idea, poke holes in it" => hotseat
+- "help me decide between two product directions before I commit" => hotseat
 
 ## spelunk
 

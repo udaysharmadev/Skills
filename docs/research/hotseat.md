@@ -8,6 +8,7 @@
 | Teresa Torres, Continuous Discovery Habits (productalk.io) | Assumption testing is more efficient than idea testing; rank assumptions by kill probability and test urgency | Assumption register now includes urgency tiers | SKILL.md §synthesis §2, personas.md moderator format |
 | Gary Klein, Pre-mortem technique (HBR 2007 + practical 2025 sources) | Past-tense failure framing bypasses optimism bias; independent silent generation prevents "boss effect" suppression | Full pre-mortem mode added with prospective hindsight mechanics | SKILL.md §pre-mortem section |
 | Product Talk — Teresa Torres on kill criteria | Kill criteria must be specific and falsifiable; "low engagement" is not a kill criterion | Kill criteria format specified with threshold + timeframe requirement | SKILL.md §synthesis §7, personas.md moderator |
+| v1 campaign audit, Phase 02 (2026-09-14) | Synthesis had no decision matrix; minority dissent could smooth into consensus by omission | Options × verdicts matrix (scoreless — voting stays banned) and a mandatory minority-objections-or-why-empty section | SKILL.md §synthesis items 2+5, §quality gates; personas.md moderator |
 
 ## Key new intelligence encoded
 

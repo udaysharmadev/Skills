@@ -22,6 +22,11 @@ user's *intent words*. Format matches cases.md (run via
 - "here's what I want, roughly: notifications that don't annoy people" => distill
 - "the spec is agreed, figure out the build order" => masterplan
 
+## hotseat vs distill
+
+- "is this idea worth building at all" => hotseat
+- "the idea is settled, turn it into a build-ready spec" => distill
+
 ## proof vs roadtest
 
 - "add tests so the next refactor doesn't break payments" => proof

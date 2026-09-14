@@ -204,3 +204,11 @@ users who completed onboarding."
 **MVP cut line:** for each deferred item, name the specific condition that
 would bring it back — not "later" but "when we hit X users" or "when this
 metric reaches Y."
+
+**Decision matrix:** options (build / change / kill / major variants) as
+rows, each persona's one-line verdict as columns. Verdicts only — no
+scores, no votes, no weights.
+
+**Minority objections:** dissent surviving round 2 is quoted in the
+dissenter's own terms. No minority section is allowed only with a stated
+reason (genuine agreement or explicitly unresolved).

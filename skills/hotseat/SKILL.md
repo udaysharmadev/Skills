@@ -115,18 +115,26 @@ that" reflex doesn't fire when you've already accepted that you lost.
 A moderator (not any persona) synthesizes — decisions, not a transcript:
 
 1. **Strongest version** of the idea that survived;
-2. **Assumption register** — ranked by kill probability: assumption →
+2. **Decision matrix** — the live options considered (build / change /
+   kill / major variants) as rows, each persona's one-line verdict as
+   columns. Qualitative verdicts only: no scores, no votes, no weighting
+   (voting collapses disagreement — see rejected ideas in the research note);
+3. **Assumption register** — ranked by kill probability: assumption →
    who distrust it → what would resolve it → urgency (test before build /
    test in build / monitor post-launch);
-3. **Rejected assumptions** (with who rejected them and why);
-4. **Open questions** the user must answer before building;
-5. **Product + technical decisions** to lock now;
-6. **MVP cut line** — what survives in the smallest shippable version,
+4. **Rejected assumptions** (with who rejected them and why);
+5. **Minority objections** — dissent that survived round 2 is quoted in
+   the dissenter's own terms, never smoothed into consensus. A synthesis
+   with no minority section must state why (genuine agreement or
+   unresolved — never imply unanimity by omission);
+6. **Open questions** the user must answer before building;
+7. **Product + technical decisions** to lock now;
+8. **MVP cut line** — what survives in the smallest shippable version,
    what waits;
-7. **Kill criteria** — what observable outcome after build would prove this
+9. **Kill criteria** — what observable outcome after build would prove this
    wrong (must be specific and falsifiable: not "low engagement" but "DAU/MAU
    below 0.15 after 4 weeks with 200 active users");
-8. **Top 3–5 risks** — each with a mitigation and its second-order effect.
+10. **Top 3–5 risks** — each with a mitigation and its second-order effect.
 
 ## Honesty rules
 
@@ -147,6 +155,9 @@ A moderator (not any persona) synthesizes — decisions, not a transcript:
 - The synthesis names at least **2 rejected or corrected assumptions**.
   If it can't, the debate was theater — run a sharper round 2 or say
   honestly that the idea survived unchallenged.
+- The synthesis carries a decision matrix (options × one-line verdicts,
+  no scores) and a minority-objections section — or states explicitly why
+  the latter is empty.
 - Kill criteria are specific and falsifiable — not "if users don't adopt it"
   but a concrete metric with a threshold and timeframe.
 - No more than 2 discussion rounds total.
