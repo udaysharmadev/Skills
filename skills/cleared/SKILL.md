@@ -36,7 +36,10 @@ State the scope before checking.
 
 ### 2. Verify each dimension with fresh evidence
 
-Run — don't recall:
+Each dimension row carries: **status** (verified green / warning /
+blocked / unverified), **evidence**, **risk if unresolved**, and
+**owner/action** — who fixes what by when. "Not checked" is not pass;
+it is unverified and caps the verdict. Run — don't recall:
 
 - **requirements** — walk the acceptance criteria one by one, verified
   or explicitly unmet;

@@ -3,6 +3,40 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning is semantic.
 
+## [0.8.5] — 2026-09-14
+
+### Phase 8, Batch E — cleanup & public-quality depth
+
+- **unslop**: measurable-effects tracking (deps removed, duplication
+  merged, tests preserved) explicitly subordinated to judgment; the
+  keep-list (intentional duplication, compatibility hacks, load-bearing
+  weirdness) promoted to first-class report content.
+- **janitor**: remote audit extended — issue/PR templates, CODEOWNERS,
+  dependency automation, changelog/release-notes quality; description
+  typo fixed.
+- **frontpage**: snippet verification re-runs the README text verbatim;
+  anchor/code-fence checks; the reader-question order (why care → what
+  is it → see it → try it → trust it → deeper) and stated-limitations
+  rule.
+- **findable**: findings classified as confirmed issue / content
+  opportunity / speculative suggestion — only confirmed issues get fix
+  treatment.
+- **frugal**: the budget model (task-critical / useful / optional /
+  waste) — optimization targets optional and waste only, which is what
+  stops token-saving from becoming evidence-skipping.
+
+### Phase 8, Batch F — release & operations depth
+
+- **cleared**: every dimension row carries status, evidence, risk and
+  owner/action; "not checked" formally not-pass.
+- **runway**: deployment-strategy selection follows platform and risk
+  (rolling default; blue/green/canary only where supported and risky);
+  CDN/cache state in verification (fingerprint through the public URL);
+  anti-enterprise-cosplay rule stated.
+
+Context: SKILL.md median 1204 → 1352 tokens across the expertise pass —
++148 median, every addition decision-bearing; references +9KB.
+
 ## [0.8.4] — 2026-09-14
 
 ### Phase 8, Batch D — proof & engineering-quality depth

@@ -60,11 +60,17 @@ Small batches, each independently verifiable and revertable:
 4. delete more than you write. Good detox output is usually net-negative
    in lines.
 
-### 5. Report honestly
+### 5. Track and report honestly
 
-What was removed, what was kept (and why — some slop is load-bearing),
-what's ranked but untouched. The goal is a repo the user can work in,
-not a trophy list.
+Count what changed where it's measurable — dead dependencies removed,
+duplication merged (lines), files under size thresholds crossed, tests
+preserved through every batch, net lines. Metrics describe the work;
+they never become the objective (deleting useful code to improve the
+number is the same slop in a clean outfit). Report: what was removed,
+what was **kept with a reason** (intentional duplication, performance-
+motivated ugliness, compatibility hacks, legacy constraints,
+load-bearing weirdness — the catalog's keep-list), what's ranked but
+untouched.
 
 ## Rules
 

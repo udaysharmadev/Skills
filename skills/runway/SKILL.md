@@ -62,6 +62,16 @@ responds, key flows pass) → then production (user's go). Announce each
 step as it happens. The platform's own CLI/CI is the executor — you
 drive it, you don't pretend it.
 
+**Strategy follows the platform, not ambition** — rolling (default
+everywhere), blue/green or canary (when the platform supports traffic
+switching and the change is risky), immutable deploys (container/image
+platforms), atomic static swaps (static hosts). A small project on
+Vercel gets preview → prod, and that IS professional; inventing canary
+infrastructure for it is enterprise cosplay in the other direction.
+CDN/cache state is part of the verification: a successful deploy with
+stale edge cache means the old version is still live — verify the
+fingerprint through the public URL, not the dashboard.
+
 ### 5. Verify on the ground (the part that makes it real)
 
 - **Health:** endpoint(s) return 200 in reasonable time; version

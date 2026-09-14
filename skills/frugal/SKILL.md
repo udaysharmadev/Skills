@@ -54,6 +54,15 @@ not a checklist to run ritually.
   the same order early in context where the runtime supports prompt
   caching; don't shuffle stable content between turns.
 
+### Budget model
+
+Before optimizing, classify where context goes: **task-critical**
+(removing it fails the task) · **useful** (improves quality measurably)
+· **optional** (read but never used) · **waste** (re-read, over-cap
+output, restated instructions). Optimization targets optional and waste
+ONLY — the budget model is what stops "save tokens" from quietly
+becoming "skip the evidence".
+
 ### Execute, don't reason
 
 - **Scripts over eyeballing** — counting occurrences, diffing trees,

@@ -58,7 +58,10 @@ a small CLI tool with 15 sections is wearing someone else's clothes.
 ### 3. Verify
 
 - Every link resolves — checked, not assumed; external links verified
-  for 200s where the network allows.
+  for 200s where the network allows. Every anchor matches a real
+  heading; every fenced code block carries a language; install/usage
+  snippets are re-run verbatim from the README text itself (not from
+  memory of what they should say).
 - Quickstart executed end-to-end on a clean clone.
 - Claims audit: walk the README and mark every factual claim
   (versions, platforms, counts, timings) with its source — manifest,
@@ -85,7 +88,12 @@ can be checked, or the section goes.
 - Zero unproven claims (the audit in step 3 is the evidence).
 - Every link resolves; anchors match headings.
 - Structure fits the project — sections exist because they earned
-  their place, not because the template has them.
+  their place, not because the template has them. The reader's
+  questions are answered in order: why should I care → what is it →
+  can I see it → how fast can I try it → does it work for me → why
+  trust it → how does it work → where do I go deeper. Limitations are
+  stated, not hidden — a README that oversells gets found out at
+  `git clone`.
 
 ## Stop conditions
 

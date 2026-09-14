@@ -70,6 +70,11 @@ unproven speculation or not at all.
 
 ## Quality gates
 
+- Findings separated into **confirmed technical issue** (evidence in
+  rendered output), **content opportunity** (needs writing, not code),
+  and **speculative growth suggestion** (labeled as such or cut). Only
+  the first category gets "fix" treatment; the second gets routed
+  (frontpage/user); the third never becomes a ranking promise.
 - Audit ran on rendered HTML of real URLs, with the commands shown.
 - Every fix verified in served output (before/after evidence).
 - Titles/descriptions: unique + descriptive per page, no template
