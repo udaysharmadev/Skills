@@ -10,13 +10,18 @@ including failures. Results: evals/results/<ts>-outcome-<skill>-<agent>.json
 (gitignored).
 
 Usage:
-  scripts/eval-outcome --skill concierge --agent codex --trials 3
-  scripts/eval-outcome --skill concierge --agent codex --trials 1 --heldout
+  scripts/eval-outcome --skill concierge --agent opencode --trials 3
+  scripts/eval-outcome --skill concierge --agent codex --trials 3 --allow-paid
+  scripts/eval-outcome --skill concierge --agent codex --trials 1 --heldout --allow-paid
+
+Paid agents (codex) are default-deny: any run additionally requires
+--allow-paid AND ALLOW_PAID_AGENT=1 (scripts/eval_guard.py, exit 4).
 """
 import argparse, json, os, re, shutil, subprocess, sys, tempfile, time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
+from eval_guard import PAID_AGENTS, guard_paid_agent
 RESULTS = os.path.join(ROOT, "evals", "results")
 
 AGENTS = {
@@ -140,9 +145,54 @@ def grade(task, route, raw, obs=None):
         return grade_hotseat(task, raw)
     if isinstance(exp, dict) and exp.get("type") == "pilot":
         return grade_pilot(task, raw, obs or {})
+    if isinstance(exp, dict) and exp.get("type") == "blueprint":
+        return grade_blueprint(task, raw, obs or {})
     if isinstance(exp, dict) and exp.get("type") == "spelunk":
         return grade_spelunk(task, raw)
     return grade_route(task, route, raw)
+
+
+def grade_blueprint(task, raw, obs):
+    """Deliverable grading: diagrams exist, validate, nodes resolve, count restrained."""
+    exp = task["expected"]
+    artifacts = obs.get("artifacts") or {}
+    mmds = sorted(p for p in artifacts if p.endswith(".mmd"))
+    if not mmds:
+        return False, {"reason": "no .mmd diagrams produced", "diagrams": 0}
+    over = len(mmds) > exp.get("max_diagrams", 5)
+    checks = obs.get("verify") or []
+    failed_checks = [c["cmd"] for c in checks if c["exit"] != c.get("expect", 0)]
+    body = "\n".join(artifacts[p] for p in mmds)
+    known = fixture_files(task["fixture"]) if task.get("fixture") else []
+    hallucinated = []
+    checked = 0
+    for tok in set(PATH_RE.findall(body)):
+        tok = tok.lstrip("./")
+        if not tok:
+            continue
+        checked += 1
+        if not any(f == tok or f.endswith("/" + tok) for f in known):
+            hallucinated.append(tok)
+    low = (body + "\n" + raw).lower()
+    must = [m.lower() for m in exp.get("must_contain", [])]
+    missing = [m for m in must if m not in low]
+    # Invented-infrastructure check: fixtures with no infra files of their own
+    # must not sprout managed services. Word-boundary match on service names.
+    suspect_infra = []
+    if exp.get("forbid_infra"):
+        infra_words = ["kafka", "kubernetes", "k8s", "redis", "cdn", "postgres",
+                       "mysql", "mongodb", "rabbitmq", "elasticsearch", "docker",
+                       "terraform", "nginx", "envoy", "istio", "prometheus",
+                       "grafana", "replica", "shard", "queue"]
+        suspect_infra = sorted(w for w in infra_words
+                               if re.search(r"\b" + w + r"s?\b", low))
+    ok = (not over and not failed_checks and not hallucinated and not missing
+          and not suspect_infra)
+    return ok, {"diagrams": len(mmds), "over_budget": over,
+                "failed_checks": failed_checks, "missing": missing,
+                "hallucinated_paths": sorted(hallucinated),
+                "suspect_infra": suspect_infra,
+                "paths_checked": checked}
 
 
 def grade_pilot(task, raw, obs):
@@ -214,7 +264,8 @@ def grade_spelunk(task, raw):
                 "over_budget": over_budget}
 
 
-def observe(agent, prompt, cfg, timeout, fixture=None, verify=None):
+def observe(agent, prompt, cfg, timeout, fixture=None, verify=None,
+            artifacts=None):
     workdir = tempfile.mkdtemp(prefix="outcome-")
     if fixture:
         src = os.path.join(ROOT, "benchmarks", "fixtures", fixture)
@@ -245,8 +296,9 @@ def observe(agent, prompt, cfg, timeout, fixture=None, verify=None):
             # run check commands and record the changed-file set BEFORE cleanup.
             checks = []
             for v in verify:
+                cmd = v["cmd"].replace("{ROOT}", ROOT)
                 try:
-                    r = subprocess.run(v["cmd"], shell=True, capture_output=True,
+                    r = subprocess.run(cmd, shell=True, capture_output=True,
                                        text=True, timeout=120, cwd=workdir)
                     checks.append({"cmd": v["cmd"], "exit": r.returncode,
                                    "expect": v.get("expect", 0),
@@ -259,6 +311,17 @@ def observe(agent, prompt, cfg, timeout, fixture=None, verify=None):
             changed = [l[3:] for l in st.stdout.splitlines() if l.strip()]
             obs["verify"] = checks
             obs["changed_files"] = changed
+        if artifacts:
+            # Deliverable skills are graded on produced files: capture capped
+            # contents of glob-matched artifacts BEFORE cleanup.
+            import glob as _glob
+            captured = {}
+            for pat in artifacts:
+                for match in sorted(_glob.glob(pat, root_dir=workdir, recursive=True)):
+                    with open(os.path.join(workdir, match), encoding="utf-8",
+                              errors="replace") as f:
+                        captured[match] = f.read()[:20000]
+            obs["artifacts"] = captured
         return obs
     except subprocess.TimeoutExpired:
         return {"status": "error", "error": "timeout",
@@ -287,7 +350,11 @@ def main():
     ap.add_argument("--trials", type=int, default=3)
     ap.add_argument("--timeout", type=int, default=180)
     ap.add_argument("--heldout", action="store_true")
+    ap.add_argument("--allow-paid", action="store_true",
+                    help="with ALLOW_PAID_AGENT=1, authorize a paid-agent run (codex)")
     a = ap.parse_args()
+
+    guard_paid_agent(a.agent, a.allow_paid)
 
     cfg = AGENTS[a.agent]
     if shutil.which(cfg["bin"]) is None:
@@ -311,6 +378,7 @@ def main():
     rec = {"schema": "outcome/1", "skill": a.skill, "agent": a.agent,
            "agent_version": aver, "commit": commit,
            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+           "paid_guard": "authorized" if a.agent in PAID_AGENTS else "n/a",
            "heldout": a.heldout, "trials": []}
     for task in tasks:
         for cond, ctx in (("baseline", None), ("treatment", treat)):
@@ -318,7 +386,8 @@ def main():
                 to = task.get("timeout", a.timeout)
                 obs = observe(a.agent, build_prompt(task, cat, ctx), cfg, to,
                               fixture=task.get("fixture"),
-                              verify=task.get("verify"))
+                              verify=task.get("verify"),
+                              artifacts=task.get("artifacts"))
                 raw = obs.get("output", "")
                 route = normalize_route(raw)
                 passed, notes = grade(task, route, raw, obs)
@@ -358,6 +427,10 @@ def main():
                 vals = [len(r["notes"].get("outside_scope", [])) for r in rows]
                 print(f"{task['id']} {cond}: pass={pr:.2f} "
                       f"mean_out_of_scope={sum(vals)/max(len(vals),1):.2f}")
+            elif isinstance(task["expected"], dict) and task["expected"].get("type") == "blueprint":
+                vals = [r["notes"].get("diagrams", 0) for r in rows]
+                print(f"{task['id']} {cond}: pass={pr:.2f} "
+                      f"mean_diagrams={sum(vals)/max(len(vals),1):.2f}")
             else:
                 lens = [len(r["notes"].get("route") or []) for r in rows]
                 ml = sum(lens) / max(len(lens), 1)

@@ -15,6 +15,7 @@ grading stays blind and reviewable; it is never described as ground truth.
 | `masterplan.md` | masterplan | 5 (normal/hard-edge/failure/restraint/adversarial) | authored; evidence runner available |
 | `pilot.md` | pilot | 5 (normal/hard-edge/failure/restraint/adversarial) | authored; evidence runner available |
 | `backend.md` | backend | 5 (normal/hard-edge/failure/restraint/adversarial) | authored; evidence runner available |
+| `blueprint.md` | blueprint | 5 (normal/hard-edge/failure/restraint/adversarial) | authored; evidence runner available |
 
 Target coverage for v1.0 eval completeness: all 28 skills × 3 scenarios
 (≥ 84). Authored ≠ executed: a scenario only counts as coverage once a

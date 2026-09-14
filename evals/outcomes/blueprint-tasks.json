@@ -1,0 +1,80 @@
+[
+  {
+    "id": "O1",
+    "request": "Document this repo's architecture in docs/architecture/: a component view and one order request-flow sequence as .mmd sources. Validate every .mmd with the blueprint skill's own scripts/validate-mermaid checker and fix findings. Every node must name something real in the repo. Keep it to what the questions need.",
+    "fixture": "ts-dashboard",
+    "timeout": 600,
+    "heldout": false,
+    "artifacts": [
+      "docs/architecture/*.mmd"
+    ],
+    "verify": [
+      {
+        "cmd": "{ROOT}/skills/blueprint/scripts/validate-mermaid docs/architecture/*.mmd",
+        "expect": 0
+      }
+    ],
+    "instruction_baseline": "You are a documentation assistant with shell and file tools in the repo root. Write the .mmd diagrams described, grounding every node in real files.",
+    "instruction_treatment": "Follow the active blueprint skill (analyze first, choose diagrams by question, validate with the bundled checker, no fabricated infrastructure, proposed-vs-observed marked).",
+    "expected": {
+      "type": "blueprint",
+      "max_diagrams": 5,
+      "must_contain": [
+        "App.tsx"
+      ],
+      "forbid_infra": true
+    }
+  },
+  {
+    "id": "O2",
+    "request": "This is a tiny single-purpose API. Give it exactly one honest architecture diagram as a .mmd source in docs/architecture/ \u2014 no microservices saga, no invented infrastructure. Validate it with the blueprint skill's own scripts/validate-mermaid checker.",
+    "fixture": "py-notes-api",
+    "timeout": 600,
+    "heldout": false,
+    "artifacts": [
+      "docs/architecture/*.mmd"
+    ],
+    "verify": [
+      {
+        "cmd": "{ROOT}/skills/blueprint/scripts/validate-mermaid docs/architecture/*.mmd",
+        "expect": 0
+      }
+    ],
+    "instruction_baseline": "You are a documentation assistant with shell and file tools in the repo root. Write the single diagram described.",
+    "instruction_treatment": "Follow the active blueprint skill (restraint: one honest diagram for one app + one database; validate with the bundled checker).",
+    "expected": {
+      "type": "blueprint",
+      "max_diagrams": 2,
+      "must_contain": [
+        "main.py"
+      ],
+      "forbid_infra": true
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Document the failure path in docs/architecture/ as a .mmd source: what happens when order submission fails (validation error, network error)? Show where errors surface and where they are swallowed. Validate with the blueprint skill's own scripts/validate-mermaid checker. Every node real.",
+    "fixture": "ts-dashboard",
+    "timeout": 600,
+    "heldout": true,
+    "artifacts": [
+      "docs/architecture/*.mmd"
+    ],
+    "verify": [
+      {
+        "cmd": "{ROOT}/skills/blueprint/scripts/validate-mermaid docs/architecture/*.mmd",
+        "expect": 0
+      }
+    ],
+    "instruction_baseline": "You are a documentation assistant with shell and file tools in the repo root. Write the failure-path diagram described, grounding every node in real files.",
+    "instruction_treatment": "Follow the active blueprint skill (failure-path view from the menu, nodes traced to code, inferred edges labeled).",
+    "expected": {
+      "type": "blueprint",
+      "max_diagrams": 5,
+      "must_contain": [
+        "App.tsx"
+      ],
+      "forbid_infra": true
+    }
+  }
+]

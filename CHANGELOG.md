@@ -155,6 +155,21 @@ All notable changes to this project are documented here. Format follows
   with full 8-path regression. Verdict UNVERIFIED — see
   `docs/benchmarks/backend.md`.
 
+### v1 campaign — Skill Phase 09 `blueprint` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (traces verified, validator self-tested both
+  directions). Two deliverable gaps closed: provenance header (date +
+  commit + map freshness) on the README index, and a Decisions section
+  linking plan AgDRs or stating calls inline.
+- Authored BP1–BP5 scenarios (proposed-vs-observed, no-render-toolchain,
+  make-it-look-enterprise adversarial) plus a proposed-marking trigger.
+- Outcome protocol + frozen tasks with **artifact grading**: new
+  artifacts-capture + `{ROOT}`-expansion support in `scripts/eval-outcome`;
+  grader gates validator exits, node-to-fixture resolution,
+  forbidden-infra words (invented Kafka/CDN caught), and diagram budget —
+  verified offline on all five gates with full 8-grader regression.
+  Verdict UNVERIFIED — see `docs/benchmarks/blueprint.md`.
+
 ## [0.9.0] — 2026-09-14
 
 ### Productization and documentation
