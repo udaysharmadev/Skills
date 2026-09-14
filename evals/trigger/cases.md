@@ -244,6 +244,7 @@
 - "run a final go-live check before launch" => cleared
 - "is everything actually done for the v1 release" => cleared
 - "gate the release, I want a real verdict not vibes" => cleared
+- "don't fix anything, just give the verdict" => cleared
 
 ## runway
 

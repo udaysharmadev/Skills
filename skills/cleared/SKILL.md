@@ -25,6 +25,17 @@ capability: test runner, build, git, and ideally a running app — with
 none of these, the honest verdict is a report of what couldn't be
 verified.
 
+## Tool selection/fallback
+
+- Project runner/build/git → fresh session evidence per dimension;
+  outputs quoted, never recalled.
+- Sibling reports available (roadtest bundle, harden findings, proof
+  suite) → cite as evidence with paths; stale reports count as
+  unverified, not green.
+- Nothing runnable → the gate still runs: every dimension marked
+  unverified-or-blocked with the missing capability named; hallucinated
+  passes are automatic BLOCKEDs.
+
 ## Workflow
 
 ### 1. Scope the gate
