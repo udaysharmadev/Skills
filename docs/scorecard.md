@@ -43,7 +43,7 @@ Status vocabulary:
 | `findable` | Complete | Traced | Justified N/A | Complete | Protocol + workspace tasks authored; outcome UNVERIFIED (zero-spend) |
 | `frugal` | Complete | Traced | Justified N/A | Complete | Protocol + frozen-number tasks authored; outcome UNVERIFIED (zero-spend) |
 | `cleared` | Complete | Traced | Justified N/A | Complete | Protocol + gate-integrity tasks authored; outcome UNVERIFIED (zero-spend) |
-| `runway` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
+| `runway` | Complete | Traced | Justified N/A | Complete | Protocol + no-fabrication tasks authored; outcome UNVERIFIED (zero-spend) |
 | `handsfree` | Complete | Traced (primary host sources, verified 2026-09-14) | Justified N/A | Complete | 5 workflow scenarios + outcome protocol authored; outcome proof deferred |
 
 ## What the final audit verified

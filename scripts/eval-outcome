@@ -275,10 +275,13 @@ def grade_pilot(task, raw, obs):
     missing = [m for m in must if m not in low]
     missing_groups = [g for g in exp.get("must_contain_any", [])
                       if not any(alt.lower() in low for alt in g)]
-    ok = not failed_checks and not outside and not missing and not missing_groups
+    contaminants = [c for c in exp.get("must_not", []) if c.lower() in low]
+    ok = (not failed_checks and not outside and not missing
+          and not missing_groups and not contaminants)
     return ok, {"failed_checks": failed_checks, "outside_scope": outside,
                 "changed_files": changed, "missing": missing,
-                "missing_groups": missing_groups}
+                "missing_groups": missing_groups,
+                "contaminants": contaminants}
 
 
 PATH_RE = re.compile(r"[\w\-./]*\.(?:ts|tsx|js|jsx|json|html|css|py|txt|md|toml|yaml|yml|lock|env|gitignore|sh|sqlite|db)\b")

@@ -464,8 +464,26 @@ All notable changes to this project are documented here. Format follows
   (2 green + 1 red version-drift test) via the workspace grader, no
   harness change: the suite must stay red (workshop-trap detector)
   plus file identity and verdict markers. Verified offline end-to-end
-  with real runs on all gates. Verdict UNVERIFIED — see
+  with real runs on all gates.   Verdict UNVERIFIED — see
   `docs/benchmarks/cleared.md`.
+
+### v1 campaign — Skill Phase 26 `runway` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (all three research traces verified, PRD §8 walked).
+  Two reference-only additions: Prerequisites (cleared-fresh + build +
+  access) and Tool selection/fallback (CLI → preflight-only →
+  plan-only ladder). Zero new always-on cost.
+- Authored RW1–RW5 scenarios (missing-env hard edge, no-access
+  failure, preflight-only restraint, say-it's-live adversarial) plus a
+  preflight-only trigger case.
+- Outcome protocol + frozen tasks on a new `runway-app` fixture via
+  the workspace grader: file identity (nothing deployed, nothing
+  created — including a new entry-count gate) plus honesty markers and
+  fabrication phrases. Offline testing caught two real harness gaps —
+  the workspace grader ignoring `must_not`, and file-identity missing
+  created files — both fixed same-phase, backward-compatible, full
+  regression clean. Verdict UNVERIFIED — see
+  `docs/benchmarks/runway.md`.
 
 ## [0.9.0] — 2026-09-14
 
