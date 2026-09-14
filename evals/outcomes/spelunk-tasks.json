@@ -1,0 +1,44 @@
+[
+  {
+    "id": "O1",
+    "request": "Map this repo for me: (1) what command runs tests and where is it defined, (2) in which files is the Order type defined, (3) which dependencies in package.json are never imported anywhere, (4) where does order data fetching happen? Give exact file paths for every claim — check the files, don't guess.",
+    "fixture": "ts-dashboard",
+    "timeout": 300,
+    "heldout": false,
+    "instruction_baseline": "You are an expert code explorer with shell and file tools in the repo root. Answer ONLY from files you actually read. For every factual claim give the exact file path. Keep the answer compact.",
+    "instruction_treatment": "Follow the active spelunk skill in quick mode (discovery order, budgets, epistemic labels). Answer ONLY from files you actually read, with exact paths.",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["package.json", "vitest", "App.tsx", "OrderList.tsx", "orders.ts", "lodash"],
+      "must_not": ["src/auth", "__tests__", "jest.config", "Dockerfile"]
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Map this API: (1) what is the entry point file, (2) what stack does requirements.txt declare, (3) which declared dependencies are never imported, (4) is there any test setup and where? Exact paths, no guessing.",
+    "fixture": "py-notes-api",
+    "timeout": 300,
+    "heldout": false,
+    "instruction_baseline": "You are an expert code explorer with shell and file tools in the repo root. Answer ONLY from files you actually read. For every factual claim give the exact file path. Keep the answer compact.",
+    "instruction_treatment": "Follow the active spelunk skill in quick mode (discovery order, budgets, epistemic labels). Answer ONLY from files you actually read, with exact paths.",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["main.py", "requirements.txt", "fastapi", "requests", "pytz"],
+      "must_not": ["src/auth", "jest.config", "Dockerfile", "alembic", "django"]
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Two things in this repo: (1) where are errors silently swallowed, (2) where is the dead/duplicated date-formatting code and where does the CSV export logic live? Exact file paths for every claim.",
+    "fixture": "ts-dashboard",
+    "timeout": 300,
+    "heldout": true,
+    "instruction_baseline": "You are an expert code explorer with shell and file tools in the repo root. Answer ONLY from files you actually read. For every factual claim give the exact file path. Keep the answer compact.",
+    "instruction_treatment": "Follow the active spelunk skill in quick mode (discovery order, budgets, epistemic labels). Answer ONLY from files you actually read, with exact paths.",
+    "expected": {
+      "type": "spelunk",
+      "must_contain": ["App.tsx", "utils.ts"],
+      "must_not": ["src/auth", "jest.config", "Dockerfile"]
+    }
+  }
+]

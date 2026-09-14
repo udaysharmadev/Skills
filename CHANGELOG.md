@@ -67,6 +67,21 @@ All notable changes to this project are documented here. Format follows
   2–5× time). Verdict: **PROVEN LIFT** on debate structure — see
   `docs/benchmarks/hotseat.md`. Claim C-011.
 
+### v1 campaign — Skill Phase 03 `spelunk` (zero-spend: depth + protocol, no trials)
+
+- Policy change: no paid-model runs (Codex etc.) without an explicit trial
+  budget. All outcome verdicts stay honestly `UNVERIFIED` until funded runs.
+- Closed four audit gaps: trace-one-execution-path-early step,
+  precise-symbols-before-grep rung, commit/dirty provenance header for deep
+  maps, and `inventory` manifests + generated/vendor sections with `-- .`
+  churn scoping (fixed repo-wide churn leaking into subdir scans).
+- Authored SP1–SP5 scenarios (incl. lying-README adversarial) and a risk-map
+  trigger case; outcome protocol + frozen tasks on seeded fixtures with
+  isolated answer keys (verdict UNVERIFIED).
+- Extended `scripts/eval-outcome` (code only): fixture workspaces +
+  fact-recall/contaminant/hallucinated-path grader, offline-tested incl.
+  edge cases and concierge/hotseat regression. No agent runs used.
+
 ## [0.9.0] — 2026-09-14
 
 ### Productization and documentation

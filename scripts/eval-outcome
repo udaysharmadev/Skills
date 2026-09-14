@@ -138,11 +138,62 @@ def grade(task, route, raw):
     exp = task["expected"]
     if isinstance(exp, dict) and exp.get("type") == "hotseat":
         return grade_hotseat(task, raw)
+    if isinstance(exp, dict) and exp.get("type") == "spelunk":
+        return grade_spelunk(task, raw)
     return grade_route(task, route, raw)
 
 
-def observe(agent, prompt, cfg, timeout):
+PATH_RE = re.compile(r"[\w\-./]*\.(?:ts|tsx|js|jsx|json|html|css|py|txt|md|toml|yaml|yml|lock|env|gitignore|sh|sqlite|db)\b")
+
+
+def fixture_files(name):
+    out = []
+    base = os.path.join(ROOT, "benchmarks", "fixtures", name)
+    for dirpath, _, filenames in os.walk(base):
+        for fn in filenames:
+            full = os.path.join(dirpath, fn)
+            out.append(os.path.relpath(full, base))
+    return out
+
+
+def grade_spelunk(task, raw):
+    """Fact recall + contaminant + hallucinated-path check against the fixture."""
+    low = raw.lower()
+    exp = task["expected"]
+    must = [m.lower() for m in exp.get("must_contain", [])]
+    missing = [m for m in must if m not in low]
+    contaminants = [c for c in exp.get("must_not", []) if c.lower() in low]
+    known = fixture_files(task["fixture"])
+    hallucinated = []
+    checked = 0
+    for tok in set(PATH_RE.findall(raw)):
+        tok = tok.lstrip("./")
+        if not tok:
+            continue
+        checked += 1
+        if not any(f == tok or f.endswith("/" + tok)
+                   or os.path.basename(f) == os.path.basename(tok) and
+                   tok.count("/") == 0 for f in known):
+            hallucinated.append(tok)
+    recall = (len(must) - len(missing)) / max(len(must), 1)
+    ok = not missing and not contaminants and not hallucinated
+    return ok, {"recall": round(recall, 2), "missing": missing,
+                "contaminants": contaminants,
+                "hallucinated_paths": sorted(hallucinated),
+                "paths_checked": checked}
+
+
+def observe(agent, prompt, cfg, timeout, fixture=None):
     workdir = tempfile.mkdtemp(prefix="outcome-")
+    if fixture:
+        src = os.path.join(ROOT, "benchmarks", "fixtures", fixture)
+        for entry in os.listdir(src):
+            s = os.path.join(src, entry)
+            d = os.path.join(workdir, entry)
+            if os.path.isdir(s):
+                shutil.copytree(s, d)
+            else:
+                shutil.copy2(s, d)
     subprocess.run(["git", "init", "-q", workdir], capture_output=True)
     t0 = time.time()
     try:
@@ -214,7 +265,8 @@ def main():
         for cond, ctx in (("baseline", None), ("treatment", treat)):
             for t in range(a.trials):
                 to = task.get("timeout", a.timeout)
-                obs = observe(a.agent, build_prompt(task, cat, ctx), cfg, to)
+                obs = observe(a.agent, build_prompt(task, cat, ctx), cfg, to,
+                              fixture=task.get("fixture"))
                 raw = obs.get("output", "")
                 route = normalize_route(raw)
                 passed, notes = grade(task, route, raw)
@@ -246,6 +298,10 @@ def main():
                 vals = [r["notes"].get("persona_count", 0) for r in rows]
                 print(f"{task['id']} {cond}: pass={pr:.2f} "
                       f"mean_personas={sum(vals)/max(len(vals),1):.2f}")
+            elif isinstance(task["expected"], dict) and task["expected"].get("type") == "spelunk":
+                vals = [r["notes"].get("recall", 0) for r in rows]
+                print(f"{task['id']} {cond}: pass={pr:.2f} "
+                      f"mean_recall={sum(vals)/max(len(vals),1):.2f}")
             else:
                 lens = [len(r["notes"].get("route") or []) for r in rows]
                 ml = sum(lens) / max(len(lens), 1)
