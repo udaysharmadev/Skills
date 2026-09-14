@@ -18,7 +18,7 @@ Status vocabulary:
 | Skill | Implementation | Research | Tooling | Documentation | Evaluation status |
 | --- | --- | --- | --- | --- | --- |
 | `concierge` | Complete | Traced | Justified N/A | Complete | **MIXED** — codex O1 4/4 vs baseline 1/4; O2/O3 no lift available; see `docs/benchmarks/concierge.md` |
-| `hotseat` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
+| `hotseat` | Complete | Traced | Justified N/A | Complete | **PROVEN LIFT** — 5/5 structural passes vs 0/5 baseline (strong-critic baseline); cost documented; see `docs/benchmarks/hotseat.md` |
 | `spelunk` | Complete | Traced | `inventory` smoke-tested | Complete | Outcome proof deferred |
 | `scout` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
 | `distill` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |

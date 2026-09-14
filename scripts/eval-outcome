@@ -96,8 +96,8 @@ def normalize_route(raw):
     return [s.strip(" `") for s in ARROW.split(chain) if s.strip(" `")]
 
 
-def grade(task, route):
-    """Deterministic grading. Returns (pass: bool, notes: dict)."""
+def grade_route(task, route, raw):
+    """Deterministic routing grade. Returns (pass: bool, notes: dict)."""
     if route is None:
         return False, {"reason": "no parseable route: line"}
     exp = task["expected"]
@@ -115,6 +115,32 @@ def grade(task, route):
     return ok, {"route": route, "outside": outside, "order_ok": order_ok}
 
 
+PERSONAS = ["aanya", "kabir", "meera", "arjun", "naina", "rohan", "ishaan"]
+
+
+def grade_hotseat(task, raw):
+    """Deterministic proxies for debate quality (reviewer rubric stays separate)."""
+    low = raw.lower()
+    persona_count = sum(1 for p in PERSONAS if p in low)
+    assum = len(re.findall(r"assum", low))
+    has_mvp = "mvp" in low
+    kill_at = low.find("kill")
+    kill_num = bool(re.search(r"\d", low[kill_at:])) if kill_at != -1 else False
+    has_matrix = bool(re.search(r"decision matrix", low))
+    has_minority = bool(re.search(r"minority", low))
+    ok = persona_count >= 5 and kill_num and has_mvp and assum >= 2
+    return ok, {"persona_count": persona_count, "assumption_mentions": assum,
+                "has_mvp": has_mvp, "kill_has_number": kill_num,
+                "has_matrix": has_matrix, "has_minority": has_minority}
+
+
+def grade(task, route, raw):
+    exp = task["expected"]
+    if isinstance(exp, dict) and exp.get("type") == "hotseat":
+        return grade_hotseat(task, raw)
+    return grade_route(task, route, raw)
+
+
 def observe(agent, prompt, cfg, timeout):
     workdir = tempfile.mkdtemp(prefix="outcome-")
     subprocess.run(["git", "init", "-q", workdir], capture_output=True)
@@ -124,8 +150,13 @@ def observe(agent, prompt, cfg, timeout):
                               text=True, timeout=timeout, cwd=workdir,
                               stdin=subprocess.DEVNULL)
         out = (proc.stdout or "") + (proc.stderr or "")
+        # Long-form skills (debates, audits) put the graded synthesis last:
+        # keep head (framing) + tail (verdict) instead of head-only truncation.
+        if len(out) > 60000:
+            out = out[:20000] + "\n…[truncated]…\n" + out[-40000:]
         return {"status": "ok" if proc.returncode == 0 else "error",
-                "exit": proc.returncode, "output": out[:4000],
+                "exit": proc.returncode, "output": out,
+                "output_chars": len((proc.stdout or "") + (proc.stderr or "")),
                 "duration": round(time.time() - t0, 1)}
     except subprocess.TimeoutExpired:
         return {"status": "error", "error": "timeout",
@@ -139,11 +170,11 @@ def build_prompt(task, cat, treatment_text):
     lines += [f"- {n}: {d}" for n, d in cat]
     if treatment_text:
         lines += ["\nThe following skill is active — follow it:\n", treatment_text]
-    lines += [f"\nUser request: \"{task['request']}\"",
-              "Reply with exactly two lines.",
-              "Line 1: `route: A → B → C` listing only needed skills in order,",
-              "or `route: direct` (do it now, no skill needed), or `route: none` (no skill applies).",
-              "Line 2: one sentence why."]
+        lines += [f"\nUser request: \"{task['request']}\"",
+                  task.get("instruction_treatment", task.get("instruction", ""))]
+    else:
+        lines += [f"\nUser request: \"{task['request']}\"",
+                  task.get("instruction_baseline", task.get("instruction", ""))]
     return "\n".join(lines)
 
 
@@ -182,14 +213,18 @@ def main():
     for task in tasks:
         for cond, ctx in (("baseline", None), ("treatment", treat)):
             for t in range(a.trials):
-                obs = observe(a.agent, build_prompt(task, cat, ctx), cfg, a.timeout)
-                route = normalize_route(obs.get("output", ""))
-                passed, notes = grade(task, route)
+                to = task.get("timeout", a.timeout)
+                obs = observe(a.agent, build_prompt(task, cat, ctx), cfg, to)
+                raw = obs.get("output", "")
+                route = normalize_route(raw)
+                passed, notes = grade(task, route, raw)
                 rec["trials"].append({"task": task["id"], "condition": cond,
                                      "trial": t + 1, "pass": passed,
                                      "notes": notes, "obs": obs})
+                detail = f"route={route}" if route else \
+                    f"personas={notes.get('persona_count')}"
                 print(f"{task['id']} {cond} t{t+1}: "
-                      f"{'PASS' if passed else 'FAIL'} route={route} "
+                      f"{'PASS' if passed else 'FAIL'} {detail} "
                       f"({obs.get('duration', '?')}s)")
                 sys.stdout.flush()
 
@@ -201,15 +236,20 @@ def main():
         json.dump(rec, f, indent=2)
     print(f"wrote {out}")
 
-    # summary: pass rate per task/condition + mean chain length
+    # summary: pass rate per task/condition + key size metric
     for task in tasks:
         for cond in ("baseline", "treatment"):
             rows = [r for r in rec["trials"]
                     if r["task"] == task["id"] and r["condition"] == cond]
             pr = sum(r["pass"] for r in rows) / max(len(rows), 1)
-            lens = [len(r["notes"].get("route") or []) for r in rows]
-            ml = sum(lens) / max(len(lens), 1)
-            print(f"{task['id']} {cond}: pass={pr:.2f} mean_len={ml:.2f}")
+            if isinstance(task["expected"], dict) and task["expected"].get("type") == "hotseat":
+                vals = [r["notes"].get("persona_count", 0) for r in rows]
+                print(f"{task['id']} {cond}: pass={pr:.2f} "
+                      f"mean_personas={sum(vals)/max(len(vals),1):.2f}")
+            else:
+                lens = [len(r["notes"].get("route") or []) for r in rows]
+                ml = sum(lens) / max(len(lens), 1)
+                print(f"{task['id']} {cond}: pass={pr:.2f} mean_len={ml:.2f}")
     return 0
 
 

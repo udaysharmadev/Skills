@@ -3,7 +3,10 @@
     "id": "O1",
     "request": "Login is broken.",
     "heldout": false,
+    "instruction_baseline": "Reply with exactly two lines. Line 1: `route: A → B → C` listing only needed skills in order, or `route: direct` (do it now, no skill needed), or `route: none` (no skill applies). Line 2: one sentence why.",
+    "instruction_treatment": "Reply with exactly two lines. Line 1: `route: A → B → C` listing only needed skills in order, or `route: direct` (do it now, no skill needed), or `route: none` (no skill applies). Line 2: one sentence why.",
     "expected": {
+      "type": "route",
       "allowed": ["spelunk", "sleuth", "proof", "roadtest"],
       "required": ["sleuth"],
       "order": ["spelunk", "sleuth", "proof", "roadtest"],
@@ -14,13 +17,18 @@
     "id": "O2",
     "request": "Rename the login button to Sign in.",
     "heldout": false,
+    "instruction_baseline": "Reply with exactly two lines. Line 1: `route: A → B → C` listing only needed skills in order, or `route: direct` (do it now, no skill needed), or `route: none` (no skill applies). Line 2: one sentence why.",
+    "instruction_treatment": "Reply with exactly two lines. Line 1: `route: A → B → C` listing only needed skills in order, or `route: direct` (do it now, no skill needed), or `route: none` (no skill applies). Line 2: one sentence why.",
     "expected": ["direct"]
   },
   {
     "id": "O3",
     "request": "Research the correct Stripe webhook approach and then implement it.",
     "heldout": true,
+    "instruction_baseline": "Reply with exactly two lines. Line 1: `route: A → B → C` listing only needed skills in order, or `route: direct` (do it now, no skill needed), or `route: none` (no skill applies). Line 2: one sentence why.",
+    "instruction_treatment": "Reply with exactly two lines. Line 1: `route: A → B → C` listing only needed skills in order, or `route: direct` (do it now, no skill needed), or `route: none` (no skill applies). Line 2: one sentence why.",
     "expected": {
+      "type": "route",
       "allowed": ["scout", "backend", "proof"],
       "required": ["scout"],
       "order": ["scout", "backend", "proof"],

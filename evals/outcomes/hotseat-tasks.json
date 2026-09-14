@@ -1,0 +1,35 @@
+[
+  {
+    "id": "O1",
+    "request": "I want to build a habit tracker app that only lets you build one habit at a time. Thoughts?",
+    "heldout": false,
+    "instruction_baseline": "Stress-test this product idea as a senior product critic. Examine it from seven angles \u2014 product demand, engineering cost, UX, systems/failure behavior, security, growth/distribution, and beginner-maintainer perspective \u2014 then end with an MVP scope, top risks, and falsifiable kill criteria (each with a metric, a threshold, and a timeframe).",
+    "instruction_treatment": "Follow the active hotseat skill end-to-end for this idea (frame, independent round-1 verdicts, round 2 only where verdicts conflict, moderated synthesis with the full section list).",
+    "expected": {
+      "type": "hotseat"
+    },
+    "timeout": 600
+  },
+  {
+    "id": "O2",
+    "request": "I'm thinking about adding AI chat to my portfolio site. Is that a good idea?",
+    "heldout": false,
+    "instruction_baseline": "Stress-test this product idea as a senior product critic. Examine it from seven angles \u2014 product demand, engineering cost, UX, systems/failure behavior, security, growth/distribution, and beginner-maintainer perspective \u2014 then end with an MVP scope, top risks, and falsifiable kill criteria (each with a metric, a threshold, and a timeframe).",
+    "instruction_treatment": "Follow the active hotseat skill end-to-end for this idea (frame, independent round-1 verdicts, round 2 only where verdicts conflict, moderated synthesis with the full section list).",
+    "expected": {
+      "type": "hotseat"
+    },
+    "timeout": 600
+  },
+  {
+    "id": "O3",
+    "request": "I want to build an attendance app for college classes with QR check-ins. Should I?",
+    "heldout": true,
+    "instruction_baseline": "Stress-test this product idea as a senior product critic. Examine it from seven angles \u2014 product demand, engineering cost, UX, systems/failure behavior, security, growth/distribution, and beginner-maintainer perspective \u2014 then end with an MVP scope, top risks, and falsifiable kill criteria (each with a metric, a threshold, and a timeframe).",
+    "instruction_treatment": "Follow the active hotseat skill end-to-end for this idea (frame, independent round-1 verdicts, round 2 only where verdicts conflict, moderated synthesis with the full section list).",
+    "expected": {
+      "type": "hotseat"
+    },
+    "timeout": 600
+  }
+]

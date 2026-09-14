@@ -48,6 +48,25 @@ All notable changes to this project are documented here. Format follows
   2/2 both on O1 (baseline minimal, treatment full). Verdict: **MIXED** —
   see `docs/benchmarks/concierge.md`. Claim C-010.
 
+### v1 campaign — Skill Phase 02 `hotseat` (PROVEN LIFT, structural)
+
+- Closed two audit gaps: scoreless decision matrix (options × one-line
+  verdicts — voting stays banned) and mandatory minority-objections (or
+  stated why-empty) in synthesis; mirrored in the moderator card and
+  quality gates.
+- Authored H4 (settled-idea restraint) + H5 (forced-consensus adversarial)
+  scenarios; added hotseat-vs-distill sibling pair and a comparative-decision
+  trigger case.
+- Hardened `scripts/eval-outcome` after a real failure: head+tail 60K
+  capture (head-only truncation was eating graded syntheses) and per-task
+  timeouts (hotseat needs 600s). First broken attempt preserved, re-ran clean.
+- Executed `hotseat` Layer C on codex: treatment 5/5 incl. held-out (7/7
+  personas, 23–40 assumption mentions, matrix + minority throughout) vs
+  baseline 0/5 structural (strong essays: MVP + numbered kills, but 1–3
+  assumptions, no independence, no artifacts). Cost documented (~2× chars,
+  2–5× time). Verdict: **PROVEN LIFT** on debate structure — see
+  `docs/benchmarks/hotseat.md`. Claim C-011.
+
 ## [0.9.0] — 2026-09-14
 
 ### Productization and documentation
