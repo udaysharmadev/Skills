@@ -39,7 +39,7 @@ Status vocabulary:
 | `harden` | Complete | Traced | Justified N/A | Complete | Protocol + exploit-graded tasks authored; outcome UNVERIFIED (zero-spend) |
 | `unslop` | Complete | Traced | Justified N/A | Complete | Protocol + workspace tasks authored; outcome UNVERIFIED (zero-spend) |
 | `janitor` | Complete | Traced | Justified N/A | Complete | Protocol + git-state tasks authored; outcome UNVERIFIED (zero-spend) |
-| `frontpage` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
+| `frontpage` | Complete | Traced | Justified N/A | Complete | Protocol + artifact tasks authored; outcome UNVERIFIED (zero-spend) |
 | `findable` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
 | `frugal` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |
 | `cleared` | Complete | Traced | Justified N/A | Complete | Outcome proof deferred |

@@ -157,6 +157,10 @@ def grade(task, route, raw, obs=None):
         # Rebuild skills grade on the same artifact mechanics: tokens
         # inferred, trap strings absent, loop markers present.
         return grade_polish(task, raw, obs or {})
+    if isinstance(exp, dict) and exp.get("type") == "frontpage":
+        # README skills grade on the same artifact mechanics: invented
+        # strings absent, real commands present, audit markers in chat.
+        return grade_polish(task, raw, obs or {})
     if isinstance(exp, dict) and exp.get("type") == "spelunk":
         return grade_spelunk(task, raw, obs or {})
     return grade_route(task, route, raw)
@@ -206,9 +210,9 @@ def grade_blueprint(task, raw, obs):
 
 
 def grade_polish(task, raw, obs):
-    """Artifact grading (polish, friction, ditto): forbidden strings absent, named
-    files byte-identical to the fixture where required, required markers
-    present in artifacts and chat."""
+    """Artifact grading (polish, friction, ditto, frontpage): forbidden strings
+    absent, named files byte-identical to the fixture where required,
+    required markers present in artifacts and chat."""
     exp = task["expected"]
     artifacts = obs.get("artifacts") or {}
     if not artifacts:
@@ -240,15 +244,20 @@ def grade_polish(task, raw, obs):
     missing_chat = [m for m in must if m not in low]
     chat_groups = [g for g in exp.get("must_contain_any", [])
                    if not any(alt.lower() in low for alt in g)]
+    checks = (obs or {}).get("verify") or []
+    failed_checks = [c.get("cmd", "?") for c in checks
+                     if c.get("exit") != c.get("expect", 0)]
     ok = (not present_forbidden and not changed_tokens and not missing
-          and not missing_groups and not missing_chat and not chat_groups)
+          and not missing_groups and not missing_chat and not chat_groups
+          and not failed_checks)
     return ok, {"files": len(artifacts),
                 "forbidden_present": present_forbidden,
                 "tokens_changed": changed_tokens,
                 "missing_artifact": missing,
                 "missing_artifact_groups": missing_groups,
                 "missing_chat": missing_chat,
-                "missing_chat_groups": chat_groups}
+                "missing_chat_groups": chat_groups,
+                "failed_checks": failed_checks}
 
 
 def grade_pilot(task, raw, obs):
@@ -502,7 +511,7 @@ def main():
                 vals = [r["notes"].get("diagrams", 0) for r in rows]
                 print(f"{task['id']} {cond}: pass={pr:.2f} "
                       f"mean_diagrams={sum(vals)/max(len(vals),1):.2f}")
-            elif isinstance(task["expected"], dict) and task["expected"].get("type") in ("polish", "friction", "ditto"):
+            elif isinstance(task["expected"], dict) and task["expected"].get("type") in ("polish", "friction", "ditto", "frontpage"):
                 vals = [r["notes"].get("files", 0) for r in rows]
                 print(f"{task['id']} {cond}: pass={pr:.2f} "
                       f"mean_artifacts={sum(vals)/max(len(vals),1):.2f}")

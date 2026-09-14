@@ -28,6 +28,7 @@ grading stays blind and reviewable; it is never described as ground truth.
 | `harden.md` | harden | 5 (normal/hard-edge/failure/restraint/adversarial) | authored; evidence runner available |
 | `unslop.md` | unslop | 5 (normal/hard-edge/failure/restraint/adversarial) | authored; evidence runner available |
 | `janitor.md` | janitor | 5 (normal/hard-edge/failure/restraint/adversarial) | authored; evidence runner available |
+| `frontpage.md` | frontpage | 5 (normal/hard-edge/failure/restraint/adversarial) | authored; evidence runner available |
 
 Target coverage for v1.0 eval completeness: all 28 skills × 3 scenarios
 (≥ 84). Authored ≠ executed: a scenario only counts as coverage once a

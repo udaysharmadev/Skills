@@ -396,7 +396,26 @@ All notable changes to this project are documented here. Format follows
   caught and fixed two harness bugs — bare `.env`-style tokens counted
   as hallucinated paths, and the fact grader silently ignoring
   `verify` commands — both backward-compatible, full regression clean.
-  Verdict UNVERIFIED — see `docs/benchmarks/janitor.md`.
+  Verdict UNVERIFIED —   see `docs/benchmarks/janitor.md`.
+
+### v1 campaign — Skill Phase 22 `frontpage` (zero-spend, no Codex: depth + protocol, no trials)
+
+- Deep audit first (all three research traces verified, PRD §8 walked).
+  One reference-only addition: Tool selection/fallback section
+  consolidating the four verification rungs (real run → verbatim
+  snippets → hand-checked links → honest v0). Zero new always-on cost.
+- Authored FP1–FP5 scenarios (nothing-installable hard edge, offline
+  failure, tiny-tool restraint, say-10k-users adversarial) plus a
+  short-and-honest trigger case. Signature F1–F3 remain as cross-checks.
+- Outcome protocol + frozen tasks on a new `frontpage-tool` fixture
+  (working CLI under a slop-seeded README: broken install, fake
+  badges, invented traction) via the shared artifact grader (new
+  `frontpage` type dispatch, no new mechanics): invented strings gone,
+  real commands present, code byte-identical, audit/refusal markers.
+  Offline testing caught a real harness gap — the artifact grader never
+  enforced `verify` exits, so code-touching runs "passed" docs tasks —
+  fixed same-phase, backward-compatible, full regression clean.
+  Verdict UNVERIFIED — see `docs/benchmarks/frontpage.md`.
 
 ## [0.9.0] — 2026-09-14
 

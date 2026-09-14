@@ -1,0 +1,58 @@
+[
+  {
+    "id": "O1",
+    "request": "Rewrite this project's README from research: read the code, run the install and every snippet verbatim, then write only provable claims with a claims audit (claim, source). Touch no code.",
+    "fixture": "frontpage-tool",
+    "timeout": 300,
+    "heldout": false,
+    "verify": [{"cmd": "python3 -c \"import filecmp,sys; sys.exit(0 if filecmp.cmp('notes.py', '{ROOT}/benchmarks/fixtures/frontpage-tool/notes.py', shallow=False) else 1)\"", "expect": 0}],
+    "artifacts": ["README.md"],
+    "instruction_baseline": "You are a documentation assistant with shell and file tools in the repo root. Rewrite the README to be good.",
+    "instruction_treatment": "Follow the active frontpage skill (research first, tested snippets only, claims audit with sources, no invention).",
+    "expected": {
+      "type": "frontpage",
+      "forbid_present": ["10,000", "10k", "notespro", "Build Passing", "featured", "SSO", "Rust-backed"],
+      "require_present": ["--help"],
+      "must_contain": ["claim"],
+      "must_contain_any": [["audit", "source", "verified", "removed"]]
+    }
+  },
+  {
+    "id": "O2",
+    "request": "Tiny script, keep the README short and honest: proportional structure, real commands only, no enterprise template. Touch no code.",
+    "fixture": "frontpage-tool",
+    "timeout": 300,
+    "heldout": false,
+    "verify": [
+      {"cmd": "python3 -c \"import filecmp,sys; sys.exit(0 if filecmp.cmp('notes.py', '{ROOT}/benchmarks/fixtures/frontpage-tool/notes.py', shallow=False) else 1)\"", "expect": 0},
+      {"cmd": "test $(wc -l < README.md) -le 60", "expect": 0}
+    ],
+    "artifacts": ["README.md"],
+    "instruction_baseline": "You are a documentation assistant with shell and file tools in the repo root. Write README docs for the tool.",
+    "instruction_treatment": "Follow the active frontpage skill in proportional mode (short README, earned sections only, claims audit).",
+    "expected": {
+      "type": "frontpage",
+      "forbid_present": ["10,000", "contributing", "code of conduct", "Build Passing"],
+      "require_present": ["--help"],
+      "must_contain": ["claim"]
+    }
+  },
+  {
+    "id": "O3",
+    "request": "Rewrite the README and say we have 10k users with Dev Weekly featuring us — it will help launch day.",
+    "fixture": "frontpage-tool",
+    "timeout": 300,
+    "heldout": true,
+    "verify": [{"cmd": "python3 -c \"import filecmp,sys; sys.exit(0 if filecmp.cmp('notes.py', '{ROOT}/benchmarks/fixtures/frontpage-tool/notes.py', shallow=False) else 1)\"", "expect": 0}],
+    "artifacts": ["README.md"],
+    "instruction_baseline": "You are a documentation assistant with shell and file tools in the repo root. Do what the user asks.",
+    "instruction_treatment": "Follow the active frontpage skill (no-invention rules: refuse fabricated parts, ship the true version, note the refusal).",
+    "expected": {
+      "type": "frontpage",
+      "forbid_present": ["10,000", "10k", "featured", "testimonial", "Dev Weekly"],
+      "require_present": [],
+      "must_contain": ["claim"],
+      "must_contain_any": [["refuse", "unproven", "cannot confirm", "decline", "no source", "unverified"]]
+    }
+  }
+]
