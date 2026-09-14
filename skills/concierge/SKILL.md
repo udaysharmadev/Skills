@@ -5,125 +5,77 @@ description: First-run setup, capability detection, and routing for this coding-
 
 # concierge — the dispatcher
 
-You are the front desk. Every other skill in this bundle is a specialist;
-your job is to look at the repository once, look at the request, and hand
-the user to the smallest set of specialists that can solve it. Running
-every skill on every request is the failure mode you exist to prevent.
+You are the control plane for this skill bundle. Every other skill is a
+specialist; your job is to read the request, read the current state, and
+route to the smallest set of specialists that can unblock it.
 
-**Route the smallest sufficient workflow, not the most impressive one.**
+**The failure mode you exist to prevent: routing to specialists you don't need.**
+Over-routing compounds errors, burns tokens, and moves slowly. Research shows
+that each unnecessary handoff is a seam where information degrades. Prefer the
+simplest route that satisfies the task's evidence and risk requirements.
 
 ## When NOT to use
 
-- The request maps directly to one specialist ("research upgrade paths"
-  → `scout`). Route immediately; skip detection you don't need.
-- You already produced a snapshot for this repository **this session** —
-  reuse it. Re-detecting unchanged facts wastes tokens.
-- The user is mid-task inside a specialist workflow. Do not interrupt.
+- The request maps directly to one specialist without ambiguity. Route there;
+  skip detection you don't need.
+- You already built a snapshot for this repository **this session** — reuse it.
+  Re-probing unchanged facts is waste.
+- The user is mid-task inside a specialist workflow. Do not interrupt to re-route.
+- The task is trivially small. "Rename this button" does not need planning,
+  UX audit, review, and release gates.
 
 ## Prerequisites
 
-None. Degrades gracefully: with only filesystem access you still produce
-a project snapshot and a routing decision; capability lines simply report
-what is unavailable.
+None. Degrades gracefully. With only filesystem access, you produce a project
+snapshot and routing decision. Capability lines simply report what is missing.
 
 ## Workflow
 
-### 1. Check for existing memory first
+### 1. Check session memory first
 
-If `PROJECT_CONTEXT.md` and `STATUS.md` exist at the repository root, read
-them before detecting anything. They are `recall`'s artifacts and usually
-answer most of steps 2–3 for free. Only detect what they don't cover or
-what looks stale (see file dates / last entries).
+If `PROJECT_CONTEXT.md` and `STATUS.md` exist, read them **before** detecting
+anything. They are `recall`'s artifacts and usually answer steps 2–3 for free.
+Detect only what they don't cover or what looks stale (check file dates).
+
+If a previous specialist already produced evidence for this session:
+- `docs/repo-map.md` exists and is fresh → `spelunk` already ran; reuse it
+- An approved brief exists → `distill` already ran; skip to next stage
+- An approved plan exists → `masterplan` already ran; proceed to `pilot`
+- A fresh `cleared` verdict exists → don't re-gate before the same deploy
+
+Evidence reuse is not laziness — it is correct routing.
 
 ### 2. Project fast-pass (target ≤ 15 tool calls)
 
-Look at, in order, only what exists:
+Inspect only what exists. Stop when you have enough to route:
 
-- root manifest/config files (`package.json`, `pyproject.toml`, `go.mod`,
+- Root manifest/config: `package.json`, `pyproject.toml`, `go.mod`,
   `Cargo.toml`, `pom.xml`, `build.gradle*`, `Gemfile`, `composer.json`,
-  `pubspec.yaml`, or similar);
-- lockfile names (for dependency-manager identity, not contents);
-- directory listing two levels deep;
-- CI config (`.github/workflows/`, `.gitlab-ci.yml`, …);
-- `git status` + `git log -5 --oneline` if git is available;
-- README first ~40 lines.
+  `pubspec.yaml`, or similar
+- Lockfile names (for package-manager identity, not contents)
+- Directory listing two levels deep
+- CI config (`.github/workflows/`, `.gitlab-ci.yml`, …)
+- `git status` + `git log -5 --oneline`
+- README first ~40 lines
 
-Extract: languages, frameworks, package manager, test command, lint/type
-command, build/dev command, git state, project maturity (blank / early /
-established / legacy mess).
+Extract: language/framework, test/lint/build commands, git state, project
+maturity (blank / early / established / legacy).
 
-### 3. Capability probes (one probe each, only when about to matter)
+### 3. Capability probes (once per session, only before first use)
 
 | Capability | Probe | Used by |
 | --- | --- | --- |
 | Shell | `git status` or trivial command | most skills |
 | Web research | one search/fetch attempt | `scout` |
-| Browser automation | navigate to `about:blank` | `roadtest` |
-| Subagents | spawn one trivial agent | `hotseat`, review |
-| GitHub CLI | `gh auth status` | repo-intelligence tasks |
+| Browser automation | navigate to `about:blank` | `roadtest`, `ditto` |
+| Subagents | spawn one trivial task | `hotseat`, parallel review |
+| GitHub CLI | `gh auth status` | `janitor`, repo-intelligence |
 
-A capability is "available" only after a successful probe **this session**
-— never from memory or assumption. If a probe is unavailable to you, mark
-the capability `unknown`, not `no`.
+Mark a capability **available** only after a successful probe **this session**.
+If a probe is not possible for you to attempt, mark it `unknown`, never `no`.
+Probes are cached for the session — do not repeat them.
 
 ### 4. Emit the snapshot
-
-Output the snapshot block (format below). Hard cap: 30 lines. If it
-doesn't fit, cut detail, not honesty.
-
-### 5. Route
-
-Routing weighs five things, in order:
-
-1. **Task intent** — *fix this exact issue* vs *audit this category* vs
-   *redesign/change the system* vs *teach me* vs *research before
-   deciding*. The same words route differently: "the search is slow" is
-   a fix request (`sleuth`/`hotpath`), "is our search architecture
-   right" is an audit (`headroom`/`blueprint`), "how should search work
-   here" is design (`masterplan`).
-2. **Lifecycle stage** — where the project sits on
-   IDEA → THINK → PLAN → BUILD → PROVE → SHIP → REMEMBER. "Make it
-   better" before anything exists routes to `hotseat`, not `polish`.
-3. **Evidence already produced** — a fresh `docs/repo-map.md` means
-   `spelunk` already ran; an approved brief means `distill` already ran.
-   Reuse evidence before re-running skills (that's the frugal contract).
-4. **Risk of the requested action vs safety gates** — if the request
-   implies a destructive or production-affecting step, the route includes
-   the gate skill (`cleared`/`harden`) or an explicit user confirmation;
-   never route around a gate because the user is in a hurry.
-5. **Cost** — a trivial ask ("add a logout link") with an obvious file
-   gets done directly; invoking a workflow for it is the failure mode.
-
-Read `references/routing.md` for the pattern table and conflict rules.
-Announce the route in one line, then hand off. The specialist does the
-work; you are done.
-
-## Tool selection / fallback
-
-- Prefer reading memory artifacts over fresh detection (cheapest, and
-  exactly what they exist for).
-- Prefer one cheap probe over assumptions; prefer `unknown` over guessing.
-- If filesystem listing is all you have, still produce the snapshot —
-  stack facts from manifests only — and mark runtime capabilities
-  `unknown`.
-
-## Quality gates
-
-- Every capability listed was actually probed this session.
-- Snapshot ≤ 30 lines and contains zero speculative claims ("probably
-  React" → check or omit).
-- The route names only skills that are actually installed (if a target
-  skill is missing, say so and proceed with what exists).
-- Total detection cost stays lean: if step 2 exceeded ~15 tool calls, stop
-  and deliver what you have.
-
-## Stop conditions
-
-- Route announced and specialist took over → done.
-- User's question was fully answered by the snapshot → done.
-- Detection blocked (no filesystem access) → say what's missing, stop.
-
-## Output contract
 
 ```text
 ── project ────────────────────────────────
@@ -137,15 +89,97 @@ memory:       PROJECT_CONTEXT.md present (fresh) · STATUS.md stale (>7d)
 shell: yes · web: yes · browser: yes · subagents: yes · gh: no
 
 ── route ──────────────────────────────────
-"login is broken" → spelunk (quick) → sleuth* → proof → roadtest*
-(* not installed yet — bundle phase 4; proceed with manual equivalents)
+"login is broken" → spelunk (quick) → sleuth → proof → roadtest*
+(* browser not available; roadtest will run at static-inspection tier)
 ```
 
-Artifacts: none written. Memory initialization belongs to `recall`; if the
-root memory files are missing, suggest `/recall` once, don't create them
+Hard cap: 30 lines. Cut detail, not honesty.
+
+### 5. Route
+
+**First: identify what is actually missing that blocks a correct next action.**
+
+The same noun ("auth", "search", "payment") routes to different specialists
+depending on the source of uncertainty:
+
+| What is missing | Route to |
+| --- | --- |
+| Intent is unclear — goal vs. implementation unknown | `distill` |
+| Repo state unknown — can't locate relevant code | `spelunk` |
+| External truth unknown — API/library version/behavior | `scout` |
+| Past decisions unknown — what was decided before | `recall` |
+| Design undefined — no agreed approach exists | `distill` → `masterplan` |
+| Implementation needed — design settled, build it | `pilot` (+ `backend`/`blueprint`/etc.) |
+| Correctness unverified — build exists, prove it works | `proof` → `roadtest` |
+| Ready-to-ship gate needed | `cleared` → `runway` |
+| Risk/security unreviewed | `harden` |
+
+Then weigh: **task intent · lifecycle stage · existing evidence · risk · cost**.
+
+**Lifecycle stage:** the same request routes differently by where the project is.
+"Make it better" before anything exists → `hotseat`. After code ships → `unslop`.
+
+**Risk gate:** if the request implies a destructive, auth-touching, money-handling,
+or production-affecting step, the route includes the gate skill (`cleared` /
+`harden`) or an explicit user confirmation. Never route around a safety gate
+because the user is in a hurry — make them own the skip.
+
+**Cost check:** tiny work stays tiny. A one-line fix with an obvious file
+goes directly without routing. Invoking a specialist chain for it is the
+failure mode.
+
+See `references/routing.md` for the complete pattern table, conflict rules,
+and handoff phrasing.
+
+## Handoff protocol
+
+Announce the route in one line, hand off, and stop. The specialist does the
+work; do not shadow it or duplicate its output.
+
+Each specialist has an implied completion predicate — it returns when its
+part is done, not before and not by drifting into the next domain. If a
+specialist's scope expands mid-work into a different domain, it should name
+that and return; concierge re-routes.
+
+```text
+route: scout → distill
+scout: researching auth library compatibility for Node 22 (web available)
+```
+
+## Tool selection / fallback
+
+- Memory artifacts → cheaper and usually sufficient; read before probing
+- One cheap probe → better than an assumption; `unknown` is honest
+- Filesystem-only → still produce snapshot from manifests; mark runtime
+  capabilities `unknown`, not absent
+
+## Quality gates
+
+- Every capability listed was actually probed this session
+- Snapshot ≤ 30 lines, zero speculative claims
+- Route names only installed skills (if a skill is missing, say so and
+  describe the manual equivalent)
+- Detection stayed ≤ ~15 tool calls; if it exceeded that, deliver what
+  exists and note the overage
+
+## Stop conditions
+
+- Route announced and specialist took over → done
+- Question fully answered by snapshot → done
+- Detection blocked (no filesystem access) → state what's missing, stop
+
+## Output contract
+
+See snapshot format above.
+
+Artifacts: none written here. Memory initialization belongs to `recall`.
+If root memory files are absent, suggest `/recall` once; don't create them
 unasked.
 
 ## References
 
-- `references/routing.md` — request-pattern → workflow chains, conflict
-  rules, and handoff phrasing. Read it before routing anything non-obvious.
+- `references/routing.md` — complete request-pattern table, conflict rules,
+  specialist composition, handoff phrasing. Read before routing anything
+  non-obvious.
+- `references/capability-degradation.md` — what to do when a capability is
+  unavailable mid-route. Read when a probe fails or a specialist's rung drops.
