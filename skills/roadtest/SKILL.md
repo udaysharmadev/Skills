@@ -39,8 +39,13 @@ start → that's finding #1; report the blocker with its error output.
 
 ## Critical-path walk (per path)
 
-For each critical path (login, the money flow, the core CRUD loop —
-named explicitly before starting):
+Generate the concrete matrix first — `scripts/test-matrix --paths
+"login,checkout" --states` — so paths × viewports × state checks are
+decided before walking (decide the matrix, then execute it; ad-hoc
+strolling is how flows get skipped). Beyond the basics, exercise:
+deep links directly (does a shared URL land correctly?), refresh
+mid-flow (does state survive or reset sanely?), and authenticated flows
+with a real session. For each path:
 
 1. start the application;
 2. wait for healthy state (don't test a half-booted app);

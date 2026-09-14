@@ -51,6 +51,14 @@ if runs repeat over time.
 - Failed paths keep their failing evidence; don't overwrite with the
   post-fix re-run — the re-run is a new path dir (or `-rerun` suffix).
 
+## Screenshot discipline
+
+A screenshot alone does not prove a flow works — it proves one pixel
+state at one moment. Every screenshot pair must be tied to the
+assertion it evidences ("after submit — order visible in table"), and
+the result.txt records the checks that passed (console clean, network
+clean, interaction worked), not just "looks right".
+
 ## What does NOT go in the bundle
 
 - Credentials, tokens, session cookies (mask in screenshots; redact in

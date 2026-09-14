@@ -3,6 +3,31 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning is semantic.
 
+## [0.8.4] — 2026-09-14
+
+### Phase 8, Batch D — proof & engineering-quality depth
+
+- **proof**: flaky-test diagnosis ladder (shared state → timing → real
+  races → unordered data → external), property-based testing guidance
+  (where invariants earn generators).
+- **sleuth**: hypothesis-tracking table (evidence for/against, next
+  discriminating experiment); five-part causal chain — symptom,
+  mechanism, root cause, trigger, contributing condition; workaround
+  explicitly distinguished from root-cause fix.
+- **referee**: five-part findings (adds `confidence: certain | likely |
+  possible` with what would confirm possibles); the honest empty review
+  documented as a valid verdict.
+- **harden**: six scoped modes (quick review, feature threat model,
+  full audit, pre-release, auth/authz review, API review); findings
+  gain the `attack precondition` field — what the attacker actually
+  needs.
+- **roadtest**: `scripts/test-matrix` — decide paths × viewports × state
+  checks before walking; deep-link, refresh-mid-flow and authenticated
+  sessions added; screenshot discipline rule.
+- **hotpath**: `scripts/measure-report` — delta computation that
+  enforces honesty (conditions required, sub-threshold labeled NOISE,
+  no invented percentages); measurement-quality rules inlined.
+
 ## [0.8.3] — 2026-09-14
 
 ### Phase 8, Batch C — design & UX depth

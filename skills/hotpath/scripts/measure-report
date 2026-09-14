@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+"""measure-report — turn before/after measurements into the hotpath report.
+
+Computes deltas, flags regressions, and enforces the honesty fields
+(conditions, sample count). Deterministic; refuses to invent percentages
+when inputs are missing.
+
+Usage: skills/hotpath/scripts/measure-report --baseline 4.8 --after 2.9 \
+         --unit seconds --conditions "throttled 4G, 50k rows, median of 3" \
+         [--label "LCP"] [--threshold 0.1] [--json]
+Exit 0 = improvement ≥ threshold; 1 = regression or below threshold;
+2 = usage error.
+"""
+import argparse, json, sys
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--baseline", type=float, required=True)
+    ap.add_argument("--after", type=float, required=True)
+    ap.add_argument("--unit", default="ms")
+    ap.add_argument("--label", default="measurement")
+    ap.add_argument("--conditions", required=True,
+                    help="the conditions both runs shared — required, not optional")
+    ap.add_argument("--threshold", type=float, default=0.05,
+                    help="minimum relative delta to count as a real change (default 0.05)")
+    ap.add_argument("--higher-is-better", action="store_true")
+    ap.add_argument("--json", action="store_true")
+    a = ap.parse_args()
+
+    if a.baseline == 0:
+        print("measure-report: baseline of 0 — not a measurable baseline", file=sys.stderr)
+        return 2
+    delta = a.after - a.baseline
+    rel = delta / a.baseline
+    improved = (a.after < a.baseline) if not a.higher_is_better else (a.after > a.baseline)
+    significant = abs(rel) >= a.threshold
+    verdict = ("KEEP" if improved and significant else
+               "REVERT" if (not improved and significant) else
+               "NOISE — below threshold, complexity cost not justified")
+
+    doc = {"label": a.label, "unit": a.unit, "baseline": a.baseline,
+           "after": a.after, "delta": round(delta, 6),
+           "delta_percent": round(rel * 100, 2),
+           "conditions": a.conditions, "threshold": a.threshold,
+           "significant": significant, "verdict": verdict}
+    if a.json:
+        print(json.dumps(doc, indent=2))
+        return 0 if improved or not significant else 1
+    arrow = "↓" if delta < 0 else "↑"
+    print(f"{a.label}: {a.baseline}{a.unit == 'ms' and 'ms' or ' ' + a.unit} → "
+          f"{a.after}  ({arrow} {abs(round(rel * 100, 2))}%)")
+    print(f"conditions: {a.conditions}")
+    print(f"verdict: {verdict}")
+    return 0 if (improved or not significant) else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -61,6 +61,15 @@ next hot path or stop when the target is met.
 
 ## Rules
 
+- Produce the report from the bundled helper: `scripts/measure-report
+  --baseline N --after M --conditions "..."` — it computes the delta and
+  enforces the honesty fields (conditions are required; sub-threshold
+  deltas are labeled NOISE, not spun).
+- Measurement quality rules: warm up before sampling (JIT, caches),
+  enough samples for a stable median (≥3–5, report the spread), use
+  percentiles not means for latency, representative data volume, and
+  declare local-vs-production caveats — numbers without conditions are
+  anecdotes.
 - One variable per measurement round — two changes at once means neither
   is proven.
 - Micro-benchmarks lie (JIT warmup, cache priming, branch prediction) —

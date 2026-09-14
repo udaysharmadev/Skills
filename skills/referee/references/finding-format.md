@@ -14,16 +14,19 @@ will demonstrably cost the next person time or the users something.
 Nits never block; if you're listing more than a handful of nits, you're
 reviewing style, not the change.
 
-## Finding format (every finding, all four parts)
+## Finding format (every finding, all five parts)
 
 ```text
 <sev> <file:line> — <what is wrong>
       why it matters: <the concrete consequence>
       fix direction: <the change, one line>
+      confidence: certain | likely | possible
 ```
 
 A finding without "why it matters" is an opinion; without a fix
-direction it's a complaint. Both halves or delete it.
+direction it's a complaint; without confidence it claims certainty it
+didn't earn. `possible` findings say what would confirm them. All three
+halves or delete it.
 
 ## Quality checklist (walk per diff — skip what doesn't apply)
 
@@ -70,6 +73,14 @@ direction it's a complaint. Both halves or delete it.
 
 **API/DB surface changes**
 - Breaking changes flagged and versioned; migration has a down-path.
+
+## The empty review is a valid result
+
+"No blocking findings" — stated with the review scope and mode — is a
+professional verdict, not a failure of effort. Manufacturing findings
+to look thorough is worse than an honest clean pass: it trains readers
+to ignore the review. Density of real findings varies with the diff;
+say so when a clean diff was genuinely clean.
 
 ## Self-review discipline (when fresh-context is unavailable)
 

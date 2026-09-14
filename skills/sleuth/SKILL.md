@@ -49,9 +49,15 @@ store. The full checklist of techniques lives in
 
 ### 5. Hypothesize — at least two, competing
 
+Track them in a working table, not in your head:
+
+| hypothesis | evidence for | evidence against | next discriminating experiment |
+| --- | --- | --- | --- |
+
 "X is null" and "X is fine but the caller passes the wrong id" — if both
 explain the evidence, keep both. One hypothesis is an arrest without
-investigation. Write what evidence would kill each one.
+investigation. The table forces the question the gut skips: what
+experiment separates these two? Run the cheapest one first.
 
 ### 6. Eliminate
 
@@ -61,10 +67,15 @@ kill hypotheses on evidence — never bend evidence to fit the favorite.
 
 ### 7. Identify the root cause
 
-Keep asking "why" until the answer is a thing you can fix without the
-bug growing back elsewhere: not "the JSON is malformed" but "the
-uploader never escaped newlines, added in commit X". The Five Whys, but
-with evidence at each link, not vibes.
+Name all five parts of the causal chain, because fixes land on the
+wrong one otherwise: **symptom** (what the user sees) → **mechanism**
+(what actually happens inside) → **root cause** (the defect the
+mechanism flows from) → **trigger** (what activated it now) →
+**contributing conditions** (what made it possible). Keep asking "why"
+until the answer is a thing you can fix without the bug growing back
+elsewhere: not "the JSON is malformed" but "the uploader never escaped
+newlines, added in commit X". The Five Whys, but with evidence at each
+link, not vibes.
 
 ### 8. Smallest correct fix
 
@@ -84,11 +95,13 @@ what was verified and how.
 
 ## Provisional fixes (the honest exception)
 
-When the user explicitly accepts a hotfix without confirmed root cause
-(production is down, diagnosis needs days): ship it labeled
-`PROVISIONAL — cause unconfirmed` in the report, with the working
-hypothesis and the plan to confirm. Still ship the failing signal.
-Provisional fixes without labels are how bugs get tenure.
+A workaround is not a root-cause fix — it suppresses the symptom and
+rents the bug. When the user explicitly accepts a hotfix without
+confirmed root cause (production is down, diagnosis needs days): ship it
+labeled `PROVISIONAL — cause unconfirmed` in the report, with the
+working hypothesis and the plan to confirm. Still ship the failing
+signal, and open the follow-up that converts provisional into
+root-cause. Provisional fixes without labels are how bugs get tenure.
 
 ## Quality gates
 

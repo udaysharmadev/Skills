@@ -28,6 +28,17 @@ text), and the blast radius if each fails. The threat model decides
 which checklist sections are top-priority — a recipe blog and a
 payments processor do not get the same audit.
 
+## Modes (scope decides, threat model confirms)
+
+| Mode | Scope |
+| --- | --- |
+| **quick security review** | one feature/PR surface; top exposures only |
+| **feature threat model** | trust boundaries + abuse cases for a proposed design, before code |
+| **full repository audit** | the complete process below |
+| **pre-release hardening** | full audit + the deployment-config and secrets checks cleared for go-live |
+| **auth/authz review** | identity, session, and object-level authorization paths end to end |
+| **API review** | input validation, authz, rate limits, error semantics per endpoint |
+
 ## Process
 
 **threat model → static checks → dependency checks → configuration
@@ -54,9 +65,12 @@ retest**
 ## Finding format (mandatory for every finding)
 
 severity (critical/high/medium/low) · confidence (confirmed/probable/
-speculative) · evidence (exact reproduction or code path) · affected
-code · plausible impact · remediation · verification status (open / fixed
-+ retested / accepted-risk by user).
+speculative) · evidence (exact reproduction or code path) · **attack
+precondition** (what the attacker needs: an account? network position?
+a crafted link? nothing?) · affected code · plausible impact ·
+remediation · verification status (open / fixed + retested /
+accepted-risk by user). The precondition is what separates a real
+exposure from a scary-sounding impossible one.
 
 Severity honesty rules: exploitability × impact decides — a "critical"
 CVE in an unreachable code path is medium here; speculative findings say

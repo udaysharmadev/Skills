@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+"""test-matrix — generate the roadtest walk matrix + evidence skeleton.
+
+Turns a list of critical paths into the concrete test matrix (paths ×
+viewports × state checks) and prints the evidence-bundle directory
+skeleton to create. Deterministic; read-only.
+
+Usage: skills/roadtest/scripts/test-matrix --paths "login,checkout" \
+         [--viewports 1440,390] [--states] [--json]
+"""
+import argparse, json, sys
+
+DEFAULT_VIEWPORTS = "1440,390"
+STATE_CHECKS = ["empty-state", "error-state", "loading-visible", "success-feedback"]
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--paths", required=True, help="comma-separated critical paths")
+    ap.add_argument("--viewports", default=DEFAULT_VIEWPORTS)
+    ap.add_argument("--states", action="store_true", help="include per-path state checks")
+    ap.add_argument("--json", action="store_true")
+    a = ap.parse_args()
+
+    paths = [p.strip() for p in a.paths.split(",") if p.strip()]
+    viewports = [v.strip() for v in a.viewports.split(",") if v.strip()]
+    if not paths:
+        print("test-matrix: no paths given", file=sys.stderr)
+        return 2
+
+    matrix = [{"path": p, "viewport": v, "checks": ["render", "console-clean",
+               "network-clean", "interaction-works"] +
+               (STATE_CHECKS if a.states else [])}
+              for p in paths for v in viewports]
+
+    if a.json:
+        print(json.dumps({"matrix": matrix, "bundle": f"docs/reports/roadtest-<slug>/"}, indent=2))
+        return 0
+
+    print(f"{len(paths)} paths x {len(viewports)} viewports = {len(matrix)} walks\n")
+    for m in matrix:
+        print(f"  {m['path']:<28} @{m['viewport']:<6} " + " · ".join(m["checks"]))
+    print(f"\nevidence bundle: docs/reports/roadtest-<slug>/")
+    for p in paths:
+        slug = p.lower().replace(" ", "-").replace("/", "-")[:24]
+        print(f"  {slug}/  (01-initial.png ... console.log, network.log, result.txt)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

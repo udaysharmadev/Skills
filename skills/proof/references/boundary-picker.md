@@ -33,6 +33,25 @@ logic and serialization together, without browser flakiness. When in
 doubt, start there and push down (unit) for logic corners, up (e2e) only
 for critical paths.
 
+## Flaky-test diagnosis (before quarantining)
+
+Flakiness is a signal, not weather. In order of likelihood: shared state
+between tests (DB rows, singletons, temp dirs) → timing/sleep
+assertions (replace with condition-waiting) → concurrency in the code
+under test (the flake is a real race, file a bug) → unordered data
+(hash order, map iteration) → external dependency variability (freeze
+with fixtures). Only external-flakiness gets the quarantine marker; the
+rest gets fixed — a race you keep retrying past is a production incident
+in waiting.
+
+## Property-based tests (when they earn their place)
+
+Use when a behavior has an invariant over a space of inputs — encoders
+round-trip, parsers accept-then-serialize, invariants hold under
+arbitrary operation sequences. One property with a generator beats 20
+hand-picked examples for exactly that behavior; everywhere else they
+add framework weight. (fast-check, hypothesis, proptest per stack.)
+
 ## Anti-patterns
 
 1. **Mock theatre** — six mocks arranged so the test asserts its own
