@@ -531,6 +531,12 @@ def main():
            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
            "paid_guard": "authorized" if a.agent in PAID_AGENTS else "n/a",
            "heldout": a.heldout, "trials": []}
+    # Stall guard: a throttled free model hangs every call to the full
+    # timeout. After N consecutive timeout/error observations, abort the
+    # run (exit 5, no result file) so the driver can retry on a live
+    # model instead of burning hours on garbage.
+    max_consec = int(os.environ.get("EO_MAX_CONSEC", "0") or 0)
+    consec_bad = 0
     for task in tasks:
         for cond, ctx in (("baseline", None), ("treatment", treat)):
             for t in range(a.trials):
@@ -540,6 +546,14 @@ def main():
                               model=a.model, fixture=task.get("fixture"),
                               verify=task.get("verify"),
                               artifacts=task.get("artifacts"))
+                if obs.get("status") != "ok":
+                    consec_bad += 1
+                    if max_consec and consec_bad >= max_consec:
+                        print(f"ABORT: {consec_bad} consecutive bad "
+                              f"observations (model stall?)", file=sys.stderr)
+                        return 5
+                else:
+                    consec_bad = 0
                 raw = obs.get("output", "")
                 route = normalize_route(raw)
                 passed, notes = grade(task, route, raw, obs)
