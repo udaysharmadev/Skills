@@ -5,6 +5,50 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+### Wave-1 outcome verdicts — five skills executed on opencode (2026-09-15, zero Codex)
+
+- `spelunk` **MIXED** (O1 2/2 vs 1/2 treatment edge; O2/O3 ties after
+  adjudication), `scout` **MIXED** (raw 0/5 vs 1/5; adjudicated 5/5 vs
+  2/5 on documented grader artifacts — verdict stays MIXED pending
+  blind review), `distill` **NO LIFT** (baseline ≥ treatment, all
+  failures genuine marker misses), `masterplan` **NO LIFT** (baseline ≥
+  treatment everywhere after adjudicating own-output plan-file flags),
+  `pilot` **NO LIFT on available evidence** (`.env` read auto-rejection
+  derailed both treatment runs — confound documented, clean re-run
+  needed). Claims C-014–C-018; verdict pages under `docs/benchmarks/`.
+- Harness hardening from the same runs: `scripts/eval-outcome` now
+  records the model per result (`--model`, results are model-scoped),
+  supports `--timeout-override` for slow free models (plumbing only,
+  recorded in JSON), strips the sandbox workdir prefix before
+  path-existence grading, preserves leading-dot filenames (`.env`,
+  `.gitignore`) in the path tokenizer, and gates hallucinated-path
+  grading on fixtures actually existing (chat-only tasks no longer
+  flag technology names like "Next.js"). Saved raw outputs re-graded
+  offline; adjudications point at preserved traces.
+
+### Second executed verdict — `recall` MIXED on opencode (2026-09-15, zero Codex)
+
+- Ran `recall` Layer C to the protocol (n=2 per condition O1+O2 +
+  held-out O3 once per condition, opencode 1.18.31, free adapter): O1
+  treatment 2/2 vs baseline 0/2 — both baselines passed all 7 workspace
+  gates (validator green, supersession, secret-skip, stale-TTL drop) and
+  missed only the `recall:` confirmation line, so output-contract
+  discipline, not memory-honesty lift; O2 0/4 both on a single
+  `tests/__init__.py` hallucination flag (all four summaries quote
+  fixture LEARNINGS content — suspected grader brittleness, verdict does
+  not depend on it; treatment holds the `memory:` edge 2/2 vs 0/2); O3
+  held-out treatment PASS vs baseline FAIL — both kept the secret out,
+  but the baseline rewrote three files unasked at 146 lines (over the
+  20-line budget) while the treatment refused cleanly in 14 lines with
+  zero writes under names-not-values. No regressions anywhere. Verdict:
+  **MIXED** (concierge/proof precedent). Claim C-013; PRD status updated
+  (proof + recall excepted from all-UNVERIFIED).
+- One trial run excluded with reason (wrong TMPDIR `/var/folders`,
+  permission-blocked, invalid — same class as proof's excluded `025503`)
+  plus subagent-graded analysis (O1 marker-only, O2 false-positive flag)
+  preserved in the evidence page — see `docs/benchmarks/recall.md` for
+  the full accounting.
+
 ### First executed verdict — `proof` MIXED on opencode (2026-09-15, zero Codex)
 
 - Ran `proof` Layer C to the protocol (n=2 per condition + held-out

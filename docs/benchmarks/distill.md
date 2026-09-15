@@ -1,8 +1,14 @@
 # Evidence — distill
 
-Status: **UNVERIFIED** (2026-09-14). Runtime depth pass complete (Phase
-05); zero baseline-vs-skill trials executed — zero-spend policy. This
-page publishes no number it cannot point at.
+Status: **NO LIFT** (2026-09-15, opencode 1.18.31 on muse-spark-1.3,
+n=2 per condition O1+O2 + held-out O3 once per condition, zero Codex).
+Baseline ≥ treatment on every task family: O1 2/2 vs 1/2 (treatment
+trial 1 returned a 15-line brief with no non-goals section and no
+numbered assumptions), O2 2/2 vs 2/2, held-out O3 0/1 vs 0/1 (both
+conditions miss the non-goal marker and the security-surface group). No
+artifacts to adjudicate — every failure is a genuine marker miss. The
+one treatment regression is a marker-discipline slip at n=1; the O2 tie
+is at ceiling.
 
 ## Primary claim
 
@@ -31,8 +37,26 @@ smuggled scope.
 
 ## Raw results
 
-None yet. Pointers will land here with agent/version/model/commit/
-fixture-hash/timestamp per trial, failures preserved.
+| task | baseline | treatment | runs |
+| --- | --- | --- | --- |
+| O1 vague spec (ts-dashboard) | 2/2 | 1/2 | opencode 1.18.31, commit `5a031fc`, 2026-09-15T15:35Z |
+| O2 short request (py-notes-api) | 2/2 | 2/2 | same |
+| O3 held-out contradiction spec | 0/1 | 0/1 | same, 15:38Z |
+
+Raw traces: `evals/results/20260915-153842-outcome-distill-opencode.json`,
+`20260915-153858-outcome-distill-opencode-heldout.json` (gitignored).
+
+Grading notes, stated not hidden: no grader artifacts fired on any
+distill trial (no path flags after the workdir/dotfile fixes; nothing to
+adjudicate). O1 treatment trial 1 is the only treatment failure: a
+15-line brief missing the `non-goal` marker and the assumption group.
+O3 fails both conditions on the same two gates (no non-goals, no
+security/auth surface mentioned) — a genuine held-out miss for both.
+
+## Trial environment notes (first live runs, 2026-09-15, opencode)
+
+- Model scoped: muse-spark-1.3-contributor-free (opencode default);
+  TMPDIR under the repo; durations 6.0–36.2s; zero Codex.
 
 ## Limitations (known before first run)
 

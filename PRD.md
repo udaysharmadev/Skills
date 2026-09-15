@@ -11,7 +11,10 @@ Intelligence Pass complete; `handsfree` autonomy-governor depth pass complete
 with version-verified host research; product documentation and public
 repository surface complete for the build phase. Empirical outcome
 benchmarking is intentionally deferred to the separate proof phase
-(all skills `UNVERIFIED` at Layer C except `proof` MIXED on opencode —
+(9 of 28 skills executed at Layer C as of 2026-09-15, zero Codex:
+`hotseat` PROVEN LIFT; `concierge`, `proof`, `recall`, `spelunk`, `scout`
+MIXED; `distill`, `masterplan`, `pilot` NO LIFT; the rest UNVERIFIED with
+protocols authored —
 see `docs/claims.md`). No v1.0 or
 comparative performance claim is implied.
 

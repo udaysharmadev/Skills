@@ -19,11 +19,11 @@ Status vocabulary:
 | --- | --- | --- | --- | --- | --- |
 | `concierge` | Complete | Traced | Justified N/A | Complete | **MIXED** — codex O1 4/4 vs baseline 1/4; O2/O3 no lift available; see `docs/benchmarks/concierge.md` |
 | `hotseat` | Complete | Traced | Justified N/A | Complete | **PROVEN LIFT** — 5/5 structural passes vs 0/5 baseline (strong-critic baseline); cost documented; see `docs/benchmarks/hotseat.md` |
-| `spelunk` | Complete | Traced | `inventory` extended (manifests, generated/vendor, scoped churn) | Complete | Protocol + fixture grader authored; outcome UNVERIFIED (zero-spend) |
-| `scout` | Complete | Traced | `check-note` structure validator (both directions tested) | Complete | Protocol + offline-trap tasks authored; outcome UNVERIFIED (zero-spend) |
-| `distill` | Complete | Traced | Justified N/A | Complete | Protocol + scale-budget tasks authored; outcome UNVERIFIED (zero-spend) |
-| `masterplan` | Complete | Traced | Justified N/A | Complete | Protocol + groundedness tasks authored; outcome UNVERIFIED (zero-spend) |
-| `recall` | Complete | Traced | `check-memory` syntax-tested | Complete | Protocol + validator-graded tasks authored; outcome UNVERIFIED (zero-spend) |
+| `spelunk` | Complete | Traced | `inventory` extended (manifests, generated/vendor, scoped churn) | Complete | **MIXED** — opencode O1 2/2 vs 1/2; O2/O3 no lift after adjudication; see `docs/benchmarks/spelunk.md` |
+| `scout` | Complete | Traced | `check-note` structure validator (both directions tested) | Complete | **MIXED (adjudicated)** — raw 0/5 vs 1/5, adjudicated 5/5 vs 2/5 on documented grader artifacts; see `docs/benchmarks/scout.md` |
+| `distill` | Complete | Traced | Justified N/A | Complete | **NO LIFT** — O1 2/2 vs 1/2, O2 tie, O3 0/1 both; see `docs/benchmarks/distill.md` |
+| `masterplan` | Complete | Traced | Justified N/A | Complete | **NO LIFT** — baseline ≥ treatment everywhere after adjudication; see `docs/benchmarks/masterplan.md` |
+| `recall` | Complete | Traced | `check-memory` syntax-tested | Complete | **MIXED** — opencode O1 2/2 vs 0/2 (marker-only, baseline workspace-green); O2 0/4 both (brittle flag); O3 1/1 vs 0/1 refusal; see `docs/benchmarks/recall.md` |
 | `pilot` | Complete | Traced | Justified N/A | Complete | Protocol + workspace grader authored; outcome UNVERIFIED (zero-spend) |
 | `backend` | Complete | Traced | Justified N/A | Complete | Protocol + two-stack tasks authored; outcome UNVERIFIED (zero-spend) |
 | `blueprint` | Complete | Traced | `validate-mermaid` both-directions tested; HTML asset present | Complete | Protocol + artifact grader authored; outcome UNVERIFIED (zero-spend) |

@@ -1,9 +1,12 @@
 # Evidence — spelunk
 
-Status: **UNVERIFIED** (2026-09-14). Runtime depth pass complete (Phase
-03); zero baseline-vs-skill trials executed — zero-spend policy: no
-paid-model runs without an explicit trial budget. This page publishes no
-number it cannot point at.
+Status: **MIXED** (2026-09-15, opencode 1.18.31 on muse-spark-1.3, n=2 per
+condition O1+O2 + held-out O3 once per condition, zero Codex). Treatment
+shows lift on the full-map task (O1 2/2 vs 1/2 — the failing baseline
+omitted two required facts); no lift available on the Python fact map
+(O2 2/2 vs 2/2 after artifact adjudication, raw 1/2 vs 1/2) or the
+held-out re-map (O3 1/1 both after adjudication, raw 0/1 vs 1/1); no
+regressions anywhere (treatment never worse).
 
 ## Primary claim
 
@@ -32,8 +35,30 @@ secret values, cite generated/vendor code without verification.
 
 ## Raw results
 
-None yet. Pointers will land here with agent/version/model/commit/
-fixture-hash/timestamp per trial, failures preserved.
+| task | baseline | treatment | runs |
+| --- | --- | --- | --- |
+| O1 full map (ts-dashboard) | 1/2 | 2/2 | opencode 1.18.31, commit `5a031fc`, 2026-09-15T15:34Z |
+| O2 fact map (py-notes-api) | 1/2 | 1/2 | same |
+| O3 held-out risk map | 0/1 | 1/1 | same, 15:38Z |
+
+Raw traces: `evals/results/20260915-153842-outcome-spelunk-opencode.json`,
+`20260915-153925-outcome-spelunk-opencode-heldout.json` (gitignored).
+
+Grading notes, stated not hidden: three mechanical grader artifacts were
+fixed in `scripts/eval-outcome` after these runs and the saved raw
+outputs re-graded offline (no agent re-runs): (1) the sandbox workdir
+path the agent quotes when reading fixtures (`…/outcome-XXXX/.env`)
+counted as an invented path; (2) `lstrip("./")` mangled dotfiles
+(`.gitignore` → `gitignore`, then "invented"); (3) no-fixture tasks
+flagged every filename mention (not hit here — both spelunk tasks have
+fixtures — fixed alongside). With the fixed grader, O3 baseline is 1/1
+(its only flags were artifacts). Two semantic flags stand adjudicated as
+grader brittleness, not agent error: O2 trial 1 fails in *both*
+conditions on `notes.db` (fixture-quoted content —
+`sqlite3.connect("notes.db")` in `app/main.py`) and `pyproject.toml`
+(a negated claim — "no pyproject.toml found"), so O2 is 2/2 vs 2/2
+adjudicated. O1 baseline trial 2 is a genuine miss: `vitest` and
+`lodash` absent from a 19-line report the treatment covers in full.
 
 ## Limitations (known before first run)
 
@@ -42,6 +67,14 @@ fixture-hash/timestamp per trial, failures preserved.
 - Path-existence check covers extension-bearing mentions only.
 - Held-out O3 shares the ts-dashboard fixture with O1 (unseen questions;
   no tuning occurs anywhere, so leakage is N/A — stated, not hidden).
+
+## Trial environment notes (first live runs, 2026-09-15, opencode)
+
+- Model scoped: opencode default free model muse-spark-1.3-contributor-
+  free at the time of the runs. Results are model-scoped; re-runs on a
+  different model are a different row, not an update.
+- TMPDIR under the repo (`evals/results/tmp`); durations 15.9–44.2s;
+  zero Codex (paid-agent guard default-deny).
 
 ## Context audit
 

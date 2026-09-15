@@ -23,10 +23,15 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 from eval_guard import PAID_AGENTS, guard_paid_agent
 RESULTS = os.path.join(ROOT, "evals", "results")
+RESULTS_TMP = os.path.join(RESULTS, "tmp")
+os.makedirs(RESULTS_TMP, exist_ok=True)
+os.environ["TMPDIR"] = RESULTS_TMP
 
 AGENTS = {
-    "codex": {"bin": "codex", "cmd": lambda p: ["codex", "exec", p]},
-    "opencode": {"bin": "opencode", "cmd": lambda p: ["opencode", "run", p]},
+    "codex": {"bin": "codex", "cmd": lambda p, m=None: ["codex", "exec", p]},
+    "opencode": {"bin": "opencode",
+                 "cmd": lambda p, m=None:
+                     ["opencode", "run"] + (["-m", m] if m else []) + [p]},
 }
 
 ARROW = re.compile(r"\s*(?:→|->|>|,|;)\s*")
@@ -309,22 +314,37 @@ def grade_spelunk(task, raw, obs=None):
     missing_groups = [g for g in exp.get("must_contain_any", [])
                       if not any(alt.lower() in low for alt in g)]
     contaminants = [c for c in exp.get("must_not", []) if c.lower() in low]
-    known = fixture_files(task["fixture"]) if task.get("fixture") else []
+    # Hallucinated-path grading needs a fixture ground truth. Chat-only
+    # tasks (no fixture) would flag every filename mention — technology
+    # names like "Next.js" match PATH_RE — as invented paths, so the
+    # check is fixture-gated (caught by headroom/opencode 2026-09-15).
+    known = fixture_files(task["fixture"]) if task.get("fixture") else None
+    # The sandbox path is harness plumbing, not a repo claim: agents quote
+    # it when reading fixture files ("…/outcome-XXXX/.env"). Strip the
+    # workdir (recorded per-trial; regex fallback for results saved before
+    # that) before any path-existence grading.
+    wd = (obs or {}).get("workdir")
+    if wd and wd in raw:
+        raw = raw.replace(wd, "")
+    raw = re.sub(r"[\w./-]*evals/results/tmp/outcome-[0-9a-z_]+", "", raw)
     hallucinated = []
     checked = 0
-    for raw_tok in set(PATH_RE.findall(raw)):
-        # Bare dotfile mentions (".env") are names, not path claims —
-        # without this, any required finding about dotfiles false-fails.
-        if raw_tok.startswith(".") and "/" not in raw_tok:
-            continue
-        tok = raw_tok.lstrip("./")
-        if not tok:
-            continue
-        checked += 1
-        if not any(f == tok or f.endswith("/" + tok)
-                   or os.path.basename(f) == os.path.basename(tok) and
-                   tok.count("/") == 0 for f in known):
-            hallucinated.append(tok)
+    if known is not None:
+        for raw_tok in set(PATH_RE.findall(raw)):
+            # Bare dotfile mentions (".env") are names, not path claims —
+            # without this, any required finding about dotfiles false-fails.
+            if raw_tok.startswith(".") and "/" not in raw_tok:
+                continue
+            # Strip only a literal "./" prefix; lstrip("./") mangles
+            # dotfiles (".gitignore" → "gitignore") into hallucinations.
+            tok = raw_tok[2:] if raw_tok.startswith("./") else raw_tok
+            if not tok:
+                continue
+            checked += 1
+            if not any(f == tok or f.endswith("/" + tok)
+                       or os.path.basename(f) == os.path.basename(tok) and
+                       tok.count("/") == 0 for f in known):
+                hallucinated.append(tok)
     recall = (len(must) - len(missing)) / max(len(must), 1)
     line_count = len(raw.strip().splitlines())
     over_budget = (exp.get("max_lines") is not None
@@ -350,8 +370,8 @@ def _root_status():
     return set(l for l in r.stdout.splitlines() if l.strip())
 
 
-def observe(agent, prompt, cfg, timeout, fixture=None, verify=None,
-            artifacts=None):
+def observe(agent, prompt, cfg, timeout, model=None, fixture=None,
+            verify=None, artifacts=None):
     workdir = tempfile.mkdtemp(prefix="outcome-")
     # Containment: the agent must work ONLY inside workdir. Pin it in
     # the prompt (agents otherwise wander to absolute repo paths they
@@ -385,7 +405,7 @@ def observe(agent, prompt, cfg, timeout, fixture=None, verify=None,
                        capture_output=True)
     t0 = time.time()
     try:
-        proc = subprocess.run(cfg["cmd"](prompt), capture_output=True,
+        proc = subprocess.run(cfg["cmd"](prompt, model), capture_output=True,
                               text=True, timeout=timeout, cwd=workdir,
                               stdin=subprocess.DEVNULL)
         out = (proc.stdout or "") + (proc.stderr or "")
@@ -396,6 +416,7 @@ def observe(agent, prompt, cfg, timeout, fixture=None, verify=None,
         obs = {"status": "ok" if proc.returncode == 0 else "error",
                "exit": proc.returncode, "output": out,
                "output_chars": len((proc.stdout or "") + (proc.stderr or "")),
+               "workdir": workdir,
                "duration": round(time.time() - t0, 1)}
         if verify:
             # Execution skills are graded on the workspace, not the chat:
@@ -470,6 +491,14 @@ def main():
     ap.add_argument("--trials", type=int, default=3)
     ap.add_argument("--timeout", type=int, default=180)
     ap.add_argument("--heldout", action="store_true")
+    ap.add_argument("--model", default=None,
+                    help="model id passed to the agent CLI (e.g. opencode/"
+                         "nemotron-3-ultra-free); recorded in the "
+                         "result JSON — results are model-scoped")
+    ap.add_argument("--timeout-override", type=int, default=None,
+                    help="replace per-task timeouts (slow free models); "
+                         "plumbing only — no grading gate changes; "
+                         "recorded in the result JSON")
     ap.add_argument("--allow-paid", action="store_true",
                     help="with ALLOW_PAID_AGENT=1, authorize a paid-agent run (codex)")
     a = ap.parse_args()
@@ -496,16 +525,19 @@ def main():
         return 2
 
     rec = {"schema": "outcome/1", "skill": a.skill, "agent": a.agent,
-           "agent_version": aver, "commit": commit,
+           "agent_version": aver, "model": a.model or "agent-default",
+           "timeout_override": a.timeout_override,
+           "commit": commit,
            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
            "paid_guard": "authorized" if a.agent in PAID_AGENTS else "n/a",
            "heldout": a.heldout, "trials": []}
     for task in tasks:
         for cond, ctx in (("baseline", None), ("treatment", treat)):
             for t in range(a.trials):
-                to = task.get("timeout", a.timeout)
+                to = (a.timeout_override if a.timeout_override
+                      else task.get("timeout", a.timeout))
                 obs = observe(a.agent, build_prompt(task, cat, ctx), cfg, to,
-                              fixture=task.get("fixture"),
+                              model=a.model, fixture=task.get("fixture"),
                               verify=task.get("verify"),
                               artifacts=task.get("artifacts"))
                 raw = obs.get("output", "")
