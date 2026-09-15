@@ -5,6 +5,19 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+### First executed verdict — `proof` MIXED on opencode (2026-09-15, zero Codex)
+
+- Ran `proof` Layer C to the protocol (n=2 per condition + held-out
+  once per condition, opencode 1.18.30, free adapter): O1 treatment 2/2
+  vs baseline 0/2 (red-regression discipline), O2 2/2 both (no lift
+  available on one-test restraint), O3 0/1 both (held-out honesty
+  markers), no regressions anywhere. Verdict: **MIXED** (concierge
+  precedent). Claim C-012; PRD status updated (proof excepted from
+  all-UNVERIFIED).
+- Three trial runs were excluded with reasons (harness-bug all-fail,
+  pre-containment contamination, permission-blocked roleplays) — see
+  `docs/benchmarks/proof.md` for the full accounting.
+
 ### Outcome trial harness hardening — from first live runs (2026-09-15, opencode only, no Codex)
 
 - First live workspace trial (`proof`, opencode, trials=1) exposed four

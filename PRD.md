@@ -11,7 +11,8 @@ Intelligence Pass complete; `handsfree` autonomy-governor depth pass complete
 with version-verified host research; product documentation and public
 repository surface complete for the build phase. Empirical outcome
 benchmarking is intentionally deferred to the separate proof phase
-(all skills `UNVERIFIED` at Layer C — see `docs/claims.md`). No v1.0 or
+(all skills `UNVERIFIED` at Layer C except `proof` MIXED on opencode —
+see `docs/claims.md`). No v1.0 or
 comparative performance claim is implied.
 
 ---

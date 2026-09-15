@@ -18,6 +18,7 @@ evidence for release-critical claims. Last swept: 2026-09-14.
 | C-009 | Context footprint: SKILL.md ~170KB total, frontmatter ~3561 tok always-on | DERIVED | `scripts/check-context` (byte-estimate method stated in script) | 2026-09-14 | `scripts/check-context` | any skill edit |
 | C-010 | `concierge` outcome evidence: MIXED (codex O1 treatment 4/4 vs baseline 1/4; O2/O3 no lift available) | MEASURED | `docs/benchmarks/concierge.md` trial table (raw traces gitignored in `evals/results/`) | 2026-09-14 | `scripts/eval-outcome --skill concierge --agent codex --trials 3` | model/agent version change |
 | C-011 | `hotseat` outcome evidence: PROVEN LIFT on debate-structure footprints (treatment 5/5 incl. held-out vs baseline 0/5; strong-critic baseline; ~2× output cost) | MEASURED | `docs/benchmarks/hotseat.md` trial table (raw traces gitignored in `evals/results/`) | 2026-09-14 | `scripts/eval-outcome --skill hotseat --agent codex --trials 2` | model/agent version change |
+| C-012 | `proof` outcome evidence: MIXED on opencode 1.18.30 (O1 treatment 2/2 vs baseline 0/2; O2 2/2 both; O3 0/1 both; no regressions) | MEASURED | `docs/benchmarks/proof.md` trial table (raw traces gitignored in `evals/results/`) | 2026-09-15 | `scripts/eval-outcome --skill proof --agent opencode --trials 1` (×2 rounds) + `--heldout` | model/agent version change |
 Prohibited until a row above (or a new row with evidence) allows it:
 stars, installs, users, testimonials, benchmark wins, "works on X"
 compatibility, token-saving percentages.

@@ -31,7 +31,7 @@ Status vocabulary:
 | `polish` | Complete | Traced | Justified N/A | Complete | Protocol + fixture-graded tasks authored; outcome UNVERIFIED (zero-spend) |
 | `friction` | Complete | Traced | Justified N/A | Complete | Protocol + fixture-graded tasks authored; outcome UNVERIFIED (zero-spend) |
 | `ditto` | Complete | Traced | Justified N/A | Complete | Protocol + fixture-graded tasks authored; outcome UNVERIFIED (zero-spend) |
-| `proof` | Complete | Traced | Justified N/A | Complete | Protocol + workspace tasks authored; outcome UNVERIFIED (zero-spend) |
+| `proof` | Complete | Traced | Justified N/A | Complete | **MIXED** — opencode O1 2/2 vs baseline 0/2; O2/O3 no lift available; see `docs/benchmarks/proof.md` |
 | `roadtest` | Complete | Traced | `test-matrix` smoke-tested | Complete | Protocol + fixture tasks authored; outcome UNVERIFIED (zero-spend) |
 | `sleuth` | Complete | Traced | Justified N/A | Complete | Protocol + workspace tasks authored; outcome UNVERIFIED (zero-spend) |
 | `referee` | Complete | Traced | Justified N/A | Complete | Protocol + fixture tasks authored; outcome UNVERIFIED (zero-spend) |
