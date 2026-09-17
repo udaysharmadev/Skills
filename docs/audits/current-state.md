@@ -1,4 +1,9 @@
-# Current-state audit — Skills v1 campaign, Phase 0
+# Historical current-state audit: Skills v1 campaign, Phase 0
+
+> Superseded by the 28-skill release at commit `310dfec` on 2026-09-18.
+> This is preserved evidence of the 2026-09-14 baseline, not a description of
+> the current product. For current install and runtime information, use the
+> repository README, generated skill index, and validators.
 
 Frozen: 2026-09-14. Commit `96b4646` (`docs: add banner image to top of README and sync 28-skill index`).
 Tree clean at freeze time. Auditor: OpenCode session (Muse Spark) under the

@@ -1,4 +1,8 @@
-# Skill maturity scorecard
+# Historical skill maturity scorecard
+
+> Snapshot of the prior evidence pass. The current runtime release is validated
+> by repository checks; this document preserves past measured and unverified
+> evaluation evidence and is not a marketing claim.
 
 The 28 skills are **implementation-complete**. Empirical outcome benchmarking
 is a separate future proof phase. This scorecard therefore keeps implementation

@@ -1,15 +1,15 @@
 # Cross-agent compatibility matrix
 
 **Portability is an empirical claim, not a format assumption.** Cells are
-filled only from actual tests or clearly-labeled research — never from
+filled only from actual tests or clearly-labeled research, never from
 "the Agent Skills format is theoretically portable".
 
 Status semantics:
 
-- ✅ **tested** — executed against a live agent, date recorded
-- ◐ **supported with fallback** — works, but degraded vs the primary path
-- ? **unverified** — researched/documented, not yet executed here
-- — **unavailable** — not installed / no headless capability found
+- ✅ **tested**: executed against a live agent, date recorded
+- ◐ **supported with fallback**: works, but degraded vs the primary path
+- ? **unverified**: researched/documented, not yet executed here
+- — **unavailable**: not installed / no headless capability found
 
 ## Local probe results (2026-09-14)
 
@@ -45,13 +45,13 @@ implementation incomplete.
 
 ## Installation compatibility (measured 2026-09-14)
 
-- `npx skills add udaysharmadev/Skills --all -y` → **verified**: all 27
-  skills discovered and installed into `./.agents/skills/` of a clean
-  directory via the public skills CLI; CLI reports Claude Code as
-  symlinked target and broad "universal" agent support.
-- 28-skill re-verification (with `handsfree`) → **verified 2026-09-14**:
-  clean-directory install yields 28/28 folders under `.agents/skills/`
-  including `handsfree` — see C-004 in [claims.md](claims.md).
-- Interactive single-skill install (`npx skills add udaysharmadev/Skills`)
-  → same CLI, selection mode; discovery verified, interactive flow
+- `npx skills add udaysharmadev/Skills --all -y` was verified on
+  2026-09-14: a clean-directory install yielded all 28 folders under
+  `./.agents/skills/`, including `handsfree`; see C-004 in
+  [claims.md](claims.md).
+- Interactive single-skill install (`npx skills add udaysharmadev/Skills`):
+  same CLI, selection mode; discovery verified, interactive flow
   exercised manually.
+
+The command is verified. The live skills.sh listing and badge status remain
+unverified until the public listing can be checked directly.

@@ -59,7 +59,7 @@ putting it into runtime context.
 These are not “act like an expert” prompts.
 
 - `sleuth` keeps competing hypotheses alive until an experiment separates them.
-- `headroom` attaches a trigger metric to every scaling recommendation—and
+- `headroom` attaches a trigger metric to every scaling recommendation, and
   tells you what not to build yet.
 - `harden` separates severity, confidence, exploit preconditions, and impact.
 - `unslop` protects load-bearing weirdness instead of rewriting everything clean.
@@ -108,14 +108,14 @@ Still unsure? `/concierge` is the front door. The beginner-friendly
 
 ### Think
 
-- [`concierge`](skills/concierge/) — inspect the project and route the smallest sufficient workflow.
-- [`handsfree`](skills/handsfree/) — stop babysitting the agent. Routine decisions are autonomous; only real human gates interrupt you.
-- [`hotseat`](skills/hotseat/) — stress-test an idea through seven genuinely different lenses.
-- [`spelunk`](skills/spelunk/) — map an unfamiliar repository without reading it blindly.
-- [`scout`](skills/scout/) — replace stale API memory with version-pinned evidence.
-- [`distill`](skills/distill/) — turn a vague request into a compact, executable brief.
-- [`masterplan`](skills/masterplan/) — produce vertical slices grounded in files that exist.
-- [`recall`](skills/recall/) — preserve decisions and expensive lessons without dumping transcripts.
+- [`concierge`](skills/concierge/): inspect the project and route the smallest sufficient workflow.
+- [`handsfree`](skills/handsfree/): stop babysitting the agent. Routine decisions are autonomous; only real human gates interrupt you.
+- [`hotseat`](skills/hotseat/): stress-test an idea through seven genuinely different lenses.
+- [`spelunk`](skills/spelunk/): map an unfamiliar repository without reading it blindly.
+- [`scout`](skills/scout/): replace stale API memory with version-pinned evidence.
+- [`distill`](skills/distill/): turn a vague request into a compact, executable brief.
+- [`masterplan`](skills/masterplan/): produce vertical slices grounded in files that exist.
+- [`recall`](skills/recall/): preserve decisions and expensive lessons without dumping transcripts.
 
 ### Build
 
@@ -257,7 +257,7 @@ inspectable, but this bundle is not a security guarantee. See
 - [Workflow recipes](docs/workflows.md)
 - [Architecture](docs/architecture/README.md)
 - [Compatibility](docs/compatibility.md)
-- [Current maturity scorecard](docs/scorecard.md)
+- [Maintainer evidence and historical audits](docs/evaluations.md)
 
 Implementation is complete for all 28 skills. Empirical outcome benchmarking
 is a separate, intentionally deferred proof phase; no benchmark superiority is

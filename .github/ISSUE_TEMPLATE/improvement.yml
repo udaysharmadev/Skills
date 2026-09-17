@@ -7,7 +7,7 @@ body:
     id: skill
     attributes:
       label: Skill
-      description: The 27-skill set is frozen; name the existing owner.
+      description: The 28-skill set is frozen; name the existing owner.
       placeholder: headroom
     validations:
       required: true

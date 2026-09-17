@@ -5,7 +5,7 @@ The README is the front door. This directory is the map behind it.
 ## Getting started
 
 - [Which skill do I need?](choosing-a-skill.md) — choose from the problem you
-  are trying to solve, not from 27 names.
+  are trying to solve, not from 28 names.
 - [Workflow recipes](workflows.md) — realistic compositions, including when
   one skill is enough.
 - [Human skill guide](skills/README.md) — concise cards for every skill.
@@ -30,17 +30,14 @@ The README is the front door. This directory is the map behind it.
 - [Research provenance index](research/README.md) — all 28 research passes,
   grouped by lifecycle area.
 
-## Maintainers
+## Maintainer and historical material
 
-- [Current maturity scorecard](scorecard.md) — implementation, research,
-  tooling, docs, and evaluation status kept separate.
-- [Evaluations](evaluations.md) — trigger and workflow evidence infrastructure.
-- [Benchmarks](benchmarks.md) — existing fixtures and the intentionally
-  deferred empirical proof phase.
-- [Historical expertise audit](expertise-audit.md) — the v0.8 intelligence-pass
-  snapshot, retained as history.
-- [Name audit](name-audit.md) — collision method and pre-announcement checks.
-- [Brand options](brand-options.md) — historical naming exploration; no rename
+- [Release evidence and historical audits](evaluations.md) contains the
+  optional maintainer-only evaluation harness, benchmark fixtures, prior
+  scorecards, and archived audits. None of it is required to install or use a
+  skill.
+- [Name audit](name-audit.md) records pre-announcement collision research.
+- [Brand options](brand-options.md) is historical naming exploration; no rename
   is implied.
 
 The evaluation and benchmark material remains available for the later proof

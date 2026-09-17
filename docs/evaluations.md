@@ -1,4 +1,8 @@
-# Evaluations
+# Maintainer evaluation evidence
+
+> This material is optional maintainer evidence, not part of installation or
+> normal skill use. It records historical methodology and results without any
+> claim that the bundle is benchmark-superior.
 
 How the suite measures itself. Honesty rules from the PRD bind every
 number shown anywhere: `measured` / `derived` / `estimated` / `unknown`

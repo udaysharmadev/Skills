@@ -1,4 +1,4 @@
-# Historical expertise audit — v0.8.6
+# Historical expertise audit: v0.8.6
 
 > This is the snapshot taken at the end of the Deep Intelligence Pass. Its
 > implementation gaps were reconciled during the productization pass; use the
