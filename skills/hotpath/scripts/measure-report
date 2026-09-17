@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""measure-report — turn before/after measurements into the hotpath report.
+"""measure-report: turn before/after measurements into the hotpath report.
 
 Computes deltas, flags regressions, and enforces the honesty fields
 (conditions, sample count). Deterministic; refuses to invent percentages
@@ -7,7 +7,7 @@ when inputs are missing.
 
 Usage: skills/hotpath/scripts/measure-report --baseline 4.8 --after 2.9 \
          --unit seconds --conditions "throttled 4G, 50k rows, median of 3" \
-         [--label "LCP"] [--threshold 0.1] [--json]
+         --threshold 0.1 [--label "LCP"] [--json]
 Exit 0 = improvement ≥ threshold; 1 = regression or below threshold;
 2 = usage error.
 """
@@ -21,15 +21,15 @@ def main():
     ap.add_argument("--unit", default="ms")
     ap.add_argument("--label", default="measurement")
     ap.add_argument("--conditions", required=True,
-                    help="the conditions both runs shared — required, not optional")
-    ap.add_argument("--threshold", type=float, default=0.05,
-                    help="minimum relative delta to count as a real change (default 0.05)")
+                    help="the conditions both runs shared: required, not optional")
+    ap.add_argument("--threshold", type=float, required=True,
+                    help="minimum relative delta selected from variance or product budget")
     ap.add_argument("--higher-is-better", action="store_true")
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
 
     if a.baseline == 0:
-        print("measure-report: baseline of 0 — not a measurable baseline", file=sys.stderr)
+        print("measure-report: baseline of 0: not a measurable baseline", file=sys.stderr)
         return 2
     delta = a.after - a.baseline
     rel = delta / a.baseline
@@ -37,7 +37,7 @@ def main():
     significant = abs(rel) >= a.threshold
     verdict = ("KEEP" if improved and significant else
                "REVERT" if (not improved and significant) else
-               "NOISE — below threshold, complexity cost not justified")
+               "NOISE: below threshold, complexity cost not justified")
 
     doc = {"label": a.label, "unit": a.unit, "baseline": a.baseline,
            "after": a.after, "delta": round(delta, 6),

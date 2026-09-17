@@ -1,121 +1,63 @@
-# Scale dimensions — read only what the decision touches
+# Capacity dimensions
 
-Each dimension: the question, the threshold thinking, and when it matters.
-Skip dimensions the current scale makes irrelevant — and say you skipped
-them (that's proportionality, not laziness).
+Read only the dimensions that can change the current decision.
 
-## Load shape
+## Workload
 
-- **Traffic** — requests/sec now and expected peak; the number everything
-  else keys off. Ask; estimate only with shown arithmetic.
-- **Traffic pattern** — flat, diurnal (peak ≈ 5–10× average), or spiky
-  (viral/batch)? Capacity is sized for the pattern, not the mean; queues
-  and load shedding exist for the spikes.
-- **Read/write ratio** — decides caching, replicas, denormalization.
-  95% reads and 50/50 are different architectures.
-- **Latency targets** — interactive (<200ms p50?) vs background? Sets
-  how much complexity sync paths may carry.
-- **Tail latency, not just the median** — p99 is where users feel the
-  system: GC pauses, noisy neighbors, retry amplification, and queueing
-  all hide behind a pretty p50. Name what dominates the tail for THIS
-  workload (cold starts? lock contention? downstream fan-out?) and which
-  design choice moves it — a cache that fixes p50 but not p99 fixed the
-  dashboard, not the experience.
-- **Throughput / data size** — GBs vs TBs changes storage choices more
-  than any feature comparison chart.
-- **Durability** — how much data loss is acceptable in a disaster (RPO)?
-  "Zero" prices the storage architecture before anything else does.
+Record observed values where available and label estimates:
 
-## Capacity estimation (when numbers exist)
+- traffic rate and peak-to-average shape;
+- concurrency and burst duration;
+- read and write mix;
+- request fan-out and payload size;
+- data volume, growth, retention, and index overhead;
+- latency and availability objectives;
+- recovery point and recovery time objectives;
+- budget and operational staffing.
 
-Do the arithmetic explicitly, one line per step, units on everything:
+Show arithmetic with units. A sample estimate is not a capacity fact.
 
-```text
-avg request = 3 reads + 0.2 writes
-peak factor = 5× (diurnal assumption — label it)
-users → sessions/hr → req/s at peak:  10k users × 0.5 req/session/hr
-  × 5 peak ≈ 1.4 req/s  ← tiny; a $10 managed DB carries this
-storage growth = rows/day × row size × 365 (+ indexes ≈ 1.5×)
-fan-out = one user action → N service calls (N multiplies load downstream)
-```
+## Bottlenecks
 
-If the arithmetic shows headroom under 3×, the "Scale" tier stops being
-hypothetical and Next-level items get concrete triggers. If it shows
-100× headroom, say so — that is the proportionality rule winning.
+For each likely bottleneck, record:
 
-## Data
+- resource or dependency;
+- evidence of current utilization;
+- failure behavior as saturation approaches;
+- the metric that would trigger action;
+- the cheapest change that creates headroom;
+- new cost, consistency, and operational failure modes.
 
-- **Consistency** — what actually breaks if two readers disagree for a
-  second? Most apps: nothing. Money/inventory: real damage. Choose from
-  the failure, not from fashion.
-- **Partitioning / sharding** — the thing you do when one machine
-  genuinely can't hold or serve the data. Marked Scale until proven
-  otherwise.
-- **Replication** — read scaling and failover; comes with lag, which
-  becomes a consistency question above.
+Consider compute, memory, storage, database locks, connections, queues, network,
+third-party quotas, hot keys, and human on-call capacity.
 
-## Coordination
+## Architecture choices
 
-- **Concurrency** — hot rows, double-submit, race conditions on limited
-  inventory. Usually solved with constraints + idempotency, not queues.
-- **Queues** — for bursty or deferrable work (email, media, webhooks).
-  Not for making a fast request slow on purpose. Queue economics decide
-  the design: max acceptable end-to-end lag sets depth alarms, poison
-  messages need a dead-letter path with its own retention, and retention
-  itself is priced (a 7-day backlog of payloads is a storage bill, not a
-  safety net).
-- **Retries / idempotency** — anything that retries must be safe to
-  repeat. Cross-cutting; see `backend`'s disciplines.
-- **Backpressure / load shedding** — what happens when producers
-  outpace consumers? Rejected work beats silently growing lag; decide
-  WHO gets shed (low-priority traffic first) before the overload, not
-  during it.
-- **Hot keys / hot rows** — one celebrity user, one popular product, one
-  counter row: caching and queueing fail at the hot key before they fail
-  in aggregate. Name the likely hot keys and their plan.
+Use the failure that must be prevented to choose among:
 
-## Availability
+- vertical scaling, horizontal scaling, and workload isolation;
+- caching and invalidation;
+- batching, queues, and backpressure;
+- replication, partitioning, and sharding;
+- stronger or weaker consistency;
+- single-region and multi-region deployment;
+- modular monolith and separately deployed services.
 
-- **Availability goals** — "99%" and "99.99%" are different budgets and
-  different teams. Match the goal to what downtime actually costs.
-- **Failure domains** — what dies together today? One box, one zone?
-  Name the blast radius before promising uptime.
-- **Disaster recovery** — backup restore *tested*, RTO/RPO stated.
-  Untested backups are hopes, not DR.
-- **Multi-region** — Scale level almost always; the lag/cost bill is
-  enormous. Data residency laws are the one non-negotiable trigger.
+Do not add a mechanism merely because a growth scenario can be imagined.
 
-## Protection
+## Now, Next, Scale
 
-- **Rate limiting** — per-IP at minimum, per-token for real APIs.
-  Decides abuse survival more than any scaling.
-- **Cost** — the constraint that makes proportionality real. A $5 managed
-  DB that survives 10k users beats a $500 self-run cluster.
+| Horizon | Content |
+| --- | --- |
+| Now | simplest design that meets current measured needs |
+| Next | one low-regret preparation plus a measurable trigger |
+| Scale | larger change, evidence that would justify it, migration path, and cost |
 
-## Operability
+A scenario multiplier may be useful for sensitivity analysis, but it must be
+labeled as a scenario chosen for the current task, not a universal forecast.
 
-- **Caching** — where reads are repetitive; every cache needs an
-  invalidation story. Design the failure modes, not just the hit rate:
-  cold start (what serves traffic while the cache warms?), stampede
-  protection (request coalescing or stale-while-revalidate so one expiry
-  doesn't fan out into N origin hits), and cache-outage fallback (degraded
-  reads or explicit errors — never silent wrong answers).
-- **Observability** — can you see the thing break? Logs/metrics/traces
-  proportional to the architecture's complexity (more moving parts =
-  more visibility required).
-- **Migration path** — from what exists today, in steps that each ship.
-  A design with no incremental path from reality is fiction.
+## Failure and recovery
 
-## Agentic Workflows & Teams (2026)
-
-- **Agent Modularity (The "Premature Microservices" Trap)** — Do not split an AI agent into independent microservices until operational overhead (contention, memory isolation, deployment lifecycle) forces it. Start with an orchestrated execution graph (modular monolith).
-- **Bounded Agency** — AI agents must operate within explicit, human-defined boundaries (like traditional API interfaces). Define what the agent *cannot* do.
-- **Team Topologies** — An AI-assisted team is still a stream-aligned team responsible for stewardship. Architect for human observability and control, not full unmonitored autonomy.
-
-## The proportionality table (rough guide)
-
-| Level | Typical numbers | Appropriate shape |
-| --- | --- | --- |
-| Now | < 10k users, < 50 req/s, single region | one app process + managed DB + queue for async work; boring everywhere |
-| Next | 10k–500k users, 50–2k req/s | read replicas, real caching layer, job workers split out, multi-AZ |
-| Scale | beyond, or hard multi-region/data-residency needs | service split along real seams, sharding where data demands, event-driven where coupling hurts |
+If reliable workload data is missing, return the smallest safe design and the
+measurement needed next. If a recommendation depends on an untested assumption,
+state the counterfactual that would reverse it.

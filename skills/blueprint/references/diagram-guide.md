@@ -14,17 +14,18 @@
 | Where are the trust boundaries / threat vectors? | Threat Model | `flowchart TD` with `subgraph` for zones |
 | Who does what over time (async)? | Event flow | `sequenceDiagram` |
 
-Pick by question, not by completeness. 3–5 diagrams usually cover it.
+Pick by question, not by completeness. Delete any diagram that does not answer
+a named reader question.
 
 ## Style rules (all diagrams)
 
-- `%%{init: {'theme':'dark'}}%%` is unnecessary — the HTML template
+- `%%{init: {'theme':'dark'}}%%` is unnecessary: the HTML template
   themes them; keep sources theme-neutral.
 - Node labels: real names + a role hint: `api["API (Hono)"]`.
 - Data stores: cylinder shape `[(Postgres)]`; external systems: box with
   dashed border for inferred, solid for verified.
-- Max ~30 nodes; beyond that, split into two diagrams with one sentence
-  linking them.
+- Split when labels or relationships stop being legible, then link the views
+  with one sentence.
 - **Explicit Trust Boundaries:** Use subgraphs (`subgraph TrustZone`) to demarcate where data crosses from public to private, or between different permission contexts. Security must not be an afterthought.
 - Direction left-to-right for flows that follow time; top-down for structure.
 
@@ -82,10 +83,10 @@ The bundled HTML template (in this skill's assets folder) is the shell:
 sidebar nav, content sections,
 light/dark toggle, zoom buttons per diagram, print CSS. Fill every
 placeholder (`{{TITLE}}`, nav items, sections); delete sections you don't
-use. Diagrams render via Mermaid from CDN — if the reader is offline the
+use. Diagrams render via Mermaid from CDN: if the reader is offline the
 template shows a notice pointing at the `.mmd` files (which is also why
 the `.mmd` sources always ship alongside).
 
 Print-friendly means: `@media print` in the template collapses the
-sidebar, forces light theme, and avoids page-breaks inside diagrams —
+sidebar, forces light theme, and avoids page-breaks inside diagrams,
 verify with a print preview before shipping.

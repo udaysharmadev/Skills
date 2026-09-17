@@ -12,14 +12,14 @@ blocks a correct next action. The same topic routes differently:
 
 | Source of uncertainty | Route first to |
 | --- | --- |
-| Intent unclear — goal vs. implementation unspecified | `distill` |
-| Repo state unknown — can't locate relevant code | `spelunk` |
-| External truth missing — library/API/version behavior | `scout` |
-| Prior decisions missing — need project context | `recall` |
-| Design missing — no agreed plan exists | `distill` → `masterplan` |
-| Design settled — needs implementation | `pilot` |
-| Correctness missing — code exists, prove it works | `proof` / `roadtest` |
-| Risk/safety missing — auth/money/prod-facing change | `harden` / `cleared` |
+| Intent unclear: goal vs. implementation unspecified | `distill` |
+| Repo state unknown: can't locate relevant code | `spelunk` |
+| External truth missing: library/API/version behavior | `scout` |
+| Prior decisions missing: need project context | `recall` |
+| Design missing: no agreed plan exists | `distill` → `masterplan` |
+| Design settled: needs implementation | `pilot` |
+| Correctness missing: code exists, prove it works | `proof` / `roadtest` |
+| Risk/safety missing: auth/money/prod-facing change | `harden` / `cleared` |
 | Progress blocked by approval ceremony, not by missing information | `handsfree` |
 
 ## Request patterns
@@ -52,8 +52,8 @@ blocks a correct next action. The same topic routes differently:
 | "Are we ready to ship / go live" | `cleared` |
 | Deploy this (any platform) | `runway` |
 | "stop asking me to confirm every step" / autonomy complaint | `handsfree` |
-| Trivial fully-specified micro-change ("rename this button") | direct — no skill; do the change |
-| General knowledge / reminder / translation (no repo, no code) | none — answer directly, no skill |
+| Trivial fully-specified micro-change ("rename this button") | direct: no skill; do the change |
+| General knowledge / reminder / translation (no repo, no code) | none: answer directly, no skill |
 | Before context reset / handoff | `recall` (session delta) |
 
 ## Evidence reuse
@@ -105,7 +105,7 @@ appropriate for the task's risk (auth/money → shorter; research notes → long
    subagents creates merge conflicts and reconciliation cost.
 7. **Loop detection.** One re-route per domain per task. If a specialist
    returns the work a second time for the same reason, stop dispatching
-   and report the loop with the blocking question — a third dispatch to
+   and report the loop with the blocking question: a third dispatch to
    the same domain is the failure mode, not persistence.
 
 ## Handoff phrasing

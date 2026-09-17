@@ -1,4 +1,4 @@
-# Gate dimensions — applicability, evidence, weight
+# Gate dimensions: applicability, evidence, weight
 
 Scope the gate first; check what applies. Weight column decides what a
 failure does to the verdict.
@@ -12,7 +12,7 @@ failure does to the verdict.
 | Tests | runner exists | full suite, real output, skips noted | **BLOCKED** on fail |
 | Build | always | build command output | **BLOCKED** on fail |
 | Browser flows | user-facing UI | `roadtest` bundle for changed flows | **BLOCKED** for UI changes if unverified+critical; unverified alone = warning cap |
-| Responsive UI | web UI | ≥ 2 viewports evidenced | warning (unusable at common widths = blocked) |
+| Responsive UI | web UI | supported boundaries evidenced | warning (unusable at a required width = blocked) |
 | Accessibility | user-facing UI | WCAG/friction pass | **BLOCKED** if unusable; others warning |
 | Security | always, weight rises with data | `harden` findings current | **BLOCKED** on open critical; medium = warning with user sign-off |
 | Dependencies | always | audit tool output | **BLOCKED** on critical CVE in runtime path; else warning |
@@ -28,12 +28,12 @@ failure does to the verdict.
 ## Verdict arithmetic
 
 - Any **BLOCKED**-weight failure → `BLOCKED`.
-- No blockers, but ≥ 1 warning or unverified dimension → `READY WITH
+- No blockers, but a material warning or unverified dimension means `READY WITH
   WARNINGS` (each listed with evidence + remediation + owner).
 - All applicable dimensions verified green → `READY`.
 
 Unverified dimensions: a warning, unless the dimension was the point of
-the release (browser flows for a UI release) — then it blocks.
+the release (browser flows for a UI release): then it blocks.
 
 ## The evidence bar
 

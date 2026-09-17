@@ -1,4 +1,4 @@
-# Evidence bundle — format and storage
+# Evidence bundle: format and storage
 
 The bundle makes "it worked" auditable. Directory per run:
 
@@ -14,7 +14,7 @@ docs/reports/roadtest-<slug>/
     result.txt                 ← PASS / FAIL + one-line reason
 ```
 
-`<slug>`: kebab-case, ≤ 3 words (feature or release name) + optional date
+`<slug>`: short kebab-case feature or release name, with an optional date
 if runs repeat over time.
 
 ## report.md format
@@ -38,33 +38,33 @@ if runs repeat over time.
 - automation: healed locator on 'Submit' button (data-testid missing, fell back to XPath)
 
 ## Unverified
-- payment provider redirect — sandbox unavailable this run
+- payment provider redirect: sandbox unavailable this run
 ```
 
 ## Capture rules
 
-- Screenshot **at the assertion moment** — the state the result claim is
+- Screenshot **at the assertion moment**: the state the result claim is
   about, named sequentially (`01-…`, `02-…`).
 - Console/network logs: full session capture per path, failures
   highlighted at the top of the excerpt in report.md.
-- A PASS with no screenshots is an unverified claim — rung discipline
+- A PASS with no screenshots is an unverified claim: rung discipline
   applies to us too.
 - Failed paths keep their failing evidence; don't overwrite with the
-  post-fix re-run — the re-run is a new path dir (or `-rerun` suffix).
+  post-fix re-run: the re-run is a new path dir (or `-rerun` suffix).
 
 ## Screenshot discipline
 
-A screenshot alone does not prove a flow works — it proves one pixel
+A screenshot alone does not prove a flow works: it proves one pixel
 state at one moment. Every screenshot pair must be tied to the
-assertion it evidences ("after submit — order visible in table"), and
+assertion it evidences ("after submit: order visible in table"), and
 the result.txt records the checks that passed (console clean, network
 clean, interaction worked), not just "looks right".
 
 ## What does NOT go in the bundle
 
 - Credentials, tokens, session cookies (mask in screenshots; redact in
-  logs — evidence files ship with the repo).
+  logs: evidence files ship with the repo).
 - Personal/test data beyond what the flow requires; use obviously-fake
   payloads (`test@example.com`, `REDACTED`).
-- Video dumps when screenshots suffice — the bundle should be reviewable
+- Video dumps when screenshots suffice: the bundle should be reviewable
   in a browser tab, not a media player.

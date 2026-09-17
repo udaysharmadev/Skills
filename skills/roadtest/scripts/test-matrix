@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""test-matrix — generate the roadtest walk matrix + evidence skeleton.
+"""test-matrix: generate the roadtest walk matrix + evidence skeleton.
 
 Turns a list of critical paths into the concrete test matrix (paths ×
 viewports × state checks) and prints the evidence-bundle directory

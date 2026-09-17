@@ -1,4 +1,4 @@
-# Source ladder — trust tiers, citation format, note template
+# Source ladder: trust tiers, citation format, note template
 
 ## Trust tiers
 
@@ -24,7 +24,7 @@ must not override official documentation or vendored code.
 Inline links with version + date context:
 
 ```markdown
-- `useActionState` requires React 19. [React docs — 19.x](https://…)
+- `useActionState` requires React 19. [React docs: 19.x](https://…)
 - Rate limit is 100 req/min on the free tier per 2026-06 pricing page. [source](https://…) (verify before launch)
 ```
 
@@ -46,7 +46,7 @@ Offline mode cites file paths instead of URLs:
 The answer, in 1–3 sentences, decidable.
 
 ## Load-bearing facts
-- fact [source] — each one would change the recommendation if wrong.
+- fact [source]: each one would change the recommendation if wrong.
 
 ## Incompatible / outdated patterns
 - pattern that looks right but is deprecated/renamed/unsafe in the
@@ -82,7 +82,7 @@ current major's docs), **experimental** (flagged, behind a flag, or
 major-version-0), or **deprecated** (marked in changelog/docs, or
 absent from current docs while present in older ones). Experimental
 APIs get recommended only with that label and an escape hatch note;
-deprecated APIs are named as "works today, removal pending" — never as
+deprecated APIs are named as "works today, removal pending": never as
 the recommended path.
 
 ## Alternatives comparison (when the question is "which X")
@@ -90,13 +90,12 @@ the recommended path.
 Compare on explicit criteria, not vibes: fit to the actual requirement,
 maintenance health (recent releases, issue responsiveness), ecosystem
 fit with what the repo already uses, migration cost from the current
-choice, and exit cost. Two or three candidates maximum — a five-way
-comparison is a decision dodge. State the decision rule you applied
+choice, and exit cost. Compare only the credible candidates that could win;
+an exhaustive list is often a decision dodge. State the decision rule you applied
 ("picked the one with the lowest exit cost because the requirement is
 likely to change").
 
 ## Freshness rules
 
-- Research older than 30 days: re-verify load-bearing facts before reuse.
-- Ecosystems move at different speeds (JS frameworks ≠ database engines) —
-  weight freshness by ecosystem churn, and say when you did.
+- Reverify when the source version, target version, scope, or ecosystem churn
+  makes a load-bearing claim plausibly stale. Record when you checked.

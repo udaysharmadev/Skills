@@ -13,7 +13,7 @@
 <What the user experiences differently. One or two sentences.>
 
 ## Context
-- <Existing piece the work touches — path + one line.>
+- <Existing piece the work touches: path + one line.>
 - <Command/environment facts that constrain the work.>
 
 ## Constraints & conventions
@@ -71,7 +71,7 @@ choice persists across sessions.
 Comfortable viewing in low light; the app remembers the preference.
 
 ## Context
-- Tailwind configured with CSS variables — `tailwind.config.ts`
+- Tailwind configured with CSS variables: `tailwind.config.ts`
 - Theme not stored anywhere today; no user preferences table exists.
 
 ## Constraints & conventions

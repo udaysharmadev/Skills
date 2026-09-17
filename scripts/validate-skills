@@ -1,136 +1,93 @@
 #!/usr/bin/env bash
-# validate-skills — mechanically check each skill's identity, structural
-# completion markers, research/reference reachability, size, and
-# self-containment. Semantic PRD compliance remains a review responsibility.
+# Validate the 28-skill product contract with cheap deterministic checks.
 set -u
 cd "$(dirname "$0")/.."
 
 fail=0
-count=0
 expected="backend blueprint cleared concierge distill ditto findable friction frontpage frugal handsfree harden headroom hotpath hotseat janitor masterplan pilot polish proof recall referee roadtest runway scout sleuth spelunk unslop"
+count=0
+
+scripts/validate-frontmatter || fail=1
 
 for dir in skills/*/; do
   [ -d "$dir" ] || continue
   count=$((count + 1))
-  name=$(basename "$dir")
-  f="$dir/SKILL.md"
+  skill=$(basename "$dir")
+  file="$dir/SKILL.md"
 
   case " $expected " in
-    *" $name "*) ;;
-    *) echo "FAIL $name: not in the frozen 28-skill set"; fail=1 ;;
+    *" $skill "*) ;;
+    *) echo "FAIL $skill: outside the frozen 28-skill set"; fail=1 ;;
   esac
 
-  if [ ! -f "$f" ]; then
-    echo "FAIL $name: missing SKILL.md"
-    fail=1
-    continue
-  fi
-
-  # Frontmatter delimiters
-  if [ "$(head -n 1 "$f")" != "---" ]; then
-    echo "FAIL $name: file must start with a '---' frontmatter delimiter"
-    fail=1
-    continue
-  fi
-  if [ "$(awk 'NR>1 && /^---$/{print; exit}' "$f")" != "---" ]; then
-    echo "FAIL $name: frontmatter is not closed by a second '---' line"
-    fail=1
-    continue
-  fi
-
-  fm_name=$(awk 'NR>1 && /^---$/{exit} /^name:/{print $2; exit}' "$f")
-  if [ "$fm_name" != "$name" ]; then
-    echo "FAIL $name: frontmatter name is '${fm_name:-<missing>}' but directory is '$name'"
-    fail=1
-  fi
-
-  desc=$(awk 'NR>1 && /^---$/{exit} /^description:/{sub(/^description: */,""); print; exit}' "$f")
-  if [ -z "$desc" ]; then
-    echo "FAIL $name: missing description (the primary trigger signal)"
-    fail=1
-  elif [ "${#desc}" -gt 1024 ]; then
-    echo "FAIL $name: description is ${#desc} chars (spec limit 1024)"
-    fail=1
-  fi
-
-  lines=$(wc -l < "$f" | tr -d ' ')
+  lines=$(wc -l < "$file" | tr -d ' ')
   if [ "$lines" -gt 500 ]; then
-    echo "FAIL $name: SKILL.md is $lines lines (max 500 — move detail to references/)"
+    echo "FAIL $skill: SKILL.md has $lines lines; maximum is 500"
     fail=1
   fi
 
-  # Self-containment: no relative escapes out of the skill folder
-  if grep -qnE '\]\(\.\./|\]\(/' "$f"; then
-    echo "FAIL $name: SKILL.md links outside its own folder — skills must be self-contained"
-    fail=1
-  fi
-  if grep -qn 'shared/' "$f"; then
-    echo "FAIL $name: SKILL.md references shared/ — copy the needed contract inline instead"
-    fail=1
-  fi
-
-  # Completion contract: these sections are universal even when prerequisite
-  # and fallback details are embedded in the workflow rather than headings.
-  for heading in 'When NOT to use' 'Quality gates' 'Stop conditions' 'Output contract'; do
-    if ! grep -q "^## $heading" "$f"; then
-      echo "FAIL $name: missing required section '$heading'"
+  for heading in "When NOT to use" "Quality gates" "Stop conditions" "Output contract"; do
+    if ! grep -q "^## $heading" "$file"; then
+      echo "FAIL $skill: missing '$heading'"
       fail=1
     fi
   done
 
-  research="docs/research/$name.md"
+  for heading in "Prerequisites" "Tool selection"; do
+    if ! grep -Eqi "^## .*$heading" "$file"; then
+      echo "FAIL $skill: missing '$heading' guidance"
+      fail=1
+    fi
+  done
+
+  research="$dir/references/research.md"
   if [ ! -f "$research" ]; then
-    echo "FAIL $name: missing research provenance at $research"
+    echo "FAIL $skill: missing references/research.md"
     fail=1
-  elif ! grep -q 'Where encoded' "$research"; then
-    echo "FAIL $name: research provenance has no 'Where encoded' trace"
+  else
+    for field in "Title:" "Author / Organization:" "Publication date:" "Version:" "URL:" "Source type:" "What it establishes:" "What this skill adopts:" "What it does NOT establish:" "Numbers taken from source:" "Reverify when:"; do
+      if ! grep -Fq "$field" "$research"; then
+        echo "FAIL $skill: research ledger missing '$field'"
+        fail=1
+      fi
+    done
+    if ! grep -Eq '^Source type: (standard|primary research|official docs|implementation evidence)$' "$research"; then
+      echo "FAIL $skill: research ledger has an unsupported source type"
+      fail=1
+    fi
+    if ! grep -Fq "references/research.md" "$file"; then
+      echo "FAIL $skill: research ledger is not discoverable from SKILL.md"
+      fail=1
+    fi
+  fi
+
+  if grep -REqn '\]\(\.\./|\]\(/|(^|[^[:alnum:]_])shared/' "$dir"; then
+    echo "FAIL $skill: runtime package depends outside its own folder"
     fail=1
   fi
 
-  ref_count=0
-  for ref in "${dir}"references/*; do
-    [ -f "$ref" ] || continue
-    ref_count=$((ref_count + 1))
-    rel="references/$(basename "$ref")"
-    if ! grep -Fq "$rel" "$f"; then
-      echo "FAIL $name: $rel is not reachable from SKILL.md"
+  for helper in "$dir"scripts/*; do
+    [ -f "$helper" ] || continue
+    if [ ! -x "$helper" ]; then
+      echo "FAIL $skill: helper $helper is not executable"
       fail=1
     fi
   done
-  if [ "$ref_count" -eq 0 ]; then
-    echo "FAIL $name: no progressive-disclosure reference file"
-    fail=1
-  fi
-
-  for extra in "${dir}"scripts/* "${dir}"assets/*; do
-    [ -f "$extra" ] || continue
-    rel="${extra#"$dir"}"
-    if ! grep -RFq "$rel" "$f" "$dir"references/; then
-      echo "FAIL $name: $rel exists but is not reachable from skill instructions"
-      fail=1
-    fi
-    if [ "${rel#scripts/}" != "$rel" ] && [ ! -x "$extra" ]; then
-      echo "FAIL $name: helper $rel is not executable"
-      fail=1
-    fi
-  done
-
-  if grep -Rqi '(planned)' "$dir"; then
-    echo "FAIL $name: stale '(planned)' language remains in runtime package"
-    fail=1
-  fi
 done
 
-if [ "$count" -eq 0 ]; then
-  echo "FAIL: no skills found under skills/"
-  exit 1
-fi
 if [ "$count" -ne 28 ]; then
-  echo "FAIL: frozen skill set requires exactly 28 folders, found $count"
+  echo "FAIL: expected exactly 28 skills, found $count"
+  fail=1
+fi
+
+em_dash=$(printf '\342\200\224')
+if rg -n "$em_dash" skills >/dev/null; then
+  echo "FAIL: literal em dash found in shipped skill text"
+  rg -n "$em_dash" skills
   fail=1
 fi
 
 if [ "$fail" -eq 0 ]; then
-  echo "OK: $count skill(s) valid"
+  echo "OK: $count self-contained skills satisfy the repository contract"
 fi
 exit "$fail"

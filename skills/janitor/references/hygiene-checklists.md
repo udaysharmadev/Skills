@@ -1,4 +1,4 @@
-# Hygiene checklists — run the commands, quote the output
+# Hygiene checklists: run the commands, quote the output
 
 ## Local audit
 
@@ -31,7 +31,7 @@ git tag --sort=-creatordate | head         # release reality
 
 - Merged-but-alive branches → deletion candidates (confirm before
   deleting; never delete others' unmerged work).
-- Stale branches (> 30 days, unmerged) → list with age + last message;
+- Stale branches relative to repository cadence: list age and last message;
   the owner decides. **Watch for Orphaned AI Branches** (`agent-fix-X`, `experiment-Y`) that agents spun up and forgot.
 - Tags: releases shipped without tags, tag chaos (v1 vs 1.0.0) →
   recommend a convention.
@@ -44,9 +44,9 @@ git ls-files -i -c --exclude-standard      # tracked-but-ignored (trap!)
 ```
 
 - `.env`, `.DS_Store`, logs, editor dirs showing up → add to
-  `.gitignore` (with approval — it changes repo behavior).
+  `.gitignore` (with approval: it changes repo behavior).
 - Files both tracked *and* ignored → the classic zombie; propose
-  `git rm --cached` (stages a real change — explain the push effect).
+  `git rm --cached` (stages a real change: explain the push effect).
 
 ### Churn hotspots
 
@@ -56,7 +56,7 @@ git log --format=format: --name-only --since="6 months ago" |
 ```
 
 High churn + large file = fragility signal. Hand the pointer to
-`unslop`/`spelunk` — the *why* lives there, not here.
+`unslop`/`spelunk`: the *why* lives there, not here.
 
 ## Remote audit (gh authenticated; probe with `gh auth status`)
 
@@ -71,13 +71,13 @@ High churn + large file = fragility signal. Hand the pointer to
 
 - Public security hygiene: security policy file, no committed secrets in
   *recent* public history, secret-scanning status where available.
-- Presentation: README first screen honest (frontpage owns content —
+- Presentation: README first screen honest (frontpage owns content,
   you flag the gap, frontpage fixes it).
 - Recommend, don't mutate: repo settings changes are the owner's click.
 
 ## Commit message guide (mode 2)
 
-Good subject: imperative mood, ≤ 50 chars, no trailing period, specific
+Good subject: matches the repository's observed convention and is specific
 enough that log-skimming works.
 
 ```text

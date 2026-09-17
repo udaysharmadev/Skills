@@ -1,13 +1,13 @@
-# Usability checklist — walk with a user's hands, not a linter
+# Usability checklist: walk with a user's hands, not a linter
 
 Grouped by where friction lives. Each: the question to answer on the real
 flow, and the classic tell.
 
 ## Information architecture and navigation
 
-- Can a first-time visitor tell what this product is within 5 seconds of
-  landing?
-- Is anything the user needs findable in ≤ 2 navigation steps? Tell:
+- Can a first-time visitor identify the product and next action without
+  avoidable hesitation?
+- Can users find critical actions without avoidable navigation? Tell:
   settings split across three menus by internal team structure, not user
   mental model.
 - Labels name user goals ("Billing") not system concepts ("Subscription
@@ -18,18 +18,18 @@ flow, and the classic tell.
 ## Forms and validation
 
 - Inputs ask only for what's needed now; every field has a visible label
-  (placeholders are not labels — they vanish on type).
+  (placeholders are not labels: they vanish on type).
 - Validation timing: inline on blur for format, on submit for
   cross-field; never punish-as-you-type.
 - Error messages: what happened + how to fix it, attached to the field:
-  "Email needs an @ — like name@company.com", not "Invalid input".
+  "Email needs an @: like name@company.com", not "Invalid input".
 - Constraints stated before the mistake: "Password: 12+ chars" under the
   empty field, not after failing.
 - Progress preserved on failure; back button never destroys form state.
 
 ## Error recovery and destructive safety
 
-- Every error has a next step (retry, contact, alternate path) — dead-end
+- Every error has a next step (retry, contact, alternate path): dead-end
   screens are blockers.
 - Destructive severity ladder: toggle → instant; delete draft → confirm
   inline; delete account/project → typed confirmation + consequence
@@ -39,8 +39,10 @@ flow, and the classic tell.
 
 ## Feedback and latency perception
 
-- Every action acknowledges within ~100ms (button state, spinner, toast).
-- >300ms waits show progress honestly (skeleton > spinner > nothing).
+- Every action acknowledges promptly relative to measured latency and user
+  expectations.
+- Perceptible waits show progress honestly with treatment appropriate to the
+  operation.
 - Success confirmations state what changed ("Moved to Archive", not "OK").
 - Optimistic UI only where failure can roll back visibly.
 
@@ -51,8 +53,9 @@ flow, and the classic tell.
   dialogs.
 - Enter submits the form it's in; Enter/Space activates the focused
   control.
-- Touch targets ≥ 24×24 CSS px minimum, 44×44 comfortable (2.5.8); no
-  hover-only affordances on touch devices.
+- Apply WCAG 2.2 target-size requirements with their documented exceptions.
+  Larger targets may be a product heuristic; no hover-only affordances on
+  touch devices.
 
 ## Accessibility anchors (WCAG 2.2, the recurring ones)
 

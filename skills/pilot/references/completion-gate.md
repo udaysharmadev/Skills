@@ -1,4 +1,4 @@
-# Completion gate — what must be verified before "done"
+# Completion gate: what must be verified before "done"
 
 The gate maps the **type of change** to the **required verification**.
 Report every applicable row as verified (with evidence) or unverified
@@ -23,8 +23,8 @@ Report every applicable row as verified (with evidence) or unverified
 One line per gate:
 
 ```text
-verified:   npm test — 42 passing, 0 skipped (run 2026-09-14 14:02)
-unverified: browser flow — no browser automation available this session
+verified:   npm test: 42 passing, 0 skipped (run 2026-09-14 14:02)
+unverified: browser flow: no browser automation available this session
 ```
 
 ## Self-review without subagents
@@ -34,11 +34,11 @@ instead of skipping review:
 
 1. Wait until the full diff exists (don't review slice-by-slice only).
 2. Read the diff **as the reviewer**, against the plan's acceptance
-   criteria — list what you'd flag.
+   criteria: list what you'd flag.
 3. Fix blockers/majors. Nits go in the report as findings, un-fixed is
    fine.
 4. Say in the report that review was self-review (fresh-context review
-   unavailable) — honesty about the review's weakness is part of the gate.
+   unavailable): honesty about the review's weakness is part of the gate.
 
 ## Non-negotiables
 

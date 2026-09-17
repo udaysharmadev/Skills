@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# inventory — deterministic first-pass repository scan for spelunk.
+# inventory: deterministic first-pass repository scan for spelunk.
 # Read-only. Replaces ~15 tool calls of "look around" with one invocation.
 # Usage: skills/spelunk/scripts/inventory [dir] [--json]
 #   stdout: report (human) or JSON (--json). Diagnostics: stderr.
@@ -40,7 +40,7 @@ srcs=$(find . -type f \( -name '*.ts' -o -name '*.tsx' -o -name '*.js' -o -name 
   -not -path '*/node_modules/*' -not -path '*/.git/*' -not -name '*test*' -not -name '*spec*' \
   2>/dev/null | wc -l | tr -d ' ')
 
-# manifests present (ecosystem identity — never guess the stack)
+# manifests present (ecosystem identity: never guess the stack)
 manifests=$(ls package.json pyproject.toml setup.py requirements.txt go.mod Cargo.toml \
   pom.xml build.gradle build.gradle.kts Gemfile composer.json pubspec.yaml 2>/dev/null | tr '\n' ' ')
 

@@ -17,14 +17,14 @@
 | --- | --- | --- | --- | --- |
 
 ## Slices
-### Slice 1: <name>  (depends on: —)
+### Slice 1: <name>  (depends on:, )
 - Action: <verb-led specific instructions, e.g., 'Create file at...', 'Add endpoint...'>
 - Files: <real paths, verified>
 - Validation Criteria: <measurable output for verification, e.g., 'unit tests pass', 'JSON response matches schema'>
 - Rollback: <how to undo>
 
 ### Slice 2: <name>  (depends on: 1) …
-(Parallelizable: 3 ∥ 4 — conflict: both touch <file>)
+(Parallelizable: 3 ∥ 4: conflict: both touch <file>)
 
 ## Rollout & checkpoints
 <Deploy/merge order; where the user reviews before continuing.>
@@ -33,7 +33,7 @@
 | Risk | Likelihood | Mitigation |
 
 ## Definition of done
-- [ ] <acceptance criterion> — proven by <command/check>
+- [ ] <acceptance criterion>: proven by <command/check>
 ```
 
 ## Worked example (abridged)
@@ -56,7 +56,7 @@ localStorage, OS-preference default, no first-paint flash.
 | 2 | localStorage, no server storage | user table column | no auth exists yet | per-user sync lands |
 
 ## Slices
-### Slice 1: theme foundation (depends on: —)
+### Slice 1: theme foundation (depends on:, )
 - Action: Wire CSS variables for both palettes and establish `dark` class strategy.
 - Files: `tailwind.config.ts`, `src/styles/theme.css`
 - Validation Criteria: Manual class flip on <html> in devtools correctly flips color palettes.
@@ -80,8 +80,8 @@ localStorage, OS-preference default, no first-paint flash.
 | Third-party components ignore variables | medium | audit in slice 1, fallback CSS |
 
 ## Definition of done
-- [ ] Toggle persists across reload — proven by unit + manual check
-- [ ] No wrong-theme flash — proven by e2e in slice 3
+- [ ] Toggle persists across reload: proven by unit + manual check
+- [ ] No wrong-theme flash: proven by e2e in slice 3
 - [ ] `npm run build` && `npm test` green
 ```
 
@@ -90,13 +90,13 @@ add useState" nonsense.
 
 ## Anti-patterns
 
-1. **The 70-microstep plan** — "create folder / create file / add import /
+1. **The 70-microstep plan**: "create folder / create file / add import /
    run build" × 20. Means slicing failed; merge into real slices.
-2. **Speculative paths** — `src/utils/helpers.ts` that was never opened.
+2. **Speculative paths**: `src/utils/helpers.ts` that was never opened.
    Plan says "confirm location in slice N" instead.
-3. **Horizontal slicing** — "slice 1: all the API, slice 2: all the UI"
+3. **Horizontal slicing**: "slice 1: all the API, slice 2: all the UI"
    → nothing is verifiable until the end. Cut vertically.
-4. **Rollback = "trust me"** — every destructive step names its undo.
-5. **The plan that restates the brief** — reference it, don't copy it.
-6. **Decision-free plans** — every "should we X or Y" left open means the
+4. **Rollback = "trust me"**: every destructive step names its undo.
+5. **The plan that restates the brief**: reference it, don't copy it.
+6. **Decision-free plans**: every "should we X or Y" left open means the
    implementer (a weaker model, maybe) decides by accident later.

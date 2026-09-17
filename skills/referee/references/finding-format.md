@@ -1,4 +1,4 @@
-# Findings — severity, format, the quality checklist
+# Findings: severity, format, the quality checklist
 
 ## Severity definitions (with the line between them)
 
@@ -17,7 +17,7 @@ reviewing style, not the change.
 ## Finding format (every finding, all five parts)
 
 ```text
-<sev> <file:line> — <what is wrong>
+<sev> <file:line>: <what is wrong>
       why it matters: <the concrete consequence>
       fix direction: <the change, one line>
       confidence: certain | likely | possible
@@ -28,12 +28,12 @@ direction it's a complaint; without confidence it claims certainty it
 didn't earn. `possible` findings say what would confirm them. All three
 halves or delete it.
 
-## Quality checklist (walk per diff — skip what doesn't apply)
+## Quality checklist (walk per diff: skip what doesn't apply)
 
 **Correctness**
 - Logic handles the edges the behavior names: empty, zero, max, negative,
   malformed, concurrent, repeated.
-- Error paths do something deliberate (typed, logged, surfaced) — no
+- Error paths do something deliberate (typed, logged, surfaced): no
   silent catches.
 - Resource handling: files/connections/cursors closed on every path,
   including error paths.
@@ -41,7 +41,7 @@ halves or delete it.
   (constraints) or handled (locking/idempotency).
 
 **Intent & scope**
-- Every acceptance criterion: met, partially met, or missing — named.
+- Every acceptance criterion: met, partially met, or missing: named.
 - No scope creep: refactors/rename/dead-code removal that the criteria
   didn't ask for (note as findings, however well-intentioned).
 - No dead code, debug leftovers, commented-out blocks, or console
@@ -64,7 +64,7 @@ halves or delete it.
   listeners).
 
 **Conventions & clarity**
-- Project conventions followed (naming, structure, patterns) — reviewer
+- Project conventions followed (naming, structure, patterns): reviewer
   taste loses to house style.
 - Names say what things are for; the complex part has the comment
   explaining *why* (not *what*).
@@ -77,14 +77,14 @@ halves or delete it.
 
 ## The empty review vs. LGTM Syndrome
 
-"No blocking findings" — stated with the review scope and mode — is a
+"No blocking findings": stated with the review scope and mode: is a
 professional verdict, not a failure of effort. Manufacturing findings
 to look thorough is worse than an honest clean pass. However, beware **LGTM Syndrome**: do not approve a PR just because it lacks syntax errors. The code must actually solve the business intent. An honest clean pass means both syntax AND intent are verified clean. Density of real findings varies with the diff; say so when a clean diff was genuinely clean.
 
 ## Self-review discipline (when fresh-context is unavailable)
 
-1. Wait for the **complete** diff — reviewing slices hides the seams.
-2. Reread the written acceptance criteria before line one of code —
+1. Wait for the **complete** diff: reviewing slices hides the seams.
+2. Reread the written acceptance criteria before line one of code,
    memory of them is author-bias fuel.
 3. Read the diff twice: once as intent-auditor, once as quality checklist.
 4. For every "looks fine", ask what evidence would prove it isn't.

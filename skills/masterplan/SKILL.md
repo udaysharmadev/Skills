@@ -1,11 +1,11 @@
 ---
 name: masterplan
-description: Produces a serious implementation plan from an agreed brief or a clear goal — vertical slices, architectural decisions, exact files, tests, rollout, rollback and a definition of done. Use when the user asks to plan an implementation, break a feature or migration into steps, or after distill has produced a task brief and before code gets written. Inspects the real files first and never plans changes to files it has not verified exist.
+description: Builds an implementation sequence from repository evidence using dependencies, invariants, vertical slices, rollback points, parallel work, irreversible decisions, and conscious deferrals. Use when a non-trivial approved change needs an executable plan before coding.
 ---
 
-# masterplan — decide how, before touching code
+# masterplan: decide how, before touching code
 
-`distill` defines **what**. You define **how** — grounded in the actual
+`distill` defines **what**. You define **how**: grounded in the actual
 repository, sliced into increments that each leave the project demonstrably
 better. You are the Planner in a Plan-Then-Execute architecture; your output is
 an Executable Plan designed to be read and systematically executed by `pilot`.
@@ -21,9 +21,26 @@ the executor agent to fail.
 ## Prerequisites
 
 A brief (from `distill`, on disk or in chat) or an equivalent clear goal.
-Repository access — plans must be grounded in real files. A `spelunk`
+Repository access: plans must be grounded in real files. A `spelunk`
 quick-map of the affected area helps; run a mini version yourself if none
 exists (manifests, the modules the brief names, test commands).
+
+## Authority and planning modes
+
+A plan proposes implementation; it does not approve a product decision, change
+repository state, or authorize production, destructive, paid, or external work.
+Keep user decisions distinct from planner recommendations. A guessed path or
+unknown operational fact is a discovery task, never a plan commitment.
+
+| Mode | Use when | Result |
+| --- | --- | --- |
+| Lightweight | one or two bounded, low-risk slices | concise state, actions, checks, and risk note |
+| Full | multi-system, data, auth, or irreversible work | graph, slice contracts, gates, rollback |
+| Discovery-first | load-bearing path or assumption unknown | narrow evidence slice before solution work |
+| Replan | reality invalidates plan | affected graph and decisions revised, not patched |
+
+Read [references/planning-protocol.md](references/planning-protocol.md) for
+full planning, uncertain architecture, migrations, or a replan.
 
 ## Two planning depths
 
@@ -33,7 +50,7 @@ exists (manifests, the modules the brief names, test commands).
 - **Full** (everything below): for multi-slice, multi-system, or
   data-touching work.
 
-Choose by blast radius, not by request volume — a "small" change to the
+Choose by blast radius, not by request volume: a "small" change to the
 auth path plans fully.
 
 ## Workflow
@@ -42,7 +59,7 @@ auth path plans fully.
 
 From the brief: goal, scope, non-goals, acceptance criteria, verification
 requirements, assumptions. If anything load-bearing is missing, resolve it
-(one batched question round, max 5) before planning — never plan past a
+(one batched question round, max 5) before planning: never plan past a
 known unknown silently.
 
 ### 2. Inspect current reality
@@ -50,30 +67,35 @@ known unknown silently.
 Open and read the files the plan will touch. Every file path that appears
 in the final plan must be one you saw. For each: current state, what
 changes, what it connects to. Label every path by status: **confirmed**
-(you read it), **probable** (deduced from structure — say from what), or
+(you read it), **probable** (deduced from structure: say from what), or
 **to-discover** ("confirm during slice N"). A plan with no to-discover
 labels on a non-trivial repo is lying about its certainty. Where a path
-can't be confirmed, the plan says "confirm during slice N" — it does not
+can't be confirmed, the plan says "confirm during slice N": it does not
 invent a path.
 
 ### 3. Record invariants and architectural decisions
 
-Invariants first — the properties that must remain true throughout
+Invariants first: the properties that must remain true throughout
 (existing API contract, data guarantees, performance characteristics);
 every slice is checked against them. Then decisions the plan commits to (library choices, data model changes, API
 shape, patterns). Each decision acts as an embedded **AgDR (Agent Decision Record)**:
-state the decision, alternatives considered, why, and what would make this decision wrong. 
-Version-sensitive technology facts come from `scout` research or are marked 
-unverified — a plan built on stale API memory fails during execution.
+state the decision, alternatives considered, why, and what would make this decision wrong.
+Version-sensitive technology facts come from `scout` research or are marked
+unverified: a plan built on stale API memory fails during execution.
+
+For each material decision, capture evidence, scope, alternatives, reversibility,
+and recheck trigger. A decision is provisional when it depends on an unverified
+assumption; validate it before dependent implementation. Do not force one
+architecture where a narrow experiment can decide it more cheaply.
 
 ### 4. Slice vertically with explicit sequencing
 
-Cut the work into **vertical slices** — each one crosses the stack as
+Cut the work into **vertical slices**: each one crosses the stack as
 needed (data → API → UI) and ends testable on its own. Sequencing is
 dependency-aware, not ordinal: mark every slice **must precede** (its
-output is another slice's input), **can parallelize** (independent —
+output is another slice's input), **can parallelize** (independent,
 and state the files that would conflict), or **can postpone** (valuable
-but not needed for the goal — postponed slices keep the plan honest and
+but not needed for the goal: postponed slices keep the plan honest and
 the scope cut visible). Rules:
 
 - 5–12 slices for serious work; a 30-step plan means the slices are fake.
@@ -81,7 +103,7 @@ the scope cut visible). Rules:
   and the **Validation Criteria** (the measurable output that an executor agent can verify).
 - Order by the dependency graph between slices; mark which slices are
   parallelizable and what they conflict over.
-- Migrations, API contract changes and auth changes get their own slice —
+- Migrations, API contract changes and auth changes get their own slice,
   never smuggled inside a UI slice.
 - Uncertainty collapses first: slices whose job is to resolve a
   to-discover path or validate a risky assumption run before the slices
@@ -93,10 +115,14 @@ the scope cut visible). Rules:
 
 ### 5. Safety nets
 
-For the whole plan: rollout order, rollback (how to undo each slice —
+For the whole plan: rollout order, rollback (how to undo each slice,
 "revert commit" is a valid answer only if it's actually true), risks with
 mitigations, checkpoints where the user should look before continuing, and
 observability (what logs/metrics/errors will exist to debug it later).
+
+For every slice, make a compact contract: outcome, confirmed files, dependencies,
+protected invariants, action, verification, rollback or user gate, and residual
+risk. Plans should work for an executor who did not attend planning.
 
 ### 6. Definition of done
 
@@ -106,21 +132,35 @@ executable definition of done is a wishlist.
 
 ## Anti-bloat rules
 
-- No restating the brief — reference it.
+- No restating the brief: reference it.
 - No microsteps ("create file", "add import"). A step is a coherent,
   testable improvement or it gets merged into its neighbor.
 - No speculative infrastructure for scale the project doesn't have.
-- Target ≤ 150 lines for the plan document.
+- Stop adding detail when every slice can be executed and verified without
+  rediscovering a load-bearing decision.
+
+## Tool selection / fallback
+
+- Repository search and existing plans come before new structure.
+- Use the project's planning system when one exists; otherwise keep the plan in chat unless durable handoff value justifies a file.
+- Missing implementation details become explicit discovery slices, not guessed paths.
+- Existing architecture records, CI, generated-code workflows, migrations, and
+  deployment manifests are evidence when they affect slice safety.
+- If repository access is partial, plan only observed scope and label exact
+  blind spots instead of inventing broad coverage.
 
 ## Quality gates
 
-- 100% of file paths verified to exist during step 2.
+- Every path presented as existing was verified during reconnaissance.
 - Every slice independently verifiable (tests/commands named).
 - Rollback exists for every destructive or hard-to-reverse step;
   migrations state their down-path; irreversible slices are marked and gated.
 - Uncertainty-collapsing slices precede their dependents.
 - Decisions section covers every choice a reviewer would ask "why?" about.
 - Acceptance criteria from the brief all appear in the definition of done.
+- Each slice has one falsifiable completion claim and no unowned side effects.
+- Dependencies, concurrent conflicts, and user gates are explicit enough that
+  execution order does not rely on planner memory.
 
 ## Stop conditions
 
@@ -131,6 +171,10 @@ executable definition of done is a wishlist.
   back to `distill`.
 - User changes scope mid-planning → replan the affected slices, don't
   patch silently.
+- Evidence cannot support recommended architecture → stop at discovery plan
+  with alternatives and smallest discriminating experiment.
+- Remaining detail would not change execution, verification, or a decision →
+  stop; do not inflate a usable plan.
 
 ## Output contract
 
@@ -148,3 +192,12 @@ YYYY-MM-DD -->`), sections per `references/plan-template.md`:
 
 Chat summary: slice list (one line each), the 2–3 decisions that matter,
 total risk in one sentence.
+
+## Research basis
+
+Read [references/research.md](references/research.md) when a decision depends on
+an external standard, a numerical claim, or a fast-moving practice. The ledger
+records what the source supports, what it does not support, and when to reverify.
+Read [references/plan-template.md](references/plan-template.md) for durable
+artifact shape. Read [references/planning-protocol.md](references/planning-protocol.md)
+for slice contracts, decision records, discovery, or replanning.

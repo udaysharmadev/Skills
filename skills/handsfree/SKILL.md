@@ -1,9 +1,9 @@
 ---
 name: handsfree
-description: Autonomy governor for coding agents: keep safe reversible work moving without needless "continue?" prompts, while preserving explicit gates for destructive, production, and security-sensitive actions. Use when the user says "just do it", "work autonomously", "stop asking permission", "don't disturb me unless necessary", or "handsfree".
+description: Governs autonomous execution by reversibility, blast radius, external effects, secrets, spend, destructive state, and host-enforced permissions. Use when the user wants fewer interruptions, continued work, or a clear distinction between safe defaults and required approval.
 ---
 
-# `handsfree` — autonomy governor, not a permission bypass
+# `handsfree`: autonomy governor, not a permission bypass
 
 You dictate **how** the agent operates once activated: model-created
 ceremony goes away, but host/runtime enforcement and high-risk human gates
@@ -17,7 +17,7 @@ the agent spending the user's trust to skip a gate that mattered.
 ## Purpose
 
 Let routine, reversible, already-authorized work complete without
-interruption — and make every remaining interruption carry its weight.
+interruption: and make every remaining interruption carry its weight.
 
 ## Triggers
 
@@ -32,7 +32,7 @@ interruption — and make every remaining interruption carry its weight.
 - The user wants interactive pair programming, teaching, or choices
   presented before implementation.
 - The request is itself a high-risk action (production change, data
-  destruction, broad publication) with no delegated authority — the gate
+  destruction, broad publication) with no delegated authority: the gate
   skills (`cleared`, `runway`, `janitor` for history) own those, and you
   do not cancel them.
 - A stricter policy source (host denial, security boundary, BLOCKED class
@@ -42,6 +42,26 @@ interruption — and make every remaining interruption carry its weight.
 
 None. Degrades gracefully: with read-only access you still eliminate
 question-ceremony in analysis and state exactly what you could not touch.
+
+## Authority record and operating modes
+
+Autonomy is scoped to the user's request, the active host permissions, and
+current repository evidence. It does not convert a vague goal into authority
+for external effects, irreversible changes, secrets access, paid use, or a
+different product decision. Record only consequential defaults, checkpoints,
+and gates; do not create a transcript of routine work.
+
+| Mode | Use when | Outcome |
+| --- | --- | --- |
+| Focused execution | bounded work with ordinary local effects | act through AUTO items and verify outcome |
+| Checkpointed execution | broad, multi-file, generated, or migration work | recovery state, scoped batches, validation after each |
+| Gate management | one or more ASK ONCE actions are pending | one decision packet; independent work continues |
+| Recovery | a failure, host denial, or scope mismatch occurred | evidence, narrowed alternative, or precise blocker |
+
+For non-trivial work, use the short record in
+[references/execution-record.md](references/execution-record.md) before the
+first checkpoint or gate. It records authorization and evidence, not hidden
+reasoning.
 
 ## Action classes
 
@@ -82,12 +102,22 @@ security, data, or user-visible behavior, pick the conventional default
 and log it at the end. Ask only when answers diverge on something
 load-bearing.
 
+When a new finding changes task scope, classify it separately. Implement a
+directly necessary fix if it is still within the stated outcome and action
+class; otherwise record it as a follow-up. Do not use autonomy to turn a nearby
+improvement into an unasked feature, dependency, migration, or external action.
+
 ### 4. Checkpoint broad work (AUTO + CHECKPOINT)
 
 Before broad changes, note the recovery path (`git status` / stash /
 branch / migration downgrade), keep the change scoped, validate after.
 On failure, restore or narrow before retrying; never pile fixes on a
 broken base.
+
+At a checkpoint, capture: target state, changed paths, protected invariant,
+verification command or observation, recovery path, and any dirty-tree overlap.
+If a recovery path would itself be destructive, it is not AUTO; stop and apply
+the stricter class.
 
 ### 5. Preserve dirty state
 
@@ -97,9 +127,15 @@ overwrite, rebase, or "clean up" user state as a side effect.
 
 ### 6. Bounded retries, no loops
 
-A failing tool gets bounded alternative diagnostics (≤ 3 attempts with
-genuinely different hypotheses), then becomes a recorded blocker — not a
-loop, and not a silent skip of the verification it owed.
+A failing tool gets a small, risk-proportionate set of alternative diagnostics
+with genuinely different hypotheses. When new attempts stop producing new
+evidence, record the blocker instead of looping or silently skipping the
+verification it owed.
+
+A retry must change one of: hypothesis, diagnostic surface, input, environment,
+or recovery approach. Re-running the same command after an unchanged failure is
+not persistence. Read [references/execution-record.md](references/execution-record.md)
+when a retry, state mismatch, or host denial needs a recovery record.
 
 ### 7. Batch the gates
 
@@ -110,23 +146,22 @@ waiting, continue every independent workstream instead of stalling the run.
 ### 8. Detect the host; never fight it
 
 Model ceremony is yours to remove; host enforcement is yours to report.
-Read [`references/antigravity.md`](references/antigravity.md) when a
-native approval appears or before a shell-heavy run — it carries the exact
-modes (Antigravity `request-review` / `proceed-in-sandbox` /
-`always-proceed` / `strict`, Gemini CLI `default` / `auto_edit` / `plan` /
-`yolo`), the sandbox strategy, and the reporting words. Standing rules:
+Read [`references/host-permissions.md`](references/host-permissions.md) when a
+native approval appears or before a shell-heavy run. Host modes are
+fast-moving, so inspect the current host state or official documentation
+instead of relying on memorized mode names. Standing rules:
 
 - Batch safe reads; prefer sandbox-compatible commands; never bundle
   unrelated risky operations to amortize one approval (banned).
 - A host denial ends that branch: report layer + action precisely
   ("Blocked by host approval: …"), continue independent work, never
   rephrase the action to dodge it. Suggesting approval-memory is allowed
-  once per run — nagging is ceremony by another name.
+  once per run: nagging is ceremony by another name.
 
 ### 9. Adversarial clarity
 
 "Never ask me anything" followed by a destructive, production, or
-data-loss request still gates — the instruction conflicts with a higher
+data-loss request still gates: the instruction conflicts with a higher
 authority (safety + the ASK ONCE class), and the gate wins. Say so
 plainly, ask the one question, and continue everything else.
 
@@ -135,16 +170,23 @@ plainly, ask the one question, and continue everything else.
 The run ends at verified completion of the requested outcome, not at the
 first green command. Re-check the completion predicate before reporting.
 
+If verification reveals a pre-existing failure, separate it from a regression
+using the smallest available comparison. Never claim a requested outcome is
+verified when that distinction is unknown; report what passed, what is unclear,
+and the next safe diagnostic.
+
 ## Tool selection / fallback
 
-- Repo/config/memory reads first — they are AUTO and answer most
+- Repo/config/memory reads first: they are AUTO and answer most
   would-be questions for free.
 - One cheap probe beats an assumption; an unprobable capability is
   `unknown`, never `no`.
 - Missing capability (no shell, no browser, no subagents) narrows what
-  you can verify — say what stayed unverified rather than simulating it.
+  you can verify: say what stayed unverified rather than simulating it.
 - Delegate mechanical bulk work to scripts where a deterministic helper
   exists; do not narrate your way through what a script proves.
+- If a tool capability is unknown, make the cheapest read-only probe first.
+  Do not test authority by attempting a risky action merely to see if it works.
 
 ## Quality gates
 
@@ -155,6 +197,10 @@ first green command. Re-check the completion predicate before reporting.
 - Dirty-tree/user state untouched unless the task explicitly authorized it.
 - Host denials reported by layer, never rephrased into bypass attempts.
 - One approval never stretched into a different, higher-risk action.
+- Scope changes are logged as executed-in-scope, deferred follow-up, or ASK
+  ONCE; they are never silently absorbed.
+- Completion report separates observed verification, assumptions, pending gates,
+  and blocked branches.
 
 ## Stop conditions
 
@@ -164,6 +210,10 @@ first green command. Re-check the completion predicate before reporting.
 - A BLOCKED action or host denial with no lawful alternative → report
   precisely, stop that branch.
 - Retry/iteration budget exhausted → report as blocker with evidence, stop.
+- Current target or repository state materially changed after checkpoint → stop
+  dependent work, refresh evidence, and reclassify before acting.
+- The only recovery would overwrite user work, erase data, rewrite history, or
+  bypass the host → stop and ask once or report BLOCKED as the class requires.
 
 ## Output contract
 
@@ -180,10 +230,15 @@ Hand durable decisions to `recall` when they will matter next session.
 
 ## References
 
-- `references/decision-policy.md` — the full scenario table: what is
+- `references/decision-policy.md`: the full scenario table: what is
   AUTO, what is ASK ONCE, what is BLOCKED. Read before any non-trivial action.
-- `references/antigravity.md` — host permission modes (Antigravity
-  `request-review` / `proceed-in-sandbox` / `always-proceed` / `strict`,
-  Gemini CLI `default` / `auto_edit` / `plan` / `yolo`), sandbox strategy,
-  and the exact words for reporting a host block. Read when native
-  approvals appear or before shell-heavy runs.
+- `references/host-permissions.md`: portable host-enforcement and sandbox
+  behavior. Read when native approvals appear or before shell-heavy runs.
+- `references/execution-record.md`: checkpoint, gate, retry, and recovery
+  record. Read for non-trivial work or any state mismatch.
+
+## Research basis
+
+Read [references/research.md](references/research.md) when a decision depends on
+an external standard, a numerical claim, or a fast-moving practice. The ledger
+records what the source supports, what it does not support, and when to reverify.

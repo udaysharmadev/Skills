@@ -1,7 +1,7 @@
 # Capability degradation
 
 When a capability probe fails mid-route, treat the missing capability as
-a change in available evidence — not as a reason to fake the action or
+a change in available evidence: not as a reason to fake the action or
 abandon the work.
 
 ## Capability rungs
@@ -15,7 +15,7 @@ rung actually available and discloses which rung ran.
 | --- | --- | --- |
 | A | Web access confirmed | Full search, page fetching, version verification |
 | B | No web access | Use local files: lockfile, node_modules, installed types, changelog |
-| C | Local files missing | State: "cannot verify external claim — proceeding with stated assumption" |
+| C | Local files missing | State: "cannot verify external claim: proceeding with stated assumption" |
 
 At rung B/C: mark external claims as `unverified` rather than confident.
 The source hierarchy for `scout` applies: local before remote.
@@ -28,7 +28,7 @@ The source hierarchy for `scout` applies: local before remote.
 | B | Static files available | Source inspection, link checking, structured output review |
 | C | Neither available | State limitation; describe what evidence would be needed; do not fake |
 
-`roadtest` and `ditto` have their own rung logic — consult their SKILL.md
+`roadtest` and `ditto` have their own rung logic: consult their SKILL.md
 before assuming B/C is always acceptable.
 
 ### Subagents
@@ -40,7 +40,7 @@ before assuming B/C is always acceptable.
 | C | Token budget constrained | Route one specialist; surface the rest as follow-up |
 
 At rung B: `hotseat` is most affected. Sequential persona simulation is
-a degraded experience — disclose this to the user.
+a degraded experience: disclose this to the user.
 
 ### GitHub CLI (`gh`)
 

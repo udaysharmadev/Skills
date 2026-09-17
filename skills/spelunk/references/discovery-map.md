@@ -1,4 +1,4 @@
-# Discovery map — the deep checklist
+# Discovery map: the deep checklist
 
 Per-ecosystem detection hints for each checklist section. Use what
 applies; skip what doesn't; record "not found / N/A" honestly rather than
@@ -29,7 +29,7 @@ fiber, Actix/Axum.
 - Makefile / `justfile` / `Taskfile.yml` anywhere → list the real targets
 - CI (`.github/workflows/*.yml`, `.gitlab-ci.yml`) → the commands CI
   actually runs are the source of truth for test/lint/build
-- If a command exists nowhere: record `test=none defined` — do not invent
+- If a command exists nowhere: record `test=none defined`: do not invent
 
 ## 3. Entry points and request lifecycle
 
@@ -51,13 +51,13 @@ fiber, Actix/Axum.
 - ORM/schema locations: `prisma/schema.prisma`, `drizzle.config.*`,
   `migrations/`, `alembic/`, `django app/models.py`, `db/schema.rb`,
   `ent/`, SQL files.
-- List the 3–6 core entities and their relationships — enough for
+- List the 3–6 core entities and their relationships: enough for
   planning, not an ER diagram.
 
 ## 6. External services and configuration
 
 - Env var **names** from `.env.example`, config modules, `process.env`
-  references, `os.environ` — never values.
+  references, `os.environ`: never values.
 - Note which services: database, cache, queue, email, storage, auth
   provider, payments, analytics, LLM APIs.
 
@@ -66,7 +66,7 @@ fiber, Actix/Axum.
 - Auth: session vs JWT vs OAuth provider vs platform-managed
   (Clerk/Supabase/Auth0); where verification happens (middleware path).
 - State: server state (query/ORM patterns) and client state (store
-  libraries) — name the approach and where stores live.
+  libraries): name the approach and where stores live.
 
 ## 8. CI/CD
 

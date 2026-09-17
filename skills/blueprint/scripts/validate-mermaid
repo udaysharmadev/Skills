@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""validate-mermaid — static syntax checks for .mmd diagram sources.
+"""validate-mermaid: static syntax checks for .mmd diagram sources.
 
 Catches the failures that break rendered architecture docs without
 needing the mermaid toolchain: missing/unknown diagram type, unbalanced
 brackets/quotes, tab indentation, duplicate node ids, empty labels.
-Deterministic, read-only. It cannot prove the diagram RENDERS — for
+Deterministic, read-only. It cannot prove the diagram RENDERS: for
 that, render once with mermaid-cli when available and say so.
 
 Usage: skills/blueprint/scripts/validate-mermaid <file.mmd>... [--json]
@@ -39,7 +39,7 @@ def check_file(path: Path):
         findings.append({"check": "balanced", "detail": "unbalanced quotes"})
     for i, l in enumerate(lines, 1):
         if "\t" in l:
-            findings.append({"check": "whitespace", "detail": f"tab on line {i} — mermaid prefers spaces"})
+            findings.append({"check": "whitespace", "detail": f"tab on line {i}: mermaid prefers spaces"})
     # duplicate node ids: word[ or word( or word{ at line starts
     ids = re.findall(r"^\s*([A-Za-z_][A-Za-z0-9_]*)\s*(?:[\[\(\{])", body, re.M)
     seen, dups = set(), set()

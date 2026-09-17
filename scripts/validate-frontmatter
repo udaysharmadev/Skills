@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
-# validate-frontmatter — spec-strict frontmatter check per skill
-# (agentskills.io: name 1-64 chars, lowercase alnum+hyphens, no
-# leading/trailing/double hyphen, must match parent dir; description
-# 1-1024 chars, non-empty; optional license/compatibility/metadata caps).
-# validate-skills covers presence/shape; this covers spec legality.
+# Validate the deliberately small YAML subset used by this repository.
 set -u
 cd "$(dirname "$0")/.."
 
@@ -13,49 +9,74 @@ count=0
 for dir in skills/*/; do
   [ -d "$dir" ] || continue
   count=$((count + 1))
-  name=$(basename "$dir")
-  f="$dir/SKILL.md"
+  skill=$(basename "$dir")
+  file="$dir/SKILL.md"
 
-  # extract frontmatter block (between the two --- delimiters)
-  fm=$(awk 'NR==1 && /^---$/{on=1; next} on && /^---$/{exit} on{print}' "$f")
-
-  fm_name=$(echo "$fm" | awk '/^name:/{sub(/^name: */,""); print; exit}')
-  if [ ${#fm_name} -lt 1 ] || [ ${#fm_name} -gt 64 ]; then
-    echo "FAIL $name: frontmatter name length ${#fm_name} (spec: 1-64)"
+  if [ ! -f "$file" ]; then
+    echo "FAIL $skill: missing SKILL.md"
     fail=1
-  fi
-  if ! echo "$fm_name" | grep -Eq '^[a-z0-9]+(-[a-z0-9]+)*$'; then
-    echo "FAIL $name: frontmatter name '$fm_name' violates spec charset (lowercase alnum, hyphens only, no leading/trailing/double hyphen)"
-    fail=1
+    continue
   fi
 
-  desc=$(echo "$fm" | awk '/^description:/{sub(/^description: */,""); print; exit}')
-  if [ -z "$desc" ]; then
-    echo "FAIL $name: empty description (spec: 1-1024 non-empty)"
+  if [ "$(head -n 1 "$file")" != "---" ]; then
+    echo "FAIL $skill: frontmatter must start on line 1"
     fail=1
-  elif [ "${#desc}" -gt 1024 ]; then
-    echo "FAIL $name: description ${#desc} chars (spec limit 1024)"
-    fail=1
+    continue
   fi
 
-  compat=$(echo "$fm" | awk '/^compatibility:/{sub(/^compatibility: */,""); print; exit}')
-  if [ -n "$compat" ] && [ "${#compat}" -gt 500 ]; then
-    echo "FAIL $name: compatibility ${#compat} chars (spec limit 500)"
+  close=$(awk 'NR > 1 && /^---$/ { print NR; exit }' "$file")
+  if [ -z "$close" ]; then
+    echo "FAIL $skill: frontmatter is not closed"
+    fail=1
+    continue
+  fi
+
+  fm=$(sed -n "2,$((close - 1))p" "$file")
+  if echo "$fm" | grep -qvE '^(name|description): [^[:space:]].*$'; then
+    echo "FAIL $skill: frontmatter must contain only single-line name and description scalars"
     fail=1
   fi
 
-  # unknown top-level frontmatter keys are a drift smell (spec + local set)
-  while IFS= read -r key; do
-    case "$key" in
-      name|description|license|compatibility|metadata|allowed-tools) ;;
-      *) echo "FAIL $name: unknown frontmatter key '$key'"; fail=1 ;;
-    esac
-  done <<EOF
-$(echo "$fm" | grep -E '^[A-Za-z][A-Za-z0-9_-]*:' | sed 's/:.*//' | sort -u)
-EOF
+  keys=$(printf '%s\n' "$fm" | sed 's/:.*//' | sort)
+  if [ "$keys" != "$(printf 'description\nname')" ]; then
+    echo "FAIL $skill: frontmatter requires exactly one name and one description"
+    fail=1
+  fi
+
+  name=$(printf '%s\n' "$fm" | sed -n 's/^name: //p')
+  desc=$(printf '%s\n' "$fm" | sed -n 's/^description: //p')
+
+  if ! printf '%s\n' "$name" | grep -Eq '^[a-z0-9]+(-[a-z0-9]+)*$'; then
+    echo "FAIL $skill: invalid name '$name'"
+    fail=1
+  elif [ "$name" != "$skill" ]; then
+    echo "FAIL $skill: name '$name' does not match directory"
+    fail=1
+  fi
+
+  if [ ${#name} -gt 64 ]; then
+    echo "FAIL $skill: name exceeds 64 characters"
+    fail=1
+  fi
+  if [ -z "$desc" ] || [ ${#desc} -gt 1024 ]; then
+    echo "FAIL $skill: description must contain 1 to 1024 characters"
+    fail=1
+  fi
+  if ! printf '%s\n' "$desc" | grep -Eqi 'use (when|for|before)|when '; then
+    echo "FAIL $skill: description does not state when to use the skill"
+    fail=1
+  fi
 done
 
+if command -v skills-ref >/dev/null 2>&1; then
+  for dir in skills/*/; do
+    skills-ref validate "$dir" || fail=1
+  done
+else
+  echo "INFO: skills-ref unavailable; local strict validation completed"
+fi
+
 if [ "$fail" -eq 0 ]; then
-  echo "OK: $count frontmatter block(s) spec-legal"
+  echo "OK: $count frontmatter blocks are strict and spec-shaped"
 fi
 exit "$fail"

@@ -1,4 +1,4 @@
-# Backend checklists — read only the sections your task touches
+# Backend checklists: read only the sections your task touches
 
 Each section: the checks that transfer across stacks, with the failure
 each prevents.
@@ -11,16 +11,18 @@ each prevents.
   code + human message; no stack traces in responses.
 - Status codes honest: 400 vs 401 vs 403 vs 404 vs 409 vs 422 used for
   their actual meanings; 500 only for genuinely unexpected failures.
-- Pagination on any collection that can grow: limit default, max cap,
-  cursor or offset decision stated (cursor preferred for large/changing sets).
+- Pagination on collections whose size or latency requires it; limit and cap
+  follow the product contract, while cursor versus offset follows mutation and
+  ordering behavior.
 - Versioning: breaking change → version bump or explicit compatibility
   window; never silently change response shapes.
-- **LLM/Agent Outputs:** Any endpoint accepting or returning LLM-generated data 
-  must validate it strictly against a schema (e.g., Pydantic, JSON Schema). 
+- **LLM/Agent Outputs:** Any endpoint accepting or returning LLM-generated data
+  must validate it strictly against a schema (e.g., Pydantic, JSON Schema).
   Never trust raw LLM output without a structural boundary check.
-- **Idempotency (Agent-Safe):** Unsafe methods must accept an idempotency key. 
-  Because LLM agents retry non-deterministically, use an internal ledger or 
-  natural constraint to ensure "exactly-once" execution.
+- **Retry safety:** State-changing operations that may be retried use the
+  mechanism appropriate to their contract: an idempotency key, uniqueness
+  constraint, conditional write, durable ledger, or explicit rejection.
+  Describe delivery and effect guarantees without claiming generic exactly-once.
 
 ## Data modeling and migrations
 
@@ -30,10 +32,10 @@ each prevents.
   new query that filters on an unindexed column is a decision, not an
   accident.
 - Nullability explicit; defaults thought through for existing rows.
-- Migrations: additive-first (add column/table → backfill → switch reads
-  → drop old); down-path written and tested; locks considered for large
-  tables (batched backfills, avoid long transactions).
-- Money: integer minor units or decimal types — never floats.
+- Migrations: additive-first for live data when practical; recovery may be a
+  tested rollback, forward-fix, restore, or backup path. Do not invent a down
+  migration when reversal would be less safe.
+- Money: integer minor units or decimal types: never floats.
 - Time: UTC everywhere internally; timezone conversion at the edge; never
   store local times naive.
 
@@ -44,11 +46,11 @@ each prevents.
 - Optimistic locking (version column) or explicit conflict handling for
   read-modify-write on contested rows.
 - Uniqueness enforced by the database (constraints), not application
-  checks — the app-level check is UX, the constraint is correctness.
+  checks: the app-level check is UX, the constraint is correctness.
 - Deadlocks designed out, not debugged later: acquire locks in a
   consistent order, keep contested transactions short, and retry the
   whole transaction on deadlock/abort (with a cap) rather than part of
-  it — partial retry after a deadlock is silent corruption.
+  it: partial retry after a deadlock is silent corruption.
 
 ## AuthN / AuthZ / sessions
 
@@ -56,7 +58,7 @@ each prevents.
 - Sessions/tokens: httpOnly + secure + sameSite cookies for browsers;
   short-lived access + rotation for refresh; logout actually invalidates.
 - Authorization check at the object level per request ("this user, this
-  record") — route-level middleware alone is not authorization.
+  record"): route-level middleware alone is not authorization.
 - OAuth/OIDC: state + PKCE where applicable; validate issuer/audience on
   tokens; don't build crypto when a provider exists.
 
@@ -65,17 +67,17 @@ each prevents.
 - Every cache has an invalidation story (TTL is the minimum, an event is
   better); stale-while-revalidate where the stack supports it.
 - Cache keys include everything the response depends on (auth scope
-  included — cross-tenant cache leaks are a real vulnerability class).
+  included: cross-tenant cache leaks are a real vulnerability class).
 - Don't cache what's cheap to compute; do cache the N+1s and external
   calls you already measured.
 
 ## Queues, jobs, async
 
-- Handlers idempotent (they will run twice); dedupe/skip logic on a
-  natural key.
+- Handlers exposed to duplicate delivery are retry-safe through a natural key,
+  conditional transition, or explicit deduplication.
 - Retries with exponential backoff + jitter; a dead-letter path for
   poison messages; visibility into failure counts.
-- Job payloads carry IDs, not blobs — the handler re-reads current state
+- Job payloads carry IDs, not blobs: the handler re-reads current state
   instead of acting on stale snapshots.
 - DB + event atomicity goes through a transactional outbox: write the
   event row in the same transaction as the state change, relay
@@ -86,7 +88,7 @@ each prevents.
 
 - Timeouts and a small retry budget on every outbound call; no unbounded
   hangs. Retry ownership is explicit: the caller owns retries within its
-  budget and propagates deadlines downstream — callees never silently
+  budget and propagates deadlines downstream: callees never silently
   retry non-idempotent operations on the caller's behalf.
 - Circuit behavior on repeated failure: stop calling a failing
   dependency for a bounded cool-down (fail fast + surface degraded
@@ -98,15 +100,15 @@ each prevents.
   dependency; backpressure protects you from a healthy flood.
 - Webhooks: verify signatures before trusting payloads; respond fast,
   process async; treat delivery as at-least-once.
-- **Agent Integration (MCP):** When exposing internal APIs for agent consumption, 
-  wrap them in an MCP (Model Context Protocol) server rather than building 
-  bespoke one-off REST tools.
+- **Agent integration:** Reuse the project's existing tool or protocol surface.
+  MCP is one option when ecosystem interoperability justifies it, not a
+  universal wrapper requirement.
 
 ## Multi-tenancy
 
 - Tenant scoping is a data-layer invariant, not a UI filter: every query
   for tenant-owned data carries the tenant condition, enforced by row
-  level security or a checked repository layer — one unscoped query is
+  level security or a checked repository layer: one unscoped query is
   a cross-tenant leak.
 - Tenant context arrives from the authenticated principal, never from a
   client-supplied id alone.
@@ -120,7 +122,7 @@ each prevents.
   trust client filenames (path traversal).
 - Serve user content from signed/expiring URLs, not public buckets.
 - Large files stream; don't buffer whole uploads in memory.
-- External responses validated (shape/enum) before use — upstream API
+- External responses validated (shape/enum) before use: upstream API
   changes are an input, not an exception.
 
 ## Errors and observability

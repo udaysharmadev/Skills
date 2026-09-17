@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# check-names — enforce the single-word lowercase naming system (PRD §16)
+# check-names: enforce the single-word lowercase naming system (PRD §16)
 # and make sure no retired compound names reappear.
 set -u
 cd "$(dirname "$0")/.."
@@ -15,7 +15,7 @@ for dir in skills/*/; do
   fi
 done
 
-# Retired working names from the pre-0.1 naming pass — none may reappear
+# Retired working names from the pre-0.1 naming pass: none may reappear
 # inside any shipped skill.
 retired="vibe-chief idea-adda adda repo-lens source-scout prompt-smith plan-weaver build-pilot memory-thread arch-studio scale-brain ui-glow ux-radar pixel-copy repo-detox backend-brain browser-patrol security-fort bug-trace test-proof diff-judge speed-hunt git-pulse readme-studio search-ready token-trimmer go-live-guard deploy-runway"
 for r in $retired; do
@@ -29,7 +29,7 @@ done
 taken="ponytail not-ai archify grill-me impeccable"
 for t in $taken; do
   if [ -d "skills/$t" ]; then
-    echo "FAIL: '$t' is an established external skill name — steal the energy, never the words"
+    echo "FAIL: '$t' is an established external skill name: steal the energy, never the words"
     fail=1
   fi
 done

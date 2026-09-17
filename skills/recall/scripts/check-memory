@@ -1,95 +1,86 @@
 #!/usr/bin/env python3
-"""check-memory — structural consistency validator for recall's four files.
+"""Validate recall memory structure without imposing arbitrary size or age caps."""
 
-Catches what drift does silently: files over their caps, undated
-decisions, stale STATUS snapshots, duplicate decision titles, transcript-
-dump smell. Deterministic, read-only. It cannot judge truth — that stays
-with recall itself.
-
-Usage: skills/recall/scripts/check-memory [repo-root] [--json]
-Exit 0 = structurally healthy; exit 1 = findings; exit 2 = usage error.
-"""
-import json, re, sys
-from datetime import date, datetime
+import json
+import re
+import sys
 from pathlib import Path
 
-CAPS = {"PROJECT_CONTEXT.md": 100, "DECISIONS.md": 200, "STATUS.md": 40,
-        "LEARNINGS.md": 100}
+FILES = ("PROJECT_CONTEXT.md", "DECISIONS.md", "STATUS.md", "LEARNINGS.md")
 
 
 def findings_for(root: Path):
-    out = []
-    for fname, cap in CAPS.items():
-        f = root / fname
-        if not f.is_file():
-            out.append({"file": fname, "check": "exists", "status": "missing",
-                        "detail": "memory file absent (created on first recall write)"})
+    findings = []
+    for name in FILES:
+        path = root / name
+        if not path.is_file():
+            findings.append({
+                "file": name,
+                "check": "exists",
+                "status": "missing",
+                "detail": "created only when durable memory is needed",
+            })
             continue
-        lines = f.read_text().splitlines()
-        if len(lines) > cap:
-            out.append({"file": fname, "check": "cap", "status": "over",
-                        "detail": f"{len(lines)} lines > soft cap {cap} — compact"})
-        # dates: every decision/lesson entry should carry one
-        if fname in ("DECISIONS.md", "LEARNINGS.md"):
-            headings = [l for l in lines if l.startswith("## ")]
-            undated = [h for h in headings
-                       if not re.search(r"\d{4}-\d{2}-\d{2}", h)]
-            for h in undated:
-                out.append({"file": fname, "check": "dated-entry", "status": "missing",
-                            "detail": f"undated entry: {h.strip()[:60]}"})
-            # duplicate titles
-            seen, dups = set(), []
-            for h in headings:
-                key = re.sub(r"^\d{4}-\d{2}-\d{2}\s*[—–-]?\s*", "", h).strip().lower()
-                if key in seen:
-                    dups.append(key)
-                seen.add(key)
-            for d in dups:
-                out.append({"file": fname, "check": "dedupe", "status": "duplicate",
-                            "detail": f"duplicate decision title: {d[:60]}"})
-        # STATUS staleness (updated marker older than 14 days)
-        if fname == "STATUS.md":
-            m = re.search(r"updated\s+(\d{4}-\d{2}-\d{2})", "\n".join(lines))
-            if m:
-                updated = datetime.strptime(m.group(1), "%Y-%m-%d").date()
-                age = (date.today() - updated).days
-                if age > 14:
-                    out.append({"file": fname, "check": "stale", "status": "stale",
-                                "detail": f"snapshot updated {age} days ago"})
-            else:
-                out.append({"file": fname, "check": "updated-marker", "status": "missing",
-                            "detail": "no 'updated YYYY-MM-DD' marker"})
-        # transcript-dump smell: giant bullet blocks (>8 lines without break)
-        if len(lines) > 1:
-            run, worst = 0, 0
-            for l in lines:
-                if l.startswith(("- ", "* ")) or l.startswith("  "):
-                    run += 1
-                    worst = max(worst, run)
-                else:
-                    run = 0
-            if worst > 12:
-                out.append({"file": fname, "check": "compact", "status": "smell",
-                            "detail": f"bullet run of {worst} lines — reads like a dump, compact"})
-    return out
+
+        lines = path.read_text().splitlines()
+        if name in ("DECISIONS.md", "LEARNINGS.md"):
+            headings = [line for line in lines if line.startswith("## ")]
+            normalized = set()
+            for heading in headings:
+                if not re.search(r"\d{4}-\d{2}-\d{2}", heading):
+                    findings.append({
+                        "file": name,
+                        "check": "dated-entry",
+                        "status": "missing",
+                        "detail": f"undated entry: {heading[:80]}",
+                    })
+                key = re.sub(
+                    r"^##\s+(?:\[[^]]+\]\s+)?\d{4}-\d{2}-\d{2}\s*[:,-]?\s*",
+                    "",
+                    heading,
+                ).strip().lower()
+                if key in normalized:
+                    findings.append({
+                        "file": name,
+                        "check": "dedupe",
+                        "status": "duplicate",
+                        "detail": f"duplicate entry: {key[:80]}",
+                    })
+                normalized.add(key)
+
+        if name == "STATUS.md" and not re.search(
+            r"updated\s+\d{4}-\d{2}-\d{2}", "\n".join(lines), re.I
+        ):
+            findings.append({
+                "file": name,
+                "check": "updated-marker",
+                "status": "missing",
+                "detail": "add 'updated YYYY-MM-DD'",
+            })
+    return findings
 
 
 def main():
-    args = [a for a in sys.argv[1:] if a != "--json"]
+    args = [arg for arg in sys.argv[1:] if arg != "--json"]
     root = Path(args[0]) if args else Path.cwd()
     if not root.is_dir():
         print(f"check-memory: not a directory: {root}", file=sys.stderr)
         return 2
+
     findings = findings_for(root)
     if "--json" in sys.argv:
         print(json.dumps({"root": str(root), "findings": findings}, indent=2))
-    elif not findings:
-        print("check-memory: 4/4 files structurally healthy (caps, dates, dedupe, staleness)")
+    elif findings:
+        for item in findings:
+            print(
+                f"{item['status'].upper():<9} {item['file']:<20} "
+                f"{item['check']:<15} {item['detail']}"
+            )
     else:
-        for f in findings:
-            print(f"{f['status'].upper():<9} {f['file']:<20} {f['check']:<15} {f['detail']}")
-    return 1 if any(f["status"] in ("over", "missing", "duplicate", "stale")
-                    for f in findings) else 0
+        print("check-memory: memory structure is consistent")
+
+    blocking = {"duplicate"}
+    return 1 if any(item["status"] in blocking for item in findings) else 0
 
 
 if __name__ == "__main__":

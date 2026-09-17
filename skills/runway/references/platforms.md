@@ -1,7 +1,7 @@
-# Platform playbook — one methodology, per-platform specifics
+# Platform playbook: one methodology, per-platform specifics
 
 The workflow in SKILL.md is identical everywhere; only the commands and
-config differ. "What good looks like" per platform — extend this file
+config differ. "What good looks like" per platform: extend this file
 as real deployments accumulate (never fabricate from memory; scout
 verifies current CLI behavior).
 
@@ -10,11 +10,11 @@ verifies current CLI behavior).
 - Signals: `vercel.json`, `.vercel/`, Next/Nuxt/etc. framework presets.
 - Auth: `vercel whoami` · env: `vercel env ls <env>` (names only) ·
   deploy: `vercel deploy` (preview), `vercel deploy --prod`.
-- Previews are the superpower: every branch gets a URL — verify there
+- Previews are the superpower: every branch gets a URL: verify there
   first, always.
 - Post-deploy: `vercel ls` confirms the deployment; alias/domains via
   `vercel domains`/`vercel alias`; rollback: `vercel rollback`.
-- Migrations: none managed by Vercel — external DB (Neon/Supabase/…)
+- Migrations: none managed by Vercel: external DB (Neon/Supabase/…)
   applies them as a pre-deploy step with the same safety rules.
 
 ## Netlify / Cloudflare Pages (similar shape)
@@ -24,19 +24,19 @@ verifies current CLI behavior).
   deploy`); preview deployments per branch; env via dashboard/CLI
   (`netlify env:*`).
 - Rollback: previous deployment promote (`netlify restore`,
-  wrangler rollback) — verify the exact command with scout when first
+  wrangler rollback): verify the exact command with scout when first
   used on a project.
 
 ## Containers (Docker → anywhere)
 
 - Signals: `Dockerfile`, `compose.yaml`, `.dockerignore`.
-- Local build first: `docker build -t app:sha .` — the sha tags the
+- Local build first: `docker build -t app:sha .`: the sha tags the
   exact artifact; the same image that was built is the image that ships.
 - Registry push → platform pull (Fly/Railway/Render/ECS/k8s).
 - Health check: the container's health endpoint (compose
   `healthcheck`, platform equivalents); rollout status watched, not
   assumed.
-- Rollback: redeploy the previous image tag — which is why tags are
+- Rollback: redeploy the previous image tag: which is why tags are
   immutable shas, never `latest`.
 
 ## VPS / systemd (the boring classic)
@@ -52,7 +52,7 @@ verifies current CLI behavior).
 
 ## Static sites (GitHub Pages / object storage)
 
-- Build output deployed — verify the *generated* files (the HTML
+- Build output deployed: verify the *generated* files (the HTML
   actually contains the meta tags), not just "upload finished".
 - CDN cache: state the invalidation status; stale-cache false alarms
   are the #1 static-deploy confusion.
@@ -69,7 +69,7 @@ verifies current CLI behavior).
 ## Mobile (EAS / store pipelines)
 
 - Build via `eas build` (or native pipelines); stores impose review
-  timelines that are outside anyone's control — report them as external
+  timelines that are outside anyone's control: report them as external
   state, never as failures.
 - Rollback = phased release pause/halt or store-managed version revert.
 - Smoke = the built binary on a device/simulator for the release

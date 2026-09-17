@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# check-note — validate a scout research note's structure, not its truth.
+# check-note: validate a scout research note's structure, not its truth.
 # Truth needs a reader; structure is checkable: provenance header, pinned
 # versions, sourced facts, uncertainty section. Usage: check-note <file>.
 set -u
@@ -18,7 +18,7 @@ grep -q '^## Load-bearing facts' "$f" \
 grep -q '^## Uncertainty' "$f" \
   || { echo "FAIL $f: missing '## Uncertainty' section"; fail=1; }
 # every fact line should carry evidence: a link, an inline-code path/pin,
-# or an explicit unverified marker — a bare assertion is the failure mode.
+# or an explicit unverified marker: a bare assertion is the failure mode.
 facts=$(awk '/^## Load-bearing facts/{on=1; next} /^## /{on=0} on && /^- /' "$f")
 if [ -z "$facts" ]; then
   echo "FAIL $f: no fact lines under Load-bearing facts"

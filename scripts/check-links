@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# check-links — verify bundled skill paths and repository Markdown links.
+# check-links: verify bundled skill paths and repository Markdown links.
 set -u
 cd "$(dirname "$0")/.."
 

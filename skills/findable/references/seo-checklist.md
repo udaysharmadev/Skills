@@ -1,4 +1,4 @@
-# SEO checklist — verify on rendered HTML, per page type
+# SEO checklist: verify on rendered HTML, per page type
 
 Commands assume `curl -s <url>`; the rendered/deferred HTML matters more
 than the template.
@@ -7,8 +7,8 @@ than the template.
 
 | Check | Good | Broken tell |
 | --- | --- | --- |
-| Title | unique, ≤ ~60 chars, topic first, brand last | every page: "Home — MyApp" |
-| Meta description | unique, ~150 chars, real summary | missing, or one description site-wide |
+| Title | unique, descriptive, and checked in target result surfaces | every page: "Home: MyApp" |
+| Meta description | unique and useful to searchers | missing, or one description site-wide |
 | Canonical | absolute, self-referencing, protocol+host exact | missing; canonical to homepage everywhere |
 | Open Graph | og:title, og:description, og:image (1200×630), og:url | absent; image 404s; relative URL |
 | Twitter card | summary_large_image + matching tags | absent |
@@ -33,8 +33,9 @@ than the template.
   respected.
 - Duplicate content: parameter URLs (utm, sort, page) canonicalized;
   trailing-slash/case variants resolve to one canonical.
-- Redirect chains ≤ 1 hop; no soft-404s (200 with "not found" content).
-- Staging environments: noindex + auth — they must never be crawlable.
+- Avoid unnecessary redirect chains; no soft-404s (successful status with
+  not-found content).
+- Staging environments: noindex + auth: they must never be crawlable.
 
 ## Structured data (schema.org)
 
@@ -53,7 +54,7 @@ than the template.
 - Alt text, heading order, link purpose → `friction`; dual-value work
   gets done once, credited twice.
 
-## GEO/AEO (answer engines) — evidence-based only
+## GEO/AEO (answer engines): evidence-based only
 
 What's defensible: stable URLs, semantic HTML, structured data, factual
 self-contained content, clear headings that answer questions. What
