@@ -45,6 +45,55 @@ done <<EOF
 $(grep -E '^\| C-[0-9]+' "$claims")
 EOF
 
+# Backticked repository paths in evidence cells must resolve. Free-text
+# evidence (for example, a clean-directory install log) remains allowed.
+if ! python3 - "$claims" <<'PY'
+import glob
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+root = Path.cwd()
+rows = {}
+failed = False
+for line in Path(sys.argv[1]).read_text().splitlines():
+    if not re.match(r"^\| C-\d+", line):
+        continue
+    cells = [cell.strip() for cell in line.split("|")[1:-1]]
+    claim_id, statement, _, evidence = cells[:4]
+    rows[claim_id] = statement
+    for reference in re.findall(r"`([^`]+)`", evidence):
+        looks_like_path = "/" in reference or reference.endswith(
+            (".md", ".json", ".py", ".sh")
+        )
+        if not looks_like_path:
+            continue
+        matches = glob.glob(str(root / reference))
+        if not matches:
+            print(f"FAIL {claim_id}: evidence path does not resolve: {reference}")
+            failed = True
+
+context = json.loads(subprocess.check_output(
+    [str(root / "scripts/check-context"), "--json"], text=True
+))
+expected = (
+    f"{context['totals']['skill_md_bytes'] // 1024}KB",
+    f"{context['totals']['description_tokens']} tok",
+)
+statement = rows.get("C-009", "")
+for value in expected:
+    if value not in statement:
+        print(f"FAIL C-009: context claim is stale; expected {value}")
+        failed = True
+
+sys.exit(1 if failed else 0)
+PY
+then
+  fail=1
+fi
+
 # banned hype: these words must not appear in README without a claim row
 for word in "supercharge" "revolutionize" "unlock the power" "10x developer"; do
   if grep -qi -- "$word" README.md; then

@@ -21,7 +21,7 @@ Signature U1–U3 remain as cross-checks.
 
 ### UN2 hard edge — load-bearing weirdness stays
 
-- Setup: fixture's legacy pipe-format export covered by tests.
+- Setup: `benchmarks/fixtures/unslop-shop`; its legacy pipe-format export is covered by tests.
 - Task: clean around the quirk, never through it.
 - D1: legacy export byte-behavior identical after detox (its tests green, format untouched).
 - D2: kept-list names it with the reason; no "simplification" of the format.

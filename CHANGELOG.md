@@ -5,6 +5,63 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+### Corrected-contract verification (2026-09-19)
+
+- Completed four new `handsfree` v2 smoke calls on OpenCode 1.18.31 using
+  `opencode/muse-spark-1.3-contributor-free`: baseline 2/2 and treatment 2/2
+  pass, with both destructive-action requests gated. Preserved the original
+  0/4 sample separately; no effectiveness or efficiency lift claimed.
+- Recorded raw-result, runner, checker, and fixture-file hashes on the evidence
+  page, distinguishing post-run companion hashes from runner-recorded fields.
+- Verified the working tree in a fresh temporary copy including Git-tracked
+  historical evidence: all 24 regression tests and deterministic checks pass;
+  the generated skill index is unchanged. Optional `skills-ref` is unavailable;
+  local strict frontmatter validation passes.
+
+### Audit follow-through (2026-09-19)
+
+- Versioned the corrected `handsfree` outcome contracts as O1-v2/O2-v2.
+  Require a real module docstring and unchanged executable AST instead of a
+  case-sensitive grep. Added positive and negative regression coverage.
+- Preserved all four historical smoke scores and raw records; documented the
+  grader defect, limited sample, and previously observed holdout. Effectiveness
+  stays UNVERIFIED; no new model calls or retrospective score changes.
+- Snapshot selected task contracts in future outcome records, alongside the
+  runner hash, so contract revisions remain visible.
+- Made the em-dash validator regression run with a tool-only PATH that cannot
+  resolve ripgrep; the validator uses portable grep.
+- Reconciled evidence indexes: ten families have completed trials including
+  the handsfree smoke, but nineteen still lack verified outcome effectiveness.
+
+### Repository audit hardening (2026-09-18)
+
+- Fixed workflow evaluation setup so every explicitly named benchmark fixture
+  is discovered and copied generically instead of only three hard-coded names;
+  made follow-up fixture scenarios self-contained.
+- Added zero-spend validation for all 83 outcome tasks, including fixture
+  existence, held-out coverage, verification commands, and artifact patterns.
+- Closed validator false-greens for orphaned skill resources and nonexistent
+  repository evidence paths; context-footprint claims now fail when stale.
+- Removed the superseded `handsfree` Antigravity reference, fixed trigger-eval
+  temporary-directory cleanup, and reconciled proof-phase documentation with
+  the 211 trigger cases and nine executed outcome families now present.
+- Corrected helper edge contracts: below-threshold performance changes now
+  fail, empty browser viewport matrices are rejected, and inventory JSON safely
+  escapes unusual target paths.
+- Added a standard-library regression suite and CI gate for the reproduced
+  validator, fixture, cleanup, and helper failures.
+- Outcome grading now rejects missing/failed verification, unsuccessful agent
+  invocations, out-of-scope filename prefixes, and outer-repository changes,
+  including edits to files that were already dirty before a trial.
+- Outcome results use schema `outcome/2`, checkpoint every completed trial,
+  retain partial results on stall aborts, and record the runner hash. Treatment
+  workspaces include the full skill package and executable helpers.
+- Reject escaping artifact symlinks and oversized captures instead of silently
+  grading incomplete evidence; clean temporary workspaces on setup failures.
+- Fixed trigger accuracy for correct chains, `handsfree` prose normalization,
+  invalid CLI selection handling, and non-finite performance measurements.
+- Fixed successful text-mode inventory scans returning failure outside Git.
+
 ### Wave-1 outcome verdicts — five skills executed on opencode (2026-09-15, zero Codex)
 
 - `spelunk` **MIXED** (O1 2/2 vs 1/2 treatment edge; O2/O3 ties after

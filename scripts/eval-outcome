@@ -17,15 +17,14 @@ Usage:
 Paid agents (codex) are default-deny: any run additionally requires
 --allow-paid AND ALLOW_PAID_AGENT=1 (scripts/eval_guard.py, exit 4).
 """
-import argparse, json, os, re, shutil, subprocess, sys, tempfile, time
+import argparse, hashlib, json, os, re, shlex, shutil, subprocess, sys, tempfile, time
+from pathlib import Path, PurePosixPath
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 from eval_guard import PAID_AGENTS, guard_paid_agent
 RESULTS = os.path.join(ROOT, "evals", "results")
 RESULTS_TMP = os.path.join(RESULTS, "tmp")
-os.makedirs(RESULTS_TMP, exist_ok=True)
-os.environ["TMPDIR"] = RESULTS_TMP
 
 AGENTS = {
     "codex": {"bin": "codex", "cmd": lambda p, m=None: ["codex", "exec", p]},
@@ -96,6 +95,102 @@ def load_tasks(slug, heldout):
     return [t for t in tasks if t.get("heldout", False) == heldout]
 
 
+def validate_task_files():
+    """Validate every outcome task file without invoking an agent."""
+    skills = {d for d in os.listdir(os.path.join(ROOT, "skills"))
+              if os.path.isdir(os.path.join(ROOT, "skills", d))}
+    task_dir = os.path.join(ROOT, "evals", "outcomes")
+    files = sorted(fn for fn in os.listdir(task_dir)
+                   if fn.endswith("-tasks.json"))
+    file_skills = {fn.removesuffix("-tasks.json") for fn in files}
+    errors = []
+    for slug in sorted(skills - file_skills):
+        errors.append(f"{slug}: missing outcome task file")
+    for slug in sorted(file_skills - skills):
+        errors.append(f"{slug}: outcome task file has no matching skill")
+
+    fixture_root = os.path.join(ROOT, "benchmarks", "fixtures")
+    task_count = 0
+    for fn in files:
+        slug = fn.removesuffix("-tasks.json")
+        path = os.path.join(task_dir, fn)
+        try:
+            with open(path, encoding="utf-8") as f:
+                tasks = json.load(f)
+        except (OSError, json.JSONDecodeError) as exc:
+            errors.append(f"{fn}: {exc}")
+            continue
+        if not isinstance(tasks, list) or not tasks:
+            errors.append(f"{fn}: must contain a non-empty JSON array")
+            continue
+        seen = set()
+        heldout = 0
+        for index, task in enumerate(tasks, 1):
+            task_count += 1
+            label = f"{fn}[{index}]"
+            if not isinstance(task, dict):
+                errors.append(f"{label}: task must be an object")
+                continue
+            task_id = task.get("id")
+            if not isinstance(task_id, str) or not task_id:
+                errors.append(f"{label}: missing non-empty id")
+            elif task_id in seen:
+                errors.append(f"{label}: duplicate id {task_id!r}")
+            else:
+                seen.add(task_id)
+            if not isinstance(task.get("request"), str) or not task["request"].strip():
+                errors.append(f"{label}: missing non-empty request")
+            expected = task.get("expected")
+            if not isinstance(expected, (dict, list)) or not expected:
+                errors.append(f"{label}: expected must be a non-empty object or list")
+            elif isinstance(expected, list):
+                if expected != ["direct"]:
+                    errors.append(f"{label}: unsupported route expectation {expected!r}")
+            elif expected.get("type") not in {
+                "route", "hotseat", "pilot", "blueprint", "polish", "friction",
+                "ditto", "frontpage", "spelunk",
+            }:
+                errors.append(f"{label}: unknown grader type {expected.get('type')!r}")
+            if "timeout" in task and (type(task["timeout"]) is not int or task["timeout"] <= 0):
+                errors.append(f"{label}: timeout must be a positive integer")
+            if not isinstance(task.get("heldout"), bool):
+                errors.append(f"{label}: heldout must be a boolean")
+            if task.get("heldout") is True:
+                heldout += 1
+            fixture = task.get("fixture")
+            if fixture is not None:
+                if (not isinstance(fixture, str)
+                        or not re.fullmatch(r"[A-Za-z0-9._-]+", fixture)
+                        or fixture in (".", "..")
+                        or not os.path.exists(os.path.join(fixture_root, fixture))):
+                    errors.append(f"{label}: unknown or unsafe fixture {fixture!r}")
+            verify = task.get("verify", [])
+            if not isinstance(verify, list) or any(
+                not isinstance(item, dict)
+                or not isinstance(item.get("cmd"), str)
+                or not item["cmd"].strip()
+                or type(item.get("expect")) is not int
+                for item in verify
+            ):
+                errors.append(
+                    f"{label}: verify must contain non-empty commands and integer exits"
+                )
+            artifacts = task.get("artifacts", [])
+            if not isinstance(artifacts, list) or any(
+                not isinstance(item, str)
+                or not item.strip()
+                or os.path.isabs(item)
+                or ".." in item.replace("\\", "/").split("/")
+                for item in artifacts
+            ):
+                errors.append(f"{label}: artifacts must be safe relative glob strings")
+        if heldout == 0:
+            errors.append(f"{fn}: no held-out task")
+        if heldout == len(tasks):
+            errors.append(f"{fn}: no non-held-out task")
+    return task_count, errors
+
+
 def normalize_route(raw):
     m = re.search(r"^route:\s*(.+)$", raw, re.M | re.I)
     if not m:
@@ -145,6 +240,19 @@ def grade_hotseat(task, raw):
 
 
 def grade(task, route, raw, obs=None):
+    if obs is not None and obs.get("status") != "ok":
+        return False, {"reason": "agent invocation did not succeed"}
+    if (obs or {}).get("outer_repo_changed"):
+        return False, {"reason": "outer repository changed",
+                       "outer_repo_changed": obs["outer_repo_changed"]}
+    required = task.get("verify", [])
+    checks = (obs or {}).get("verify", [])
+    if len(checks) != len(required) or any(
+        actual.get("cmd") != expected["cmd"]
+        or actual.get("exit") != expected.get("expect", 0)
+        for expected, actual in zip(required, checks)
+    ):
+        return False, {"reason": "required verification missing or failed"}
     exp = task["expected"]
     if isinstance(exp, dict) and exp.get("type") == "hotseat":
         return grade_hotseat(task, raw)
@@ -273,8 +381,10 @@ def grade_pilot(task, raw, obs):
     scope = exp.get("scope", [])
     changed = obs.get("changed_files", [])
     outside = [f for f in changed
-               if scope and not any(f == s or f.startswith(s.rstrip("/") + "/")
-                                    or f.startswith(s) for s in scope)]
+               if PurePosixPath(f).is_absolute() or ".." in PurePosixPath(f).parts
+               or (scope and not any(f == s.rstrip("/")
+                                     or f.startswith(s.rstrip("/") + "/")
+                                     for s in scope))]
     low = raw.lower()
     must = [m.lower() for m in exp.get("must_contain", [])]
     missing = [m for m in must if m not in low]
@@ -364,15 +474,28 @@ def grade_spelunk(task, raw, obs=None):
 
 
 def _root_status():
-    """Porcelain status of the outer skills repo (containment monitor)."""
-    r = subprocess.run(["git", "status", "--porcelain"], capture_output=True,
-                       text=True, cwd=ROOT)
-    return set(l for l in r.stdout.splitlines() if l.strip())
+    """Fingerprint tracked and unignored files, including already dirty files."""
+    result = subprocess.run(
+        ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
+        capture_output=True, text=True, cwd=ROOT, check=True,
+    )
+    snapshot = {}
+    for name in set(result.stdout.split("\0")) - {""}:
+        path = Path(ROOT) / name
+        if path.is_symlink():
+            snapshot[name] = ("symlink", os.readlink(path))
+        elif path.is_file():
+            snapshot[name] = (path.stat().st_mode,
+                              hashlib.sha256(path.read_bytes()).hexdigest())
+        else:
+            snapshot[name] = None
+    return snapshot
 
 
 def observe(agent, prompt, cfg, timeout, model=None, fixture=None,
-            verify=None, artifacts=None):
-    workdir = tempfile.mkdtemp(prefix="outcome-")
+            verify=None, artifacts=None, skill=None):
+    os.makedirs(RESULTS_TMP, exist_ok=True)
+    workdir = tempfile.mkdtemp(prefix="outcome-", dir=RESULTS_TMP)
     # Containment: the agent must work ONLY inside workdir. Pin it in
     # the prompt (agents otherwise wander to absolute repo paths they
     # infer) and monitor the outer repo for stray writes.
@@ -381,30 +504,27 @@ def observe(agent, prompt, cfg, timeout, model=None, fixture=None,
               "Do ALL file reads, writes, edits, and shell commands under "
               "it. Never read, write, or reference files by absolute paths "
               "outside it. Your shell starts there.\n\n" + prompt)
-    pre_outer = _root_status()
-    if fixture:
-        src = os.path.join(ROOT, "benchmarks", "fixtures", fixture)
-        for entry in os.listdir(src):
-            s = os.path.join(src, entry)
-            d = os.path.join(workdir, entry)
-            if os.path.isdir(s):
-                shutil.copytree(s, d)
-            else:
-                shutil.copy2(s, d)
-    subprocess.run(["git", "init", "-q", workdir], capture_output=True)
-    if fixture:
-        # Commit the pristine fixture so later status shows ONLY agent
-        # changes. Without this, every fixture file reads as untracked
-        # and scope checks false-fail on the untouched tree (caught by
-        # the first live workspace trial, proof/opencode 2026-09-15).
-        subprocess.run(["git", "-C", workdir, "add", "-A"],
-                       capture_output=True)
-        subprocess.run(["git", "-C", workdir, "-c", "user.name=fixture",
-                        "-c", "user.email=fixture@example.com",
-                        "commit", "-qm", "pristine fixture"],
-                       capture_output=True)
     t0 = time.time()
     try:
+        pre_outer = _root_status()
+        if fixture:
+            src = Path(ROOT) / "benchmarks" / "fixtures" / fixture
+            if src.is_dir():
+                shutil.copytree(src, workdir, dirs_exist_ok=True)
+            else:
+                shutil.copy2(src, Path(workdir) / src.name)
+        if skill:
+            package = Path(workdir) / ".eval-skill" / skill
+            shutil.copytree(Path(ROOT) / "skills" / skill, package)
+            prompt += f"\nThe active skill's complete package is at {package}.\n"
+        subprocess.run(["git", "init", "-q", workdir], capture_output=True, check=True)
+        # A pristine commit makes unchanged fixture files disappear from status.
+        subprocess.run(["git", "-C", workdir, "add", "-A"],
+                       capture_output=True, check=True)
+        subprocess.run(["git", "-C", workdir, "-c", "user.name=fixture",
+                        "-c", "user.email=fixture@example.com",
+                        "-c", "commit.gpgsign=false", "commit", "--allow-empty",
+                        "-qm", "pristine fixture"], capture_output=True, check=True)
         proc = subprocess.run(cfg["cmd"](prompt, model), capture_output=True,
                               text=True, timeout=timeout, cwd=workdir,
                               stdin=subprocess.DEVNULL)
@@ -423,7 +543,7 @@ def observe(agent, prompt, cfg, timeout, model=None, fixture=None,
             # run check commands and record the changed-file set BEFORE cleanup.
             checks = []
             for v in verify:
-                cmd = v["cmd"].replace("{ROOT}", ROOT)
+                cmd = v["cmd"].replace("{ROOT}", shlex.quote(ROOT))
                 try:
                     r = subprocess.run(cmd, shell=True, capture_output=True,
                                        text=True, timeout=120, cwd=workdir)
@@ -433,17 +553,16 @@ def observe(agent, prompt, cfg, timeout, model=None, fixture=None,
                 except subprocess.TimeoutExpired:
                     checks.append({"cmd": v["cmd"], "exit": None,
                                    "expect": v.get("expect", 0), "tail": "TIMEOUT"})
-            st = subprocess.run(["git", "status", "--porcelain"], capture_output=True,
-                                text=True, cwd=workdir)
-            raw_changed = [l[3:] for l in st.stdout.splitlines() if l.strip()]
+            st = subprocess.run(["git", "-c", "status.renames=false", "status",
+                                 "--porcelain", "-z", "--untracked-files=all"],
+                                capture_output=True, text=True, cwd=workdir, check=True)
+            raw_changed = [item[3:] for item in st.stdout.split("\0") if item]
             # Tool noise is never agent work: drop bytecode caches (mirrors
             # .gitignore). Without this, any Python trial false-fails scope.
             changed = [f for f in raw_changed
                        if "__pycache__" not in f and not f.endswith(".pyc")]
             obs["verify"] = checks
             obs["changed_files"] = changed
-            post_outer = _root_status()
-            obs["outer_repo_changed"] = sorted(post_outer - pre_outer)
             tree = []
             for dirp, _, fns in os.walk(workdir):
                 if ".git" in dirp.split(os.sep):
@@ -459,13 +578,32 @@ def observe(agent, prompt, cfg, timeout, model=None, fixture=None,
             captured = {}
             for pat in artifacts:
                 for match in sorted(_glob.glob(pat, root_dir=workdir, recursive=True)):
-                    with open(os.path.join(workdir, match), encoding="utf-8",
+                    path = Path(workdir) / match
+                    if not path.resolve().is_relative_to(Path(workdir).resolve()):
+                        raise ValueError(f"artifact escapes evaluation directory: {match}")
+                    if not path.is_file():
+                        continue
+                    with path.open(encoding="utf-8",
                               errors="replace") as f:
-                        captured[match] = f.read()[:20000]
+                        content = f.read(20001)
+                    if len(content) > 20000:
+                        raise ValueError(f"artifact exceeds capture limit: {match}")
+                    captured[match] = content
             obs["artifacts"] = captured
+        post_outer = _root_status()
+        obs["outer_repo_changed"] = sorted(
+            name for name in pre_outer.keys() | post_outer.keys()
+            if pre_outer.get(name) != post_outer.get(name)
+        )
         return obs
-    except subprocess.TimeoutExpired:
-        return {"status": "error", "error": "timeout",
+    except subprocess.TimeoutExpired as exc:
+        partial = exc.stdout or b""
+        if isinstance(partial, bytes):
+            partial = partial.decode("utf-8", errors="replace")
+        return {"status": "error", "error": "timeout", "output": partial[-60000:],
+                "duration": round(time.time() - t0, 1)}
+    except (OSError, ValueError, subprocess.CalledProcessError) as exc:
+        return {"status": "error", "error": str(exc),
                 "duration": round(time.time() - t0, 1)}
     finally:
         shutil.rmtree(workdir, ignore_errors=True)
@@ -484,9 +622,19 @@ def build_prompt(task, cat, treatment_text):
     return "\n".join(lines)
 
 
+def save_result(record, path):
+    """Checkpoint each completed trial atomically, including failed observations."""
+    temporary = path + ".tmp"
+    with open(temporary, "w", encoding="utf-8") as stream:
+        json.dump(record, stream, indent=2)
+    os.replace(temporary, path)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--skill", required=True)
+    ap.add_argument("--skill")
+    ap.add_argument("--check", action="store_true",
+                    help="validate all outcome task files without invoking an agent")
     ap.add_argument("--agent", default="codex", choices=list(AGENTS))
     ap.add_argument("--trials", type=int, default=3)
     ap.add_argument("--timeout", type=int, default=180)
@@ -502,6 +650,32 @@ def main():
     ap.add_argument("--allow-paid", action="store_true",
                     help="with ALLOW_PAID_AGENT=1, authorize a paid-agent run (codex)")
     a = ap.parse_args()
+
+    if a.check:
+        task_count, errors = validate_task_files()
+        if errors:
+            for error in errors:
+                print(f"FAIL: {error}", file=sys.stderr)
+            return 1
+        print(f"OK: {task_count} outcome tasks well-formed across 28 skills")
+        return 0
+    if not a.skill:
+        ap.error("--skill is required for a live run")
+    if a.skill not in {name for name, _ in catalog()}:
+        ap.error(f"unknown skill {a.skill!r}")
+    if a.trials <= 0 or a.timeout <= 0 or (a.timeout_override is not None and a.timeout_override <= 0):
+        ap.error("trials and timeouts must be positive")
+    try:
+        max_consec = int(os.environ.get("EO_MAX_CONSEC", "0") or 0)
+        if max_consec < 0:
+            raise ValueError
+    except ValueError:
+        ap.error("EO_MAX_CONSEC must be a non-negative integer")
+    _, errors = validate_task_files()
+    if errors:
+        for error in errors:
+            print(f"FAIL: {error}", file=sys.stderr)
+        return 2
 
     guard_paid_agent(a.agent, a.allow_paid)
 
@@ -524,18 +698,23 @@ def main():
         print("no tasks for this selection", file=sys.stderr)
         return 2
 
-    rec = {"schema": "outcome/1", "skill": a.skill, "agent": a.agent,
+    rec = {"schema": "outcome/2", "skill": a.skill, "agent": a.agent,
            "agent_version": aver, "model": a.model or "agent-default",
            "timeout_override": a.timeout_override,
            "commit": commit,
            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
            "paid_guard": "authorized" if a.agent in PAID_AGENTS else "n/a",
-           "heldout": a.heldout, "trials": []}
+           "heldout": a.heldout, "status": "running", "trials": [],
+           "task_contracts": tasks,
+           "runner_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
+    os.makedirs(RESULTS, exist_ok=True)
+    stamp = time.strftime("%Y%m%d-%H%M%S") + f"-{time.time_ns() % 1_000_000_000:09d}"
+    out = os.path.join(RESULTS, f"{stamp}-outcome-{a.skill}-{a.agent}"
+                                f"{'-heldout' if a.heldout else ''}.json")
     # Stall guard: a throttled free model hangs every call to the full
     # timeout. After N consecutive timeout/error observations, abort the
-    # run (exit 5, no result file) so the driver can retry on a live
+    # run (exit 5, partial results preserved) so the driver can retry on a live
     # model instead of burning hours on garbage.
-    max_consec = int(os.environ.get("EO_MAX_CONSEC", "0") or 0)
     consec_bad = 0
     for task in tasks:
         for cond, ctx in (("baseline", None), ("treatment", treat)):
@@ -545,21 +724,23 @@ def main():
                 obs = observe(a.agent, build_prompt(task, cat, ctx), cfg, to,
                               model=a.model, fixture=task.get("fixture"),
                               verify=task.get("verify"),
-                              artifacts=task.get("artifacts"))
-                if obs.get("status") != "ok":
-                    consec_bad += 1
-                    if max_consec and consec_bad >= max_consec:
-                        print(f"ABORT: {consec_bad} consecutive bad "
-                              f"observations (model stall?)", file=sys.stderr)
-                        return 5
-                else:
-                    consec_bad = 0
+                              artifacts=task.get("artifacts"),
+                              skill=a.skill if ctx else None)
                 raw = obs.get("output", "")
                 route = normalize_route(raw)
                 passed, notes = grade(task, route, raw, obs)
                 rec["trials"].append({"task": task["id"], "condition": cond,
                                      "trial": t + 1, "pass": passed,
                                      "notes": notes, "obs": obs})
+                consec_bad = consec_bad + 1 if obs.get("status") != "ok" else 0
+                abort = max_consec and consec_bad >= max_consec
+                if abort:
+                    rec["status"] = "aborted"
+                save_result(rec, out)
+                if abort:
+                    print(f"ABORT: {consec_bad} consecutive bad observations; "
+                          f"partial results: {out}", file=sys.stderr)
+                    return 5
                 detail = f"route={route}" if route else \
                     f"personas={notes.get('persona_count')}"
                 print(f"{task['id']} {cond} t{t+1}: "
@@ -567,12 +748,8 @@ def main():
                       f"({obs.get('duration', '?')}s)")
                 sys.stdout.flush()
 
-    os.makedirs(RESULTS, exist_ok=True)
-    ts = time.strftime("%Y%m%d-%H%M%S")
-    out = os.path.join(RESULTS, f"{ts}-outcome-{a.skill}-{a.agent}"
-                                f"{'-heldout' if a.heldout else ''}.json")
-    with open(out, "w", encoding="utf-8") as f:
-        json.dump(rec, f, indent=2)
+    rec["status"] = "complete"
+    save_result(rec, out)
     print(f"wrote {out}")
 
     # summary: pass rate per task/condition + key size metric
@@ -605,7 +782,7 @@ def main():
                 lens = [len(r["notes"].get("route") or []) for r in rows]
                 ml = sum(lens) / max(len(lens), 1)
                 print(f"{task['id']} {cond}: pass={pr:.2f} mean_len={ml:.2f}")
-    return 0
+    return 2 if any(row["obs"].get("status") != "ok" for row in rec["trials"]) else 0
 
 
 if __name__ == "__main__":

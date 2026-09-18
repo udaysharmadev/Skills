@@ -24,6 +24,8 @@ jobs:
         run: scripts/check-claims
       - name: check-readme-sync
         run: scripts/check-readme-sync
+      - name: regression tests
+        run: scripts/test-regressions
       - name: eval fixtures well-formed
         run: scripts/run-evals
       - name: generated docs up to date

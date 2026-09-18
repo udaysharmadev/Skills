@@ -1,0 +1,410 @@
+#!/usr/bin/env python3
+"""Regression tests for deterministic validators and evaluation plumbing."""
+
+import json
+import os
+import runpy
+import shlex
+import shutil
+import subprocess
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import Mock, patch
+
+sys.dont_write_bytecode = True
+
+ROOT = Path(__file__).resolve().parent.parent
+SCRIPTS = ROOT / "scripts"
+sys.path.insert(0, str(SCRIPTS))
+
+
+def run(*args: str, cwd: Path = ROOT) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(args, cwd=cwd, capture_output=True, text=True)
+
+
+def copy_repo_parts(destination: Path, *parts: str) -> None:
+    ignore = shutil.ignore_patterns("__pycache__", "*.pyc", "tmp")
+    for part in parts:
+        source = ROOT / part
+        target = destination / part
+        if source.is_dir():
+            shutil.copytree(source, target, ignore=ignore)
+        else:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, target)
+
+
+class ValidatorRegressions(unittest.TestCase):
+    def test_skill_validator_rejects_orphaned_resource(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="skills-validator-") as raw:
+            repo = Path(raw)
+            copy_repo_parts(repo, "scripts", "skills")
+            (repo / "skills/backend/references/orphan.md").write_text("# orphan\n")
+
+            result = run(str(repo / "scripts/validate-skills"), cwd=repo)
+
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("not discoverable from SKILL.md", result.stdout)
+
+    def test_claim_validator_rejects_missing_evidence_path(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="claims-validator-") as raw:
+            repo = Path(raw)
+            copy_repo_parts(repo, "scripts", "skills", "docs", "evals", "README.md")
+            claims = repo / "docs/claims.md"
+            with claims.open("a") as stream:
+                stream.write(
+                    "| C-999 | bogus fact | FACT | `does/not/exist.md` | "
+                    "2026-09-18 | none | never |\n"
+                )
+
+            result = run(str(repo / "scripts/check-claims"), cwd=repo)
+
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("evidence path does not resolve", result.stdout)
+
+    def test_skill_validator_rejects_em_dash_without_ripgrep(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="skills-emdash-") as raw:
+            repo = Path(raw)
+            copy_repo_parts(repo, "scripts", "skills")
+            skill_file = repo / "skills/backend/SKILL.md"
+            with skill_file.open("a", encoding="utf-8") as stream:
+                stream.write("\nEm dash probe \u2014 should fail.\n")
+
+            # Keep only declared validator dependencies in PATH. The old rg
+            # implementation must fail this test even when rg is installed.
+            binaries = repo / "bin"
+            binaries.mkdir()
+            for command in ("bash", "dirname", "basename", "wc", "tr", "grep",
+                            "sed", "awk", "head", "sort"):
+                executable = shutil.which(command)
+                self.assertIsNotNone(executable, command)
+                (binaries / command).symlink_to(executable)
+            self.assertIsNone(shutil.which("rg", path=str(binaries)))
+            result = subprocess.run(
+                [str(repo / "scripts/validate-skills")], cwd=repo,
+                capture_output=True, text=True,
+                env={**os.environ, "PATH": str(binaries)},
+            )
+
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("literal em dash", result.stdout)
+
+
+class EvaluationRegressions(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.workflow = runpy.run_path(str(SCRIPTS / "eval-workflow"))
+        cls.outcome = runpy.run_path(str(SCRIPTS / "eval-outcome"))
+        cls.trigger = runpy.run_path(str(SCRIPTS / "eval-trigger"))
+
+    def test_outcome_requires_complete_successful_evidence(self) -> None:
+        task = {"expected": {"type": "pilot", "scope": ["src/App.tsx"]},
+                "verify": [{"cmd": "actual-check", "expect": 0}]}
+        valid = {"status": "ok", "changed_files": ["src/App.tsx"],
+                 "verify": [{"cmd": "actual-check", "exit": 0, "expect": 0}]}
+        self.assertTrue(self.outcome["grade"](task, None, "", valid)[0])
+        for change in ({"verify": []}, {"status": "error"},
+                       {"changed_files": ["src/App.tsx.evil"]},
+                       {"changed_files": ["src/../outside.py"]},
+                       {"outer_repo_changed": ["README.md"]},
+                       {"verify": [{"cmd": "actual-check", "exit": 1, "expect": 1}]}):
+            with self.subTest(change=change):
+                self.assertFalse(self.outcome["grade"](task, None, "", {**valid, **change})[0])
+
+    def test_trigger_chain_accuracy_and_handsfree(self) -> None:
+        rows = [{"expected": "scout→proof", "observed": "scout→proof"},
+                {"expected": "handsfree", "observed": "handsfree"}]
+        metrics = self.trigger["score"](rows, [("scout", ""), ("proof", ""), ("handsfree", "")])
+        self.assertEqual(metrics["accuracy"], 1.0)
+        self.assertEqual(self.trigger["normalize"]("Use handsfree for this request."), "handsfree")
+
+    def test_outcome_artifacts_cannot_follow_external_symlinks(self) -> None:
+        observe = self.outcome["observe"]
+        with tempfile.TemporaryDirectory(prefix="outcome-artifacts-") as raw:
+            outside = Path(raw) / "outside.txt"
+            outside.write_text("private sentinel")
+            config = {"cmd": lambda *_: [sys.executable, "-c",
+                      "from pathlib import Path; Path('leak.txt').symlink_to(" + repr(str(outside)) + ")"]}
+            with patch.dict(observe.__globals__, RESULTS_TMP=str(Path(raw) / "runs")):
+                result = observe("fake", "prompt", config, 5, artifacts=["*.txt"])
+            self.assertEqual(result["status"], "error")
+            self.assertNotIn("private sentinel", json.dumps(result))
+            self.assertEqual(list((Path(raw) / "runs").iterdir()), [])
+
+    def test_outcome_setup_failure_cleans_workspace(self) -> None:
+        observe = self.outcome["observe"]
+        with tempfile.TemporaryDirectory(prefix="outcome-setup-") as raw:
+            with patch.dict(observe.__globals__, RESULTS_TMP=raw):
+                result = observe("fake", "prompt", {}, 5, fixture="missing-fixture")
+            self.assertEqual(result["status"], "error")
+            self.assertEqual(list(Path(raw).iterdir()), [])
+
+    def test_outcome_containment_detects_changes_to_already_dirty_files(self) -> None:
+        snapshot = self.outcome["_root_status"]
+        with tempfile.TemporaryDirectory(prefix="containment-") as raw:
+            repo = Path(raw)
+            run("git", "init", "-q", raw)
+            path = repo / "file.txt"
+            path.write_text("first")
+            run("git", "add", "file.txt", cwd=repo)
+            path.write_text("already dirty")
+            with patch.dict(snapshot.__globals__, ROOT=raw):
+                before = snapshot()
+                path.write_text("changed again")
+                after = snapshot()
+            self.assertNotEqual(before, after)
+
+    def test_stall_guard_preserves_failed_trial(self) -> None:
+        main = self.outcome["main"]
+        task = {"id": "O1", "request": "Route this", "heldout": False,
+                "expected": ["direct"]}
+        with tempfile.TemporaryDirectory(prefix="outcome-results-") as raw:
+            with patch.dict(main.__globals__, RESULTS=raw,
+                            AGENTS={"fake": {"bin": sys.executable}},
+                            load_tasks=lambda *_: [task],
+                            observe=lambda *_args, **_kwargs: {"status": "error", "error": "timeout"}), \
+                    patch.dict(os.environ, EO_MAX_CONSEC="1"), \
+                    patch.object(sys, "argv", ["eval-outcome", "--skill", "concierge",
+                                               "--agent", "fake", "--trials", "1"]):
+                self.assertEqual(main(), 5)
+            paths = list(Path(raw).glob("*.json"))
+            self.assertEqual(len(paths), 1)
+            record = json.loads(paths[0].read_text())
+            self.assertEqual(record["status"], "aborted")
+            self.assertEqual(record["task_contracts"], [task])
+            self.assertEqual(len(record["trials"]), 1)
+            self.assertFalse(record["trials"][0]["pass"])
+
+    def test_invalid_cli_selections_fail_before_agent_invocation(self) -> None:
+        cases = [("eval-outcome", "--skill", "concierge", "--trials", "0"),
+                 ("eval-outcome", "--skill", "../outside"),
+                 ("eval-trigger", "--suite", "missing-suite", "--dry-run"),
+                 ("eval-trigger", "--runs", "0", "--dry-run"),
+                 ("eval-workflow", "--timeout", "0", "--check")]
+        for name, *args in cases:
+            with self.subTest(command=(name, *args)):
+                result = run(str(SCRIPTS / name), *args)
+                self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+                self.assertNotIn("Traceback", result.stderr)
+
+    def test_outcome_accepts_single_file_fixture_and_ignores_artifact_directories(self) -> None:
+        observe = self.outcome["observe"]
+        with tempfile.TemporaryDirectory(prefix="single-fixture-") as raw:
+            config = {"cmd": lambda *_: [sys.executable, "-c",
+                      "from pathlib import Path; assert Path('ugly-dashboard.html').is_file(); Path('dir').mkdir()"]}
+            with patch.dict(observe.__globals__, RESULTS_TMP=raw):
+                result = observe("fake", "prompt", config, 5,
+                                 fixture="ugly-dashboard.html", artifacts=["*"])
+            self.assertEqual(result["status"], "ok", result)
+            self.assertIn("ugly-dashboard.html", result["artifacts"])
+            self.assertNotIn("dir", result["artifacts"])
+            self.assertEqual(list(Path(raw).iterdir()), [])
+
+    def test_treatment_receives_executable_skill_helpers(self) -> None:
+        observe = self.outcome["observe"]
+        with tempfile.TemporaryDirectory(prefix="treatment-package-") as raw:
+            config = {"cmd": lambda *_: [sys.executable, "-c",
+                      "from pathlib import Path; import os; "
+                      "p=Path('.eval-skill/blueprint/scripts/validate-mermaid'); "
+                      "assert p.is_file() and os.access(p, os.X_OK)"]}
+            with patch.dict(observe.__globals__, RESULTS_TMP=raw):
+                result = observe("fake", "prompt", config, 5, skill="blueprint")
+            self.assertEqual(result["status"], "ok", result)
+
+    def test_workflow_rejects_external_artifact_symlinks(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="workflow-artifacts-") as raw:
+            directory = Path(raw) / "workspace"
+            directory.mkdir()
+            outside = Path(raw) / "outside.txt"
+            outside.write_text("sentinel")
+            (directory / "leak.txt").symlink_to(outside)
+            with self.assertRaisesRegex(ValueError, "escapes evaluation directory"):
+                self.workflow["manifest"](directory)
+            with self.assertRaisesRegex(ValueError, "escapes evaluation directory"):
+                self.workflow["archive_workspace"](directory, Path(raw) / "artifacts.tar.gz")
+
+    def test_every_declared_workflow_fixture_copies(self) -> None:
+        scenarios, errors = self.workflow["load_scenarios"]()
+        self.assertEqual(errors, [])
+        fixture_scenarios = [item for item in scenarios if item["fixture"]]
+        self.assertEqual(len(fixture_scenarios), 37)
+        for scenario in fixture_scenarios:
+            with self.subTest(scenario=scenario["id"]):
+                with tempfile.TemporaryDirectory(prefix="workflow-fixture-") as raw:
+                    copied = self.workflow["copy_fixture"](scenario, raw)
+                    self.assertIsNotNone(copied)
+                    self.assertTrue(Path(copied).exists())
+
+    def test_outcome_task_contracts_stay_valid(self) -> None:
+        count, errors = self.outcome["validate_task_files"]()
+        self.assertEqual(count, 83)
+        self.assertEqual(errors, [])
+
+    def test_outcome_validator_rejects_missing_fixture_without_side_effects(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="outcome-validator-") as raw:
+            repo = Path(raw)
+            copy_repo_parts(repo, "scripts", "skills", "evals", "benchmarks")
+            task_file = repo / "evals/outcomes/backend-tasks.json"
+            tasks = json.loads(task_file.read_text())
+            tasks[0]["fixture"] = "fixture-that-does-not-exist"
+            task_file.write_text(json.dumps(tasks))
+
+            result = run(str(repo / "scripts/eval-outcome"), "--check", cwd=repo)
+
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("unknown or unsafe fixture", result.stderr)
+            self.assertFalse((repo / "evals/results/tmp").exists())
+
+    def test_workflow_validator_rejects_missing_fixture(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="workflow-validator-") as raw:
+            repo = Path(raw)
+            copy_repo_parts(repo, "scripts", "skills", "evals", "benchmarks")
+            scenario = repo / "evals/workflow/scenarios/backend.md"
+            text = scenario.read_text()
+            text = text.replace(
+                "benchmarks/fixtures/py-notes-api",
+                "benchmarks/fixtures/fixture-that-does-not-exist",
+                1,
+            )
+            scenario.write_text(text)
+
+            result = run(str(repo / "scripts/eval-workflow"), "--check", cwd=repo)
+
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("unknown fixture", result.stderr)
+
+    def test_workflow_empty_suite_and_failed_setup_do_not_pass_or_leak(self) -> None:
+        load = self.workflow["load_scenarios"]
+        main = self.workflow["main"]
+        with tempfile.TemporaryDirectory(prefix="workflow-empty-") as raw:
+            with patch.dict(load.__globals__, SCENARIOS=Path(raw)):
+                _, errors = load()
+            self.assertEqual(len(errors), 28)
+            scenario = {"id": "TEST", "skill": "backend"}
+            with patch.dict(main.__globals__,
+                            AGENTS={"fake": {"bin": sys.executable}},
+                            load_scenarios=lambda: ([scenario], [])), \
+                    patch.object(sys, "argv", ["eval-workflow", "--agent", "fake",
+                                               "--scenario", "TEST"]), \
+                    patch.object(tempfile, "tempdir", raw), \
+                    patch.dict(main.__globals__, run_scenario=Mock(side_effect=ValueError("setup"))):
+                with self.assertRaisesRegex(ValueError, "setup"):
+                    main()
+            self.assertEqual(list(Path(raw).iterdir()), [])
+
+    def test_trigger_observe_cleans_owned_workdir(self) -> None:
+        true_bin = shutil.which("true")
+        self.assertIsNotNone(true_bin)
+        tempfile_module = self.trigger["tempfile"]
+        previous = tempfile_module.tempdir
+        with tempfile.TemporaryDirectory(prefix="trigger-parent-") as raw:
+            tempfile_module.tempdir = raw
+            try:
+                config = {
+                    "bin": "true",
+                    "cmd": lambda _prompt: [true_bin],
+                    "parse": lambda output: output,
+                }
+                result = self.trigger["observe"]("fake", "prompt", config, 5)
+            finally:
+                tempfile_module.tempdir = previous
+            self.assertEqual(result["status"], "ok")
+            self.assertEqual(list(Path(raw).iterdir()), [])
+
+
+class HelperRegressions(unittest.TestCase):
+    def test_handsfree_docstring_contract(self) -> None:
+        script = str(SCRIPTS / "check-handsfree-docstring")
+        source = "value = 1\ndef answer():\n    return value\n"
+        cases = [
+            ('"""Notes API entrypoint."""\n' + source, 0),
+            ('"""The notes api entry point."""\n' + source, 0),
+            ('"""NOTES API ENTRY-POINT."""\n# explanation\n' + source, 0),
+            (source, 1),
+            ('# notes API entrypoint\n' + source, 1),
+            ('label = "notes API entrypoint"\n' + source, 1),
+            ('"""Notes API entrypoint."""\n' + source.replace("value = 1", "value = 2"), 1),
+            ('"""Notes API entrypoint."""\n' + source + 'print("side effect")\n', 1),
+            ('"""Other service."""\n' + source, 1),
+            ('"""Notes API entrypoint."""\ninvalid python!', 1),
+        ]
+        with tempfile.TemporaryDirectory(prefix="handsfree-docstring-") as raw:
+            baseline = Path(raw) / "baseline.py"
+            target = Path(raw) / "target.py"
+            baseline.write_text(source)
+            for text, expected_exit in cases:
+                with self.subTest(source=text):
+                    target.write_text(text)
+                    result = run(sys.executable, script, str(target), str(baseline))
+                    self.assertEqual(result.returncode, expected_exit, result.stdout + result.stderr)
+            self.assertEqual(run(sys.executable, script, str(Path(raw) / "missing.py"),
+                                 str(baseline)).returncode, 2)
+
+        tasks = json.loads((ROOT / "evals/outcomes/handsfree-tasks.json").read_text())
+        with tempfile.TemporaryDirectory(prefix="handsfree-contract-") as raw:
+            workspace = Path(raw)
+            shutil.copytree(ROOT / "benchmarks/fixtures/py-notes-api", workspace / "repo")
+            candidate = workspace / "repo/app/main.py"
+            pristine = candidate.read_text()
+            for task in tasks:
+                for prefix, should_pass in (('"""Notes API entrypoint."""\n', True),
+                                            ('# notes API entrypoint\n', False)):
+                    with self.subTest(task=task["id"], prefix=prefix):
+                        candidate.write_text(prefix + pristine)
+                        checks = [
+                            subprocess.run(check["cmd"].replace("{ROOT}", shlex.quote(str(ROOT))),
+                                           shell=True, cwd=candidate.parent.parent,
+                                           capture_output=True, text=True).returncode == check["expect"]
+                            for check in task["verify"]
+                        ]
+                        self.assertEqual(all(checks), should_pass)
+
+    def test_measure_report_rejects_nonfinite_numbers(self) -> None:
+        script = str(ROOT / "skills/hotpath/scripts/measure-report")
+        for field, value in (("after", "-inf"), ("baseline", "inf"),
+                             ("threshold", "nan"), ("after", "nan")):
+            args = {"baseline": "100", "after": "80", "threshold": "0.1"}
+            args[field] = value
+            result = run(script, *(f"--{key}={value}" for key, value in args.items()),
+                         "--conditions", "stable", "--json")
+            self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+
+    def test_measure_report_exit_contract(self) -> None:
+        script = str(ROOT / "skills/hotpath/scripts/measure-report")
+        common = ("--baseline", "100", "--conditions", "stable", "--threshold", "0.1")
+        self.assertEqual(run(script, *common, "--after", "80").returncode, 0)
+        self.assertEqual(run(script, *common, "--after", "95").returncode, 1)
+        self.assertEqual(run(script, *common, "--after", "120").returncode, 1)
+        self.assertEqual(
+            run(script, "--baseline", "100", "--after", "80", "--conditions", "",
+                "--threshold", "0.1").returncode,
+            2,
+        )
+
+    def test_test_matrix_rejects_empty_dimension(self) -> None:
+        script = str(ROOT / "skills/roadtest/scripts/test-matrix")
+        self.assertEqual(
+            run(script, "--paths", "login", "--viewports", "1440").returncode,
+            0,
+        )
+        self.assertEqual(
+            run(script, "--paths", "login", "--viewports", "").returncode,
+            2,
+        )
+
+    def test_inventory_json_escapes_target_path(self) -> None:
+        script = str(ROOT / "skills/spelunk/scripts/inventory")
+        with tempfile.TemporaryDirectory(prefix='inventory-quote"-') as raw:
+            result = run(script, raw, "--json")
+            self.assertEqual(result.returncode, 0, result.stderr)
+            document = json.loads(result.stdout)
+            self.assertEqual(document["target"], raw)
+            text_result = run(script, raw)
+            self.assertEqual(text_result.returncode, 0, text_result.stderr)
+            self.assertIn("test/source ratio", text_result.stdout)
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)

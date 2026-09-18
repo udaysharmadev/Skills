@@ -16,10 +16,10 @@ scripts/eval-trigger --agent claude --tier smoke  # 12 cases, measured
 scripts/eval-trigger --suite all --agent claude --tier standard
 ```
 
-- **Suites:** `evals/trigger/cases.md` (134 positive/negative +
-  direct-route cases), `sibling-confusion.md` (20 adjacency cases),
+- **Suites:** `evals/trigger/cases.md` (173 positive/negative +
+  direct-route cases), `sibling-confusion.md` (24 adjacency cases),
   `router-stress.md` (14 adversarial/multi-skill/degraded cases)
-  = 168 total.
+  = 211 total.
 - **Method:** routing-given-metadata (see `evals/adapters/README.md`).
   Measures routing decisions, not in-runtime auto-activation — that
   limitation is stated wherever results are quoted.
@@ -58,11 +58,39 @@ evidence-first design follows current guidance from
 [Anthropic](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
 and the UK AI Security Institute's [Inspect log model](https://inspect.aisi.org.uk/eval-logs.html).
 
-## Outcome benchmarks (deferred proof phase)
+## Outcome benchmarks (proof phase underway)
 
-Skill-vs-no-skill comparisons on seeded fixtures (`benchmarks/`) are
-intentionally postponed. See `docs/benchmarks.md`; no result is implied by the
-presence of the infrastructure.
+The outcome harness contains 83 validated tasks across all 28 skills. Ten
+skill families have executed trials: `hotseat` has a measured lift on its
+pre-registered debate-structure proxies; five verdicts are MIXED; three show
+NO LIFT on the available evidence. The `handsfree` smoke sample exposed a
+grader defect and remains UNVERIFIED, alongside 18 unexecuted families. See
+[`docs/benchmarks.md`](benchmarks.md) and the per-skill pages; no verdict may be
+generalized beyond its recorded task, agent, model, and grader.
+
+`scripts/eval-outcome --check` validates task structure, fixture references,
+held-out coverage, verify-command shape, and artifact-glob shape without
+invoking an agent.
+
+The `outcome/2` runner checkpoints each completed trial, including invocation
+errors. New records also snapshot the selected task contracts in
+`task_contracts`, preserving their requests, commands, and expectations.
+External checker implementations still require the corresponding versioned
+checkout; the command snapshot alone does not freeze those files.
+`EO_MAX_CONSEC` stops after a configured number of consecutive errors
+with exit 5 and an `aborted` result containing partial evidence. Completed runs
+with invocation errors exit 2; measured task failures alone do not indicate a
+runner failure. Zero trials, invalid timeouts, and unknown skills are rejected
+before invoking an agent.
+
+Grading requires a successful invocation and every declared verification
+command to meet the exit status in the task contract. File scope uses complete
+path components. Outer-repository content changes fail grading, including
+changes to already-dirty files. This is after-the-fact detection, not an OS
+sandbox. Artifact collection rejects symlink escapes and files over its
+20,000-character capture limit, so truncated evidence cannot earn a pass.
+Treatment workspaces include the complete skill package for local helper use.
+Historical results retain their original schema and grading provenance.
 
 ## Budget controls
 
@@ -76,3 +104,7 @@ started by CI. Never unexpectedly spend token budgets.
 issue → minimal reproduction → regression case in `evals/regression/`
 → fix → case passes → case stays. The suite gets harder to break over
 time.
+
+Run `scripts/test-regressions` for deterministic runner and helper regressions.
+These tests use temporary fixture copies and fake local agent commands; they
+do not invoke model providers or measure skill effectiveness.

@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+"""Check handsfree task v2: a real docstring with unchanged executable AST.
+
+Usage: check-handsfree-docstring <candidate.py> <pristine-fixture.py>
+Exit 0 = contract satisfied; 1 = task failure; 2 = unreadable input.
+Parses source without importing or executing the candidate or fixture.
+"""
+
+import argparse
+import ast
+from pathlib import Path
+import re
+import sys
+
+
+def check(candidate: str, baseline: str) -> list[str]:
+    try:
+        current = ast.parse(candidate)
+        original = ast.parse(baseline)
+    except SyntaxError as exc:
+        return [f"invalid Python: {exc.msg}"]
+
+    docstring = ast.get_docstring(current) or ""
+    findings = []
+    if not (re.search(r"\bnotes\s+api\b", docstring, re.I)
+            and re.search(r"\bentry[\s-]?point\b", docstring, re.I)):
+        findings.append("module docstring must describe the notes API entrypoint")
+    for tree in (current, original):
+        if ast.get_docstring(tree) is not None:
+            tree.body.pop(0)
+    if ast.dump(current, include_attributes=False) != ast.dump(original, include_attributes=False):
+        findings.append("executable code differs from the pristine fixture")
+    return findings
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("candidate", type=Path)
+    parser.add_argument("baseline", type=Path)
+    args = parser.parse_args()
+    try:
+        findings = check(args.candidate.read_text(encoding="utf-8"),
+                         args.baseline.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError) as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 2
+    for finding in findings:
+        print(f"FAIL: {finding}")
+    if not findings:
+        print("OK: notes API module docstring present; executable AST unchanged")
+    return 1 if findings else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

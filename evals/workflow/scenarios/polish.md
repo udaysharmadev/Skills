@@ -20,7 +20,7 @@ after a runner executes it against a real agent and stores raw results.
 
 ### PO2 hard edge — existing design system, tokens win
 
-- Setup: fixture + a tokens file with a coherent palette.
+- Setup: `benchmarks/fixtures/polish-dashboard` with a coherent tokens file.
 - Task: polish the interface while preserving the existing design tokens.
 - D1: after uses the existing tokens (no palette rewrite).
 - D2: diff contains zero token-value changes.

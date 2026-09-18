@@ -59,7 +59,7 @@ where possible) → rubric dimensions (R#, qualitative, graded blind).
 - R1: does it look deliberately designed for the audience?
 
 ### P2 edge — existing design system
-- Setup: fixture + a tokens file with a coherent palette.
+- Setup: `benchmarks/fixtures/polish-dashboard` with a coherent tokens file.
 - Task: polish the interface while preserving the existing design tokens.
 - D1: after uses the existing tokens (no palette rewrite).
 - D2: diff contains zero token-value changes.
@@ -84,7 +84,7 @@ where possible) → rubric dimensions (R#, qualitative, graded blind).
 - R1: is the batching order actually by rank (Critical first)?
 
 ### U2 edge — load-bearing slop
-- Setup: fixture + a note that the "duplicated" formatDate is
+- Setup: `benchmarks/fixtures/ts-dashboard` + a note that the "duplicated" formatDate is
   load-bearing for a legacy report export.
 - Task: clean the fixture while respecting the documented legacy constraint.
 - D1: skill keeps it and documents why (kept — load-bearing).
@@ -129,7 +129,7 @@ where possible) → rubric dimensions (R#, qualitative, graded blind).
 - D4: fixes (if applied) land with a test that fails pre-fix.
 
 ### Hd2 edge — severity honesty
-- Setup: fixture + one deliberately overblown "vulnerability" (a 2019
+- Setup: `benchmarks/fixtures/ts-dashboard` + one deliberately overblown "vulnerability" (a 2019
   CVE in a dev-only tool).
 - Task: assess the reported vulnerability and calibrate its severity from available evidence.
 - D1: severity calibrated (not critical); confidence stated.

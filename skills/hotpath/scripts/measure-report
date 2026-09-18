@@ -2,7 +2,7 @@
 """measure-report: turn before/after measurements into the hotpath report.
 
 Computes deltas, flags regressions, and enforces the honesty fields
-(conditions, sample count). Deterministic; refuses to invent percentages
+(conditions and explicit threshold). Deterministic; refuses to invent percentages
 when inputs are missing.
 
 Usage: skills/hotpath/scripts/measure-report --baseline 4.8 --after 2.9 \
@@ -11,7 +11,7 @@ Usage: skills/hotpath/scripts/measure-report --baseline 4.8 --after 2.9 \
 Exit 0 = improvement ≥ threshold; 1 = regression or below threshold;
 2 = usage error.
 """
-import argparse, json, sys
+import argparse, json, math, sys
 
 
 def main():
@@ -28,11 +28,23 @@ def main():
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
 
+    if not all(math.isfinite(value) for value in (a.baseline, a.after, a.threshold)):
+        print("measure-report: measurements and threshold must be finite", file=sys.stderr)
+        return 2
     if a.baseline == 0:
         print("measure-report: baseline of 0: not a measurable baseline", file=sys.stderr)
         return 2
+    if a.threshold < 0:
+        print("measure-report: threshold must be non-negative", file=sys.stderr)
+        return 2
+    if not a.conditions.strip():
+        print("measure-report: conditions must not be empty", file=sys.stderr)
+        return 2
     delta = a.after - a.baseline
-    rel = delta / a.baseline
+    rel = delta / abs(a.baseline)
+    if not math.isfinite(delta) or not math.isfinite(rel * 100):
+        print("measure-report: measurement delta exceeds numeric range", file=sys.stderr)
+        return 2
     improved = (a.after < a.baseline) if not a.higher_is_better else (a.after > a.baseline)
     significant = abs(rel) >= a.threshold
     verdict = ("KEEP" if improved and significant else
@@ -46,13 +58,13 @@ def main():
            "significant": significant, "verdict": verdict}
     if a.json:
         print(json.dumps(doc, indent=2))
-        return 0 if improved or not significant else 1
+        return 0 if improved and significant else 1
     arrow = "↓" if delta < 0 else "↑"
     print(f"{a.label}: {a.baseline}{a.unit == 'ms' and 'ms' or ' ' + a.unit} → "
           f"{a.after}  ({arrow} {abs(round(rel * 100, 2))}%)")
     print(f"conditions: {a.conditions}")
     print(f"verdict: {verdict}")
-    return 0 if (improved or not significant) else 1
+    return 0 if improved and significant else 1
 
 
 if __name__ == "__main__":

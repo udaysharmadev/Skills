@@ -46,6 +46,10 @@ def load_scenarios():
                 if current:
                     scenarios.append(current)
                 parts = line[4:].split(maxsplit=1)
+                if not parts:
+                    errors.append(f"{path}:{lineno}: missing scenario id")
+                    current = None
+                    continue
                 scenario_id = parts[0]
                 current = {"id": scenario_id, "title": parts[1] if len(parts) > 1 else "",
                            "skill": skill, "path": str(path.relative_to(ROOT)),
@@ -59,6 +63,8 @@ def load_scenarios():
             scenarios.append(current)
 
     for scenario in scenarios:
+        if scenario["skill"] not in known:
+            errors.append(f"{scenario['path']}:{scenario['line']}: scenario has no known skill")
         body = "\n".join(scenario.pop("body"))
         setup = re.search(r"^- Setup:\s*(.+(?:\n  .+)*)", body, re.M)
         task = re.search(r"^- Task:\s*(.+(?:\n  .+)*)", body, re.M)
@@ -66,6 +72,22 @@ def load_scenarios():
         rubrics = re.findall(r"^- (R\d+):\s*(.+(?:\n  .+)*)", body, re.M)
         scenario["setup"] = " ".join(setup.group(1).split()) if setup else ""
         scenario["task"] = " ".join(task.group(1).split()) if task else ""
+        fixture_refs = re.findall(
+            r"benchmarks/fixtures/([A-Za-z0-9._-]+)",
+            f"{scenario['setup']} {scenario['task']}",
+        )
+        scenario["fixture"] = fixture_refs[0] if fixture_refs else None
+        if len(set(fixture_refs)) > 1:
+            errors.append(
+                f"{scenario['path']}:{scenario['line']}: multiple fixtures referenced"
+            )
+        if scenario["fixture"] and (scenario["fixture"] in (".", "..") or not (
+            ROOT / "benchmarks" / "fixtures" / scenario["fixture"]
+        ).exists()):
+            errors.append(
+                f"{scenario['path']}:{scenario['line']}: unknown fixture "
+                f"{scenario['fixture']!r}"
+            )
         scenario["assertions"] = [
             {"id": key, "kind": "candidate-check", "text": " ".join(value.split()),
              "status": "ungraded"} for key, value in assertions
@@ -79,22 +101,23 @@ def load_scenarios():
             errors.append(f"{scenario['path']}:{scenario['line']}: missing Task")
         if not assertions:
             errors.append(f"{scenario['path']}:{scenario['line']}: no deterministic assertion")
+    covered = {item["skill"] for item in scenarios}
+    for skill in sorted(known - covered):
+        errors.append(f"{skill}: no workflow scenarios")
     return scenarios, errors
 
 
 def copy_fixture(scenario, workdir):
-    text = f"{scenario['setup']} {scenario['task']}"
-    for name in ("ts-dashboard", "py-notes-api", "ugly-dashboard.html"):
-        if name not in text:
-            continue
-        source = ROOT / "benchmarks/fixtures" / name
-        target = Path(workdir) / name
-        if source.is_dir():
-            shutil.copytree(source, target)
-        elif source.is_file():
-            shutil.copy2(source, target)
-        return str(target)
-    return None
+    name = scenario.get("fixture")
+    if not name:
+        return None
+    source = ROOT / "benchmarks" / "fixtures" / name
+    target = Path(workdir) / name
+    if source.is_dir():
+        shutil.copytree(source, target)
+    else:
+        shutil.copy2(source, target)
+    return str(target)
 
 
 def copy_skill(skill, workdir):
@@ -109,6 +132,8 @@ def manifest(workdir, relative_to=None):
     for path in sorted(Path(workdir).rglob("*")):
         if not path.is_file() or ".git" in path.parts or ".eval-skill" in path.parts:
             continue
+        if not path.resolve().is_relative_to(Path(workdir).resolve()):
+            raise ValueError(f"workspace file escapes evaluation directory: {path.name}")
         data = path.read_bytes()
         files.append({"path": str(path.relative_to(relative_to or workdir)), "bytes": len(data),
                       "sha256": hashlib.sha256(data).hexdigest()})
@@ -124,6 +149,8 @@ def archive_workspace(workdir, destination):
         for path in sorted(Path(workdir).rglob("*")):
             if ".git" in path.parts or ".eval-skill" in path.parts:
                 continue
+            if not path.resolve().is_relative_to(Path(workdir).resolve()):
+                raise ValueError(f"archive entry escapes evaluation directory: {path.name}")
             archive.add(path, arcname=path.relative_to(workdir), recursive=False)
 
 
@@ -138,6 +165,8 @@ def main():
     parser.add_argument("--allow-paid", action="store_true",
                         help="with ALLOW_PAID_AGENT=1, authorize a paid-agent run (codex)")
     args = parser.parse_args()
+    if args.timeout <= 0:
+        parser.error("timeout must be positive")
 
     scenarios, errors = load_scenarios()
     if errors:
@@ -145,8 +174,10 @@ def main():
             print(f"FAIL: {error}", file=sys.stderr)
         return 1
     if args.check:
+        fixture_count = sum(bool(item["fixture"]) for item in scenarios)
         print(f"OK: {len(scenarios)} workflow scenarios well-formed across "
-              f"{len({item['skill'] for item in scenarios})} skills")
+              f"{len({item['skill'] for item in scenarios})} skills; "
+              f"{fixture_count} fixture-backed")
         return 0
     if args.list or (args.dry_run and not args.scenario):
         for item in scenarios:
@@ -166,10 +197,14 @@ def main():
     guard_paid_agent(args.agent, args.allow_paid)
 
     cfg = AGENTS[args.agent]
-    if not shutil.which(cfg.get("bin", "")):
+    if cfg.get("unavailable") or not shutil.which(cfg.get("bin", "")):
         print(f"UNAVAILABLE: {cfg.get('bin')} not installed — no result fabricated", file=sys.stderr)
         return 3
-    workdir = tempfile.mkdtemp(prefix=f"workflow-{scenario['id'].lower()}-")
+    with tempfile.TemporaryDirectory(prefix=f"workflow-{scenario['id'].lower()}-") as workdir:
+        return run_scenario(args, cfg, scenario, workdir)
+
+
+def run_scenario(args, cfg, scenario, workdir):
     subprocess.run(["git", "init", "-q", workdir], check=True)
     skill_path, context_files = copy_skill(scenario["skill"], workdir)
     fixture = copy_fixture(scenario, workdir)
@@ -201,7 +236,8 @@ def main():
         "agent": args.agent, "agent_version": version, "model": result.get("model"),
         "invocation": "verified" if cfg["verified"] else "unverified",
         "paid_guard": "authorized" if args.agent in PAID_AGENTS else "n/a",
-        "scenario": {key: scenario[key] for key in ("id", "skill", "title", "setup", "task", "path")},
+        "scenario": {key: scenario[key] for key in
+                     ("id", "skill", "title", "setup", "task", "path", "fixture")},
         "status": result["status"], "grading_status": "ungraded",
         "assertions": scenario["assertions"], "fixture": fixture,
         "skill_context": context_files, "workspace_before": before,
@@ -217,8 +253,7 @@ def main():
     }
     output = RESULTS / f"{stamp}-workflow-{args.agent}-{scenario['id'].lower()}.json"
     output.write_text(json.dumps(record, indent=2) + "\n")
-    shutil.rmtree(workdir)
-    print(f"status={record['status']} grading=UN GRADED scenario={scenario['id']}")
+    print(f"status={record['status']} grading=UNGRADED scenario={scenario['id']}")
     print(f"results: {output}")
     return 0 if result["status"] == "ok" else 2
 

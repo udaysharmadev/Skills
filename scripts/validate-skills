@@ -66,6 +66,15 @@ for dir in skills/*/; do
     fail=1
   fi
 
+  for resource in "$dir"references/* "$dir"scripts/* "$dir"assets/*; do
+    [ -f "$resource" ] || continue
+    relative=${resource#"$dir"}
+    if ! grep -Fq -- "$relative" "$file"; then
+      echo "FAIL $skill: $relative is not discoverable from SKILL.md"
+      fail=1
+    fi
+  done
+
   for helper in "$dir"scripts/*; do
     [ -f "$helper" ] || continue
     if [ ! -x "$helper" ]; then
@@ -81,9 +90,9 @@ if [ "$count" -ne 28 ]; then
 fi
 
 em_dash=$(printf '\342\200\224')
-if rg -n "$em_dash" skills >/dev/null; then
+if grep -rn -- "$em_dash" skills >/dev/null; then
   echo "FAIL: literal em dash found in shipped skill text"
-  rg -n "$em_dash" skills
+  grep -rn -- "$em_dash" skills
   fail=1
 fi
 

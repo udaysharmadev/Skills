@@ -5,8 +5,8 @@
 > evaluation evidence and is not a marketing claim.
 
 The 28 skills are **implementation-complete**. Empirical outcome benchmarking
-is a separate future proof phase. This scorecard therefore keeps implementation
-maturity, research depth, tooling, documentation, and evaluation evidence
+is a separate, partially executed proof phase. This scorecard therefore keeps
+implementation maturity, research depth, tooling, documentation, and evaluation evidence
 separate instead of lowering a finished runtime because an intentionally
 deferred benchmark has not run—or inflating everything to 100%.
 
@@ -28,7 +28,7 @@ Status vocabulary:
 | `distill` | Complete | Traced | Justified N/A | Complete | **NO LIFT** — O1 2/2 vs 1/2, O2 tie, O3 0/1 both; see `docs/benchmarks/distill.md` |
 | `masterplan` | Complete | Traced | Justified N/A | Complete | **NO LIFT** — baseline ≥ treatment everywhere after adjudication; see `docs/benchmarks/masterplan.md` |
 | `recall` | Complete | Traced | `check-memory` syntax-tested | Complete | **MIXED** — opencode O1 2/2 vs 0/2 (marker-only, baseline workspace-green); O2 0/4 both (brittle flag); O3 1/1 vs 0/1 refusal; see `docs/benchmarks/recall.md` |
-| `pilot` | Complete | Traced | Justified N/A | Complete | Protocol + workspace grader authored; outcome UNVERIFIED (zero-spend) |
+| `pilot` | Complete | Traced | Justified N/A | Complete | **NO LIFT on available evidence** — O1/O2 tied; O3 confounded by environment rejection and needs a clean rerun; see `docs/benchmarks/pilot.md` |
 | `backend` | Complete | Traced | Justified N/A | Complete | Protocol + two-stack tasks authored; outcome UNVERIFIED (zero-spend) |
 | `blueprint` | Complete | Traced | `validate-mermaid` both-directions tested; HTML asset present | Complete | Protocol + artifact grader authored; outcome UNVERIFIED (zero-spend) |
 | `headroom` | Complete | Traced | Justified N/A | Complete | Protocol + tiny/growing/large tasks authored; outcome UNVERIFIED (zero-spend) |
@@ -48,7 +48,7 @@ Status vocabulary:
 | `frugal` | Complete | Traced | Justified N/A | Complete | Protocol + frozen-number tasks authored; outcome UNVERIFIED (zero-spend) |
 | `cleared` | Complete | Traced | Justified N/A | Complete | Protocol + gate-integrity tasks authored; outcome UNVERIFIED (zero-spend) |
 | `runway` | Complete | Traced | Justified N/A | Complete | Protocol + no-fabrication tasks authored; outcome UNVERIFIED (zero-spend) |
-| `handsfree` | Complete | Traced (primary host sources, verified 2026-09-14) | Justified N/A | Complete | 5 workflow scenarios + outcome protocol authored; outcome proof deferred |
+| `handsfree` | Complete | Traced (primary host sources, verified 2026-09-14) | Justified N/A | Complete | Original smoke 0/4 on defective grader; four new v2 calls pass (baseline 2/2, treatment 2/2); effectiveness UNVERIFIED; see `docs/benchmarks/handsfree.md` |
 
 ## What the final audit verified
 
@@ -57,7 +57,7 @@ Status vocabulary:
   an output contract.
 - 28/28 have a research provenance note and at least one reachable reference.
 - Every `SKILL.md` reference is linked from the runtime workflow and resolves.
-- Five scripts are executable, syntax-valid, and wired to the skill that owns
+- Six scripts are executable, syntax-valid, and wired to the skill that owns
   them; the one asset is referenced by `blueprint`.
 - No stale `(planned)` language, sibling filesystem dependency, or hardcoded
   runtime requirement remains in the 28 skill packages.

@@ -61,9 +61,11 @@ fi
 
 if [ "$JSON" = 1 ]; then
   tojson() { python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))'; }
-  printf '{"target": "%s", "manifests": "%s", "files_by_ext": %s, "largest_files": %s, "debt_markers": %s, "test_files": "%s", "source_files": "%s", "generated_vendor_dirs": "%s", "minified_bundles": "%s", "git_churn_top": %s}\n' \
-    "$TARGET" "$manifests" "$(echo "$dist" | tojson)" "$(echo "$large" | tojson)" \
-    "$(echo "$debt" | tojson)" "$tests" "$srcs" "$genv" "$minified" "$(echo "$churn" | tojson)"
+  printf '{"target": %s, "manifests": %s, "files_by_ext": %s, "largest_files": %s, "debt_markers": %s, "test_files": "%s", "source_files": "%s", "generated_vendor_dirs": %s, "minified_bundles": "%s", "git_churn_top": %s}\n' \
+    "$(printf '%s' "$TARGET" | tojson)" "$(printf '%s' "$manifests" | tojson)" \
+    "$(printf '%s' "$dist" | tojson)" "$(printf '%s' "$large" | tojson)" \
+    "$(printf '%s' "$debt" | tojson)" "$tests" "$srcs" \
+    "$(printf '%s' "$genv" | tojson)" "$minified" "$(printf '%s' "$churn" | tojson)"
 else
   echo "== inventory: $TARGET =="
   [ -n "$manifests" ] && echo "manifests: $manifests" || echo "manifests: none found"
@@ -80,3 +82,4 @@ else
   echo "  minified bundles (*.min.js): $minified"
   [ -n "$churn" ] && { echo "== churn hotspots (6mo) =="; echo "$churn" | sed 's/^/  /'; }
 fi
+exit 0

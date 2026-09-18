@@ -20,7 +20,7 @@ after a runner executes it against a real agent and stores raw results.
 
 ### JN2 hard edge — commit message from a real diff
 
-- Setup: `setup.sh staged` (one concern staged).
+- Setup: `benchmarks/fixtures/janitor-mess` after `setup.sh staged` (one concern staged).
 - Task: propose the message, don't commit it.
 - D1: convention inferred from the log (`feat:`/`fix:` style matched, not converted).
 - D2: subject ≤ 50 chars, imperative, why-not-what; no diff narration, no slop footer.

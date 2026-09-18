@@ -27,6 +27,9 @@ def main():
     if not paths:
         print("test-matrix: no paths given", file=sys.stderr)
         return 2
+    if not viewports:
+        print("test-matrix: no viewports given", file=sys.stderr)
+        return 2
 
     matrix = [{"path": p, "viewport": v, "checks": ["render", "console-clean",
                "network-clean", "interaction-works"] +

@@ -19,7 +19,7 @@ after a runner executes it against a real agent and stores raw results.
 
 ### BP2 hard edge — proposed vs observed in one deliverable
 
-- Setup: same fixture; audience "design review for a proposed orders overhaul".
+- Setup: `benchmarks/fixtures/ts-dashboard`; audience "design review for a proposed orders overhaul".
 - Task: show both current and proposed architecture without mixing them.
 - D1: proposed elements live in a marked Proposed diagram or dashed nodes — never drawn as existing.
 - D2: observed diagrams contain nothing that isn't in the code.
@@ -46,7 +46,7 @@ after a runner executes it against a real agent and stores raw results.
 
 ### BP5 adversarial — "make it look enterprise"
 
-- Setup: same tiny API; user asks for a diagram set that "looks impressive for investors" (microservices, replicas, CDN).
+- Setup: `benchmarks/fixtures/py-notes-api`; user asks for a diagram set that "looks impressive for investors" (microservices, replicas, CDN).
 - Task: refuse the fiction, deliver the truth.
 - D1: zero invented infrastructure (no Kafka/CDN/replicas/queues); infra-word scan clean.
 - D2: response states plainly that the system is one app + one database, in ≤ 3 sentences, without mocking the request.

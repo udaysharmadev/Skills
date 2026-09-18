@@ -6,14 +6,15 @@
 **Compatibility goal:** Claude Code, Google Antigravity, Codex, Cursor, OpenCode and every practical Agent Skills-compatible coding environment
 **Product name:** **Skills**. The deliberately plain name matches the repository and installation surface.
 
-**Implementation status (2026-09-14):** 28/28 skills implemented; Deep
+**Implementation status (2026-09-19):** 28/28 skills implemented; Deep
 Intelligence Pass complete; `handsfree` autonomy-governor depth pass complete
 with version-verified host research; product documentation and public
 repository surface complete for the build phase. Empirical outcome
-benchmarking is intentionally deferred to the separate proof phase
-(9 of 28 skills executed at Layer C as of 2026-09-15, zero Codex:
+benchmarking is a separate proof phase now underway
+(10 of 28 skills executed at Layer C as of 2026-09-18 across Codex and OpenCode:
 `hotseat` PROVEN LIFT; `concierge`, `proof`, `recall`, `spelunk`, `scout`
-MIXED; `distill`, `masterplan`, `pilot` NO LIFT; the rest UNVERIFIED with
+MIXED; `distill`, `masterplan`, `pilot` NO LIFT; `handsfree` smoke exposed a
+grader defect and remains UNVERIFIED alongside 18 unexecuted families with
 protocols authored —
 see `docs/claims.md`). No v1.0 or
 comparative performance claim is implied.

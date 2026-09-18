@@ -40,5 +40,5 @@ The README is the front door. This directory is the map behind it.
 - [Brand options](brand-options.md) is historical naming exploration; no rename
   is implied.
 
-The evaluation and benchmark material remains available for the later proof
-phase. It is not required to understand, install, or use the bundle today.
+The evaluation and benchmark material records the ongoing proof phase. It is
+not required to understand, install, or use the bundle today.

@@ -61,4 +61,7 @@ fi
 if ! scripts/eval-workflow --check; then
   fail=1
 fi
+if ! scripts/eval-outcome --check; then
+  fail=1
+fi
 exit "$fail"

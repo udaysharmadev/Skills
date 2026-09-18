@@ -55,6 +55,7 @@ scripts/check-names
 scripts/check-links
 scripts/build-docs
 scripts/check-context
+scripts/test-regressions
 scripts/run-evals
 ```
 

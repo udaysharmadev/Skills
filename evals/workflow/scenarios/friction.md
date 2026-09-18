@@ -20,7 +20,7 @@ after a runner executes it against a real agent and stores raw results.
 
 ### FR2 hard edge — destructive action proportionality
 
-- Setup: account-deletion control in the fixture (seeded typed-confirm dialog).
+- Setup: account-deletion control in `benchmarks/fixtures/friction-flows` (seeded typed-confirm dialog).
 - Task: judge the destructive path in both directions.
 - D1: the seeded confirm + consequence statement survives (one-click permanent deletion named malpractice).
 - D2: no nag-confirmations proposed for reversible toggles — proportionality cuts both ways.

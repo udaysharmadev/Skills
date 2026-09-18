@@ -111,8 +111,10 @@ def routing_prompt(utterance, skills, chain):
 
 def observe(agent, prompt, cfg, timeout, workdir=None):
     t0 = time.time()
+    owns_workdir = workdir is None
+    if owns_workdir:
+        workdir = tempfile.mkdtemp(prefix="eval-run-")
     try:
-        workdir = workdir or tempfile.mkdtemp(prefix="eval-run-")
         subprocess.run(["git", "init", "-q", workdir], capture_output=True)
         proc = subprocess.run(cfg["cmd"](prompt), capture_output=True,
                               text=True, timeout=timeout, cwd=workdir,
@@ -121,10 +123,19 @@ def observe(agent, prompt, cfg, timeout, workdir=None):
         return {"status": "error", "error": "timeout", "duration": time.time() - t0}
     except FileNotFoundError:
         return {"status": "unavailable", "error": f"{cfg['bin']} not found"}
+    finally:
+        if owns_workdir:
+            shutil.rmtree(workdir, ignore_errors=True)
     if proc.returncode != 0:
         return {"status": "error", "error": f"exit {proc.returncode}: "
                 + (proc.stderr or proc.stdout)[:200], "duration": time.time() - t0}
-    raw = cfg["parse"](proc.stdout)
+    try:
+        raw = cfg["parse"](proc.stdout)
+        if not isinstance(raw, str):
+            raise ValueError("agent response is not text")
+    except (ValueError, AttributeError, TypeError) as exc:
+        return {"status": "error", "error": f"invalid agent response: {exc}",
+                "duration": time.time() - t0}
     m = re.search(r"model:\s*(\S+)", proc.stderr or "")
     return {"status": "ok", "raw": raw, "duration": time.time() - t0,
             "model": m.group(1) if m else None}
@@ -146,7 +157,7 @@ def normalize(observed):
     m = re.search(r"\b(concierge|hotseat|spelunk|scout|distill|masterplan|pilot|"
                   r"recall|blueprint|headroom|polish|friction|ditto|unslop|backend|"
                   r"roadtest|harden|sleuth|proof|referee|hotpath|janitor|frontpage|"
-                  r"findable|frugal|cleared|runway)\b", o)
+                  r"findable|frugal|cleared|runway|handsfree)\b", o)
     return m.group(1) if m else o[:60]
 
 
@@ -184,7 +195,8 @@ def score(cases_results, skills):
             "confusion": [{"expected": e, "observed": o, "count": c}
                           for (e, o), c in sorted(confusion.items(), key=lambda x: -x[1])],
             "precision": round(prec, 4), "recall": round(rec, 4), "f1": round(f1, 4),
-            "accuracy": round(total_tp / len(cases_results), 4) if cases_results else 0.0}
+            "accuracy": round(sum(r["pass"] for r in cases_results) / len(cases_results), 4)
+            if cases_results else 0.0}
 
 
 def main():
@@ -203,6 +215,10 @@ def main():
     ap.add_argument("--allow-paid", action="store_true",
                     help="with ALLOW_PAID_AGENT=1, authorize a paid-agent run (codex)")
     a = ap.parse_args()
+    if a.runs <= 0 or a.timeout <= 0 or (a.max_cases is not None and a.max_cases <= 0):
+        ap.error("runs, timeout, and max-cases must be positive")
+    if a.case is not None and a.case <= 0:
+        ap.error("case must be a positive 1-based index")
 
     skills = skill_metadata()
     if a.check:
@@ -231,6 +247,8 @@ def main():
         cases = [c for c in cases if a.skill in c["expected"]]
     if a.case:
         cases = [cases[a.case - 1]] if 0 < a.case <= len(cases) else []
+    if not cases:
+        ap.error("no cases match the requested suite, skill, or case")
     # Stratified sampling: one case per expected skill per pass (none
     # group first, so every tier includes a negative), chains last.
     singles = [c for c in cases if "→" not in c["expected"]]
@@ -257,7 +275,7 @@ def main():
     guard_paid_agent(a.agent, a.allow_paid)
 
     cfg = AGENTS[a.agent]
-    if not shutil.which(cfg.get("bin", "")):
+    if cfg.get("unavailable") or not shutil.which(cfg.get("bin", "")):
         print(f"UNAVAILABLE: {cfg['bin']} not installed — no results fabricated",
               file=sys.stderr)
         return 3
