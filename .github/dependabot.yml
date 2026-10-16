@@ -1,0 +1,15 @@
+# Keep pinned GitHub Actions SHAs fresh. Security-only cadence on purpose:
+# every other repo change here is evidence-gated, dependency bumps are not.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Etc/UTC
+    open-pull-requests-limit: 5
+    labels: [dependencies]
+    commit-message:
+      prefix: chore

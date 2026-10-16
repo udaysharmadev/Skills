@@ -1,0 +1,36 @@
+name: install-badge
+
+# Keep the README skills.sh install count honest without hand edits.
+# Runs the measured updater weekly; commits only when the number moved.
+on:
+  schedule:
+    - cron: "30 5 * * 1" # Mondays 05:30 UTC, after dependabot's run
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: install-badge
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: refresh install count
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: update badge data
+        run: scripts/update-install-badge.py
+      - name: commit when the count moved
+        run: |
+          if git diff --quiet -- assets/skills-sh-endpoint.json; then
+            echo "install count unchanged; nothing to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/skills-sh-endpoint.json
+          git commit -m "chore: refresh skills.sh install count ($(python3 -c "import json; print(json.load(open('assets/skills-sh-endpoint.json'))['total'])") total)"
+          git push

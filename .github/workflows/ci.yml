@@ -6,12 +6,22 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Default-deny: jobs get no token scopes unless they declare their own.
+permissions:
+  contents: read
+
+# Cancel superseded runs on the same ref so stale greens cannot land later.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   deterministic:
     name: deterministic checks
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: validate-skills
         run: scripts/validate-skills
       - name: check-names
@@ -31,7 +41,7 @@ jobs:
       - name: standalone packages
         run: scripts/check-packages
       - name: Node for deterministic domain models
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24'
       - name: offline and replay models
