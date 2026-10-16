@@ -1289,9 +1289,19 @@ class RunnerPlumbing(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         result = run(str(SCRIPTS / "eval-workflow"), "--list", "--model", model)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        result = run(str(SCRIPTS / "eval-outcome"), "--skill", "concierge",
-                     "--agent", "opencode", "--trials", "1",
-                     "--resume-from", "/nonexistent.json")
+        # eval-outcome checks that the agent binary exists before it reads
+        # --resume-from, so give it a stub opencode; otherwise the test fails
+        # with exit 3 (UNAVAILABLE) on any machine without opencode installed.
+        with tempfile.TemporaryDirectory() as bin_dir:
+            stub = Path(bin_dir) / "opencode"
+            stub.write_text("#!/bin/sh\necho stub\n")
+            stub.chmod(0o755)
+            env = {**os.environ, "PATH": bin_dir + os.pathsep + os.environ["PATH"]}
+            result = subprocess.run(
+                [str(SCRIPTS / "eval-outcome"), "--skill", "concierge",
+                 "--agent", "opencode", "--trials", "1",
+                 "--resume-from", "/nonexistent.json"],
+                cwd=ROOT, capture_output=True, text=True, env=env)
         self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
 
 
