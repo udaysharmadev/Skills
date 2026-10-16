@@ -10,6 +10,12 @@ implement → screenshot → **compare against the source** → correct →
 repeat until the difference is explained or gone. Eyeball-once-and-stop
 is the failure mode.
 
+## When to use
+
+- "make it look like this [screenshot]"
+- "rebuild this page from the URL I sent"
+- "just rebuild the layout, use placeholders for their photos and logo"
+
 ## When NOT to use
 
 - The user wants a *better* version, not a copy → `polish`.

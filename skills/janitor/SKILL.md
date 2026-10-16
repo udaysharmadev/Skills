@@ -45,6 +45,12 @@ deletion candidates, ignored files, branches, releases, or any recovery.
 - No `gh`/network → remote marked "skipped (no gh/network)", local
   fully walked; remote state never invented.
 
+## When to use
+
+- "my git state is a disaster, help me clean it up"
+- "write a commit message for what I just staged"
+- "just report the git mess, don't touch my branches"
+
 ## When NOT to use
 
 - Code cleanliness → `unslop`.

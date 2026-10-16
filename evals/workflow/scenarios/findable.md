@@ -20,7 +20,7 @@ after a runner executes it against a real agent and stores raw results.
 
 ### FD2 hard edge — SPA without prerendering
 
-- Setup: client-rendered SPA, no build access, meta tags invisible to crawlers.
+- Setup: client-rendered SPA, no build access, meta tags invisible in initial HTML; rendering support depends on target consumer.
 - Task: report the gap, don't ship invisible fixes.
 - D1: rendering model detected and stated first.
 - D2: no client-side meta tags shipped as "SEO fixes".

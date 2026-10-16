@@ -5,6 +5,36 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+### 28-skill audit repairs (2026-10-17)
+
+- Added an explicit `When to use` trigger section (3 quoted utterances from
+  `evals/trigger/cases.md`) to 26 skill bodies; `backend` and `handsfree`
+  already carried triggers in-body. Purpose stays in the lede + frontmatter.
+- `sleuth`: merged two tool-selection sections, moved intermittent-failure
+  and fix-selection detail to `references/techniques.md` (SKILL.md 323→~287
+  lines); pinned git-bisect manual version 2.56.0.
+- `referee`: split review scopes from review staffing (was two "modes").
+- `hotseat`: removed duplicate tool-selection section; demoted the
+  unresolvable "ACL 2026" citation to hypothesis (web search 2026-10-17
+  finds no URL/DOI).
+- `harden`: attack-surface checklist reordered to canonical A01→A10, pinned
+  ASVS v5.0.0.
+- `blueprint`: Mermaid pin 11→12 (v12.2.0 live, CDN 200); `polish`: added
+  the missing CLS ≤0.1 threshold with source.
+- `handsfree`: restored missing `references/antigravity.md` (7 dangling
+  research pointers), wired it into SKILL.md, canonicalized the moved
+  Antigravity settings URL (old path redirects; verified live).
+- Eval rubrics fixed where they contradicted skills: unslop UN1-D3 (line
+  delta), janitor JN2-D2 (subject length), findable FD2 (rendering model),
+  roadtest scenarios renumbered RT1–RT13.
+- `distill`: readiness checklist moved to `brief-template.md`, SKILL.md
+  keeps a 2-line gate; `masterplan`: slice vocabulary enforced at emission
+  time; `scout`: `check-note` gate unconditional; `spelunk`: inventory
+  pointer; `friction`: SC 3.3.8 anchor; `concierge`: routing-table coverage.
+- Added 9 trigger cases (non-English ×4, restraint/adversarial ×5); trigger
+  set is now 276 cases, still contradiction-free. C-009 footprint updated
+  to the measured 335KB.
+
 ### CI hardening and measured install badge (2026-10-17)
 
 - `ci.yml`: default-deny `contents: read` permissions, `concurrency`

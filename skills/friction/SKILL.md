@@ -9,6 +9,12 @@ UI asks "does it look good?": that's `polish`. You ask "where does the
 user hesitate, backtrack, or give up?" A beautiful app with a checkout
 that loses people is a failed app.
 
+## When to use
+
+- "users keep abandoning the signup form"
+- "is our app accessible? check keyboard navigation too"
+- "just audit the checkout flow, don't change anything yet"
+
 ## When NOT to use
 
 - Pure visual styling → `polish`.
@@ -74,7 +80,9 @@ Note every stumble point with its exact location.
 ### 3. Audit the dimensions
 
 Read `references/usability-checklist.md` and walk the applicable
-sections: information architecture, navigation, forms and validation,
+sections: information architecture, navigation, forms and validation
+(blocking paste into login/OTP fields fails WCAG 2.2 SC 3.3.8, failure
+F109 -- a blocker, not a minor),
 error recovery, destructive-action safety, feedback and latency
 perception, keyboard/focus, touch, copy, and **AI/Agentic UX** (planning
 visibility, audit trails, escalation). Fix-the-system findings (a

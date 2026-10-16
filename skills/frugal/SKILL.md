@@ -47,6 +47,12 @@ context classification, and recovery from a lossy summary.
 - Counting/extracting → shell tools (grep/jq/awk), never model
   eyeballing; the counter runs before the claim.
 
+## When to use
+
+- "we're burning through the context window way too fast"
+- "compact this session so we can keep working"
+- "save tokens but don't skip any verification"
+
 ## When NOT to use
 
 - The task is short and context is healthy: overhead exceeds savings.

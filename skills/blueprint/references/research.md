@@ -12,7 +12,7 @@ Author / Organization: Mermaid project
 
 Publication date: Not verified; living documentation/source accessed 2026-10-14
 
-Version: Living docs; selected template requests major 11 without exact pin
+Version: Living docs (v12.2.0 served 2026-10-16); selected template requests major 12 without exact pin
 
 URL: https://mermaid.js.org/config/usage.html
 

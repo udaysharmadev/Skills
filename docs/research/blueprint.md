@@ -14,7 +14,7 @@ Those entries are replaced here; they are not treated as measured evidence.
 
 | Source/access | Adopted decision | Rejected overreach / limitation |
 | --- | --- | --- |
-| [Usage: securityLevel](https://mermaid.js.org/config/usage.html); read 2026-10-14; Living docs; selected template requests major 11 without exact pin | Set strict explicitly and escape other HTML substitutions. | Does not sanitize arbitrary template content or prove diagram truth. |
+| [Usage: securityLevel](https://mermaid.js.org/config/usage.html); read 2026-10-16; Living docs (v12.2.0 served); selected template requests major 12 without exact pin | Set strict explicitly and escape other HTML substitutions. | Does not sanitize arbitrary template content or prove diagram truth. |
 | [Default configuration implementation](https://raw.githubusercontent.com/mermaid-js/mermaid/develop/packages/mermaid/src/defaultConfig.ts); read 2026-10-14; Moving develop branch; not template installed-version evidence | Record the actual renderer separately and never treat the heuristic as a parser. | Inspection of this file did not verify an exact securityLevel default; no such code claim is adopted. |
 
 All sources are primary documentation or upstream implementation. Upstream moving

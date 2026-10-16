@@ -24,6 +24,12 @@ The result is one of:
 - a remediation change plus a retest proving the claimed closure;
 - a clear statement of what could not be assessed safely.
 
+## When to use
+
+- "audit our app for security issues before launch"
+- "check for injection and XSS risks in the new API"
+- "only flag what's actually exploitable, skip theoretical CVEs"
+
 ## When NOT to use
 
 - Ordinary maintainability or style review with no meaningful trust boundary.

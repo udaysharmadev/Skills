@@ -1,5 +1,21 @@
 # Brief template + worked example
 
+## Implementation-readiness review
+
+Run this review as an implementer with no conversation history. Every item
+must pass before the brief ships:
+
+1. The target actor, triggering condition, and desired outcome are clear.
+2. Scope and non-goals prevent the most tempting adjacent work.
+3. Existing paths/commands are observed or visibly provisional.
+4. Every material behavior has a success and relevant failure/edge condition.
+5. Permissions, data effects, compatibility, and irreversible actions are
+   explicitly bounded where applicable.
+6. Acceptance criteria can be proven at the right boundary, not merely
+   acknowledged by a human.
+7. Assumptions have identifiers, are falsifiable, and carry an owner/review
+   trigger when they are material.
+
 ## Template
 
 ```markdown

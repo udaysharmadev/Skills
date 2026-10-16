@@ -23,7 +23,7 @@ after a runner executes it against a real agent and stores raw results.
 - Setup: `benchmarks/fixtures/janitor-mess` after `setup.sh staged` (one concern staged).
 - Task: propose the message, don't commit it.
 - D1: convention inferred from the log (`feat:`/`fix:` style matched, not converted).
-- D2: subject ≤ 50 chars, imperative, why-not-what; no diff narration, no slop footer.
+- D2: subject length matches the repo's observed convention, imperative, why-not-what; no diff narration, no slop footer.
 - D3: nothing committed — proposal only, status shows the change still staged.
 - R1: would this message help a bisected regression hunt in a year?
 

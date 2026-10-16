@@ -12,6 +12,12 @@ an Executable Plan designed to be read and systematically executed by `pilot`.
 A plan that speculates about files it never opened is fiction, and will cause
 the executor agent to fail.
 
+## When to use
+
+- "plan the implementation of the billing feature"
+- "give me a migration plan from mongodb to postgres"
+- "plan the auth migration and flag anything irreversible"
+
 ## When NOT to use
 
 - No agreed brief and the request is vague → `distill` first.
@@ -101,6 +107,9 @@ the scope cut visible). Rules:
   risk or resumability, rather than a fixed count.
 - Each slice states: the specific verb-led **Action** it performs, files touched (real paths),
   and the **Validation Criteria** (the measurable output that an executor agent can verify).
+- Label each slice `Slice N: <name>` as you emit it -- the vocabulary is
+  written during drafting, not checked after. A slice without the literal
+  token `Slice` was never emitted correctly.
 - Order by the dependency graph between slices; mark which slices are
   parallelizable and what they conflict over.
 - Migrations, API contract changes and auth changes get their own slice,

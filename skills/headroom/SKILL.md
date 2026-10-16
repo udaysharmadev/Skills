@@ -17,6 +17,12 @@ Consider request shape, concurrency, data growth, dependency limits, failure
 behavior, recovery objectives, operational ownership, and cost where they can
 change a decision. State every unknown, estimate, source, and confidence level.
 
+## When to use
+
+- "will this architecture handle 100k users"
+- "50 users today, plan for maybe 500, keep it boring"
+- "should we split this into microservices"
+
 ## When NOT to use
 
 - A presently slow endpoint, query, or build needs diagnosis: use `hotpath` or

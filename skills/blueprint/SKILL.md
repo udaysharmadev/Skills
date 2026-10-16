@@ -9,6 +9,12 @@ Diagrams exist to answer questions. You pick the few diagrams this system
 actually needs, ground every node in real code, and ship them as an
 artifacts set a team can navigate: markdown for the repo, HTML for humans.
 
+## When to use
+
+- "document the architecture of this system"
+- "draw the request flow for checkout"
+- "diagram how the system should look after the refactor, marked as proposed"
+
 ## When NOT to use
 
 - "Where does X live?" → `spelunk` quick mode.

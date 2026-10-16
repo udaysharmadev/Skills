@@ -19,6 +19,12 @@ The panel is not user research, market sizing, security testing, or a vote.
 It is a structured way to expose assumptions, choose cheap tests, preserve
 dissent, and help a decision owner decide under uncertainty.
 
+## When to use
+
+- "here's my product idea, poke holes in it"
+- "should I build a subscription tracker app or is that dumb"
+- "validate my startup idea before I waste a weekend on it"
+
 ## When NOT to use
 
 - The idea is settled and the user wants execution → `distill`.
@@ -243,12 +249,6 @@ the directional decision rule and ask the owner to set the boundary.
 - If a verdict is essentially the same as another persona's, call it in the
   synthesis: "Kabir and Arjun reached the same concern by different paths,
   this is a strong signal." Don't run false diversity for seven rounds.
-
-## Tool selection / fallback
-
-- Use independent subagents only when available and useful; otherwise write each lens before reading the next.
-- Research only claims that can change the decision.
-- If evidence is unavailable, preserve disagreement and name the cheapest validating experiment.
 
 ## Quality gates
 

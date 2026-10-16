@@ -46,6 +46,22 @@ system is theorizing, not sleuthing.
 - Nothing runnable → static hypotheses only, each marked unconfirmed;
   no fix ships: report routes to reproduction steps or a provisional
   label per below.
+- Prefer existing tests, logs, traces, metrics, and history before
+  adding instrumentation.
+- `git bisect` only with a deterministic, inexpensive, side-effect-safe
+  signal; honor the skip contract and stop if the range cannot be
+  classified.
+- Replay with masked fixtures where inputs are deterministic; if a
+  third party cannot be replayed, record its response contract and
+  substitute with lower confidence.
+- Profiling answers resource questions only -- never infer a functional
+  cause from a hot frame; route performance diagnosis to `hotpath`.
+
+## When to use
+
+- "this bug keeps coming back, figure out the real cause"
+- "it works locally but breaks in production, why"
+- "find what's actually causing this before you change anything"
 
 ## When NOT to use
 
@@ -191,65 +207,12 @@ what was verified and how.
 
 ## Intermittent, concurrent, and distributed failures
 
-Intermittence is evidence about hidden inputs. Capture the failure rate with a
-sample count, but do not treat a small clean run as proof of absence. Compare
-pass/fail runs by release, instance, region, identity, payload, sequence,
-clock, queue position, cache state, feature flag, and correlated downstream
-request. Freeze time, random seed, fixture, and scheduling only where it is
-safe and meaningful.
-
-For races and order failures, use event timelines with monotonic timestamps,
-request or trace IDs, ownership of mutable state, and the exact ordering
-constraint that was violated. Check idempotency, retries, locks, transactions,
-visibility, and duplicate delivery before changing a timeout. For distributed
-systems, trace a single causal path across boundaries; timestamps from different
-clocks are supporting evidence, not a total order.
-
-For environment-shaped bugs, compare an explicit environment inventory:
-runtime/library versions, build artifact, operating system, configuration,
-secrets presence only, feature flags, schema, permissions, locale/timezone,
-network/proxy, storage collation, resource limit, and data volume. Never copy
-production secrets into a local environment to "make it match".
-
-## Fix-selection and verification decision framework
-
-Select the narrowest fix that eliminates the root cause while preserving the
-contract. A local guard can be correct when the defect is local; a workaround
-is not automatically inferior, but must be called mitigation if it leaves the
-cause active. Compare candidates:
-
-| Candidate | Accept only if | Reject or escalate if |
-| --- | --- | --- |
-| Input validation | it owns the contract and returns actionable behavior | it masks a producer or authorization defect |
-| Retry/timeout change | transient failure evidence and bounded idempotent behavior exist | it amplifies load or hides a permanent fault |
-| State repair/migration | invariant and affected records are identified, reversible path exists | scope/data loss is uncertain |
-| Config rollback | change evidence and rollback safety are known | it removes unrelated fixes or violates compatibility |
-| Code fix | causal path is evidenced and a failing test can protect it | broad refactor is standing in for diagnosis |
-| Mitigation | user/data impact needs immediate reduction and label is explicit | it is presented as confirmed resolution |
-
-Verification runs at three boundaries where applicable: the minimal reproducer,
-the affected public behavior, and the nearest regression suite. Confirm the
-original failure case first, then an adjacent valid case and a failure case that
-must remain rejected. If a fix changes data, auth, money, schema, or external
-side effects, route verification planning through backend/proof and obtain the
-appropriate approval.
-
-## Tool selection and fallbacks
-
-- Use existing tests, logs, traces, metrics, state queries, and version control
-  history before adding tools or permanent instrumentation.
-- Use a debugger when stepping exposes a state transition that logs cannot
-  safely show; use boundary logging when a debugger cannot cross processes.
-- Use git bisect only with a deterministic, inexpensive, side-effect-safe
-  signal. Mark skipped commits and stop if the range cannot be classified.
-- Use controlled replay with masked fixtures when deterministic inputs are
-  available. If a third party cannot be replayed, record the response contract
-  and use a safe substitute with lower confidence.
-- Use profiling for resource/call-path questions, not to infer a functional
-  cause from a hot frame alone. Route a performance diagnosis to hotpath.
-- Without runtime access, inspect source/configuration and return ranked,
-  falsifiable hypotheses plus the exact command, log field, or state query that
-  would discriminate them. Do not change code by default.
+Read [references/techniques.md](references/techniques.md) ("Intermittent,
+concurrent, and distributed failures" and "Fix-selection and verification
+decision framework") when the failure depends on timing, order, load,
+environment, or distribution. Intermittence is evidence about hidden
+inputs: capture the rate, compare pass/fail runs across dimensions, and
+select the narrowest cause-eliminating fix -- mitigations ship labeled.
 
 ## Failure handling and edge cases
 

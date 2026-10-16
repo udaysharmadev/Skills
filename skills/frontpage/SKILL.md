@@ -9,6 +9,12 @@ GitHub renders this file as your landing page. It gets one screen to
 answer: what is this, why should I care, how do I try it. You write it
 from **research, not vibes**: and every claim in it is provable.
 
+## When to use
+
+- "our README is embarrassing, rewrite it"
+- "the install instructions in the readme don't work"
+- "tiny script, keep the README short and honest"
+
 ## When NOT to use
 
 - Code rescue itself → `unslop`. README work can proceed on a broken project
@@ -212,3 +218,4 @@ the bar applies to us first.
 Read [references/research.md](references/research.md) when a decision depends on
 an external standard, a numerical claim, or a fast-moving practice. The ledger
 records what the source supports, what it does not support, and when to reverify.
+Read [references/readme-blueprint.md](references/readme-blueprint.md) when choosing structure (step 1).

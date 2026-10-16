@@ -246,6 +246,9 @@ Hand durable decisions to `recall` when they will matter next session.
   behavior. Read when native approvals appear or before shell-heavy runs.
 - `references/execution-record.md`: checkpoint, gate, retry, and recovery
   record. Read for non-trivial work or any state mismatch.
+- `references/antigravity.md`: observed host permission modes mapped to
+  action classes (Antigravity CLI, Gemini CLI). Read when the host shows a
+  named mode or before a prompt-heavy run.
 
 ## Research basis
 

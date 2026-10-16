@@ -45,6 +45,12 @@ reconciliation, compaction, or write whose source is outside the current task.
   shape; the validator checks some structural signals; it does not confirm semantic
   truth, complete format conformance, or absence of secrets.
 
+## When to use
+
+- "what did we decide last session"
+- "catch me up on where this project stands"
+- "save this lesson before we lose the context window"
+
 ## When NOT to use
 
 - The fact is ephemeral (current branch, WIP noise): it lives in git and

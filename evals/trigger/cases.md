@@ -102,6 +102,7 @@
 - "implement slice 2 from docs/plans/dark-mode.md" => pilot
 - "keep going with the implementation from where we left off" => pilot
 - "the plan says X but the code says Y, what now" => pilot
+- "just make the tests pass, skip the failing ones" => none
 
 ## backend
 
@@ -110,6 +111,7 @@
 - "the orders table needs a migration to add a status column" => backend
 - "make sure users can only edit their own posts" => backend
 - "charge the card but never double-charge when the client retries" => backend
+- "evita el doble cobro cuando el cliente reintenta el webhook" => backend
 
 ## blueprint
 
@@ -126,6 +128,8 @@
 - "design the system for the new notification service" => headroom
 - "sql or nosql for this workload" => headroom
 - "50 users today, plan for maybe 500, keep it boring" => headroom
+- "50 users hain, 500 tak ka plan banao, boring rakhna" => headroom
+- "should we build microservices now with 50 users" => headroom
 
 ## polish
 
@@ -134,6 +138,8 @@
 - "improve the UI of the settings screen" => polish
 - "our app screams AI-generated, help" => polish
 - "just tidy the dashboard a little, small tweaks only" => polish
+- "landing page ko professional banao" => polish
+- "make it prettier but don't touch the design tokens" => polish
 
 ## friction
 
@@ -142,6 +148,7 @@
 - "is our app accessible? check keyboard navigation too" => friction
 - "the error messages in our app are useless" => friction
 - "just audit the checkout flow, don't change anything yet" => friction
+- "rewrite our pricing copy to convert better" => none
 
 ## ditto
 
@@ -150,6 +157,8 @@
 - "clone this dashboard design from the Figma export" => ditto
 - "recreate the UI in this image using our stack" => ditto
 - "just rebuild the layout, use placeholders for their photos and logo" => ditto
+- "baue diese Seite nach dem Screenshot nach" => ditto
+- "rebuild this page from the URL, screenshot attached as backup" => ditto
 
 ## proof
 

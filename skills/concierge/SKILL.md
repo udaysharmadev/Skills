@@ -14,6 +14,12 @@ Over-routing compounds errors, burns tokens, and moves slowly. Treat
 each unnecessary handoff as a seam where information can degrade: prefer
 the simplest route that satisfies the task's evidence and risk requirements.
 
+## When to use
+
+- "I just installed this skills bundle, what now"
+- "I want to build an attendance app, where do I start"
+- "which skill should handle this"
+
 ## When NOT to use
 
 - The request maps directly to one specialist without ambiguity. Route there;
@@ -265,7 +271,8 @@ unasked.
 
 - `references/routing.md`: complete request-pattern table, conflict rules,
   specialist composition, handoff phrasing. Read before routing anything
-  non-obvious.
+  non-obvious. Covers all 28 frozen skills; a route naming anything else
+  fails the quality gate above.
 - `references/capability-degradation.md`: what to do when a capability is
   unavailable mid-route. Read when a probe fails or a specialist's rung drops.
 

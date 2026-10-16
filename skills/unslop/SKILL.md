@@ -10,6 +10,12 @@ safe to touch again: baseline what currently works, remove what's
 accidental, verify every batch. **Never "clean up" by rewriting**,
 that's how the last ounce of working behavior dies.
 
+## When to use
+
+- "I vibe coded this for three weeks and I'm scared to touch it"
+- "there's so much duplicated garbage in this codebase"
+- "audit the mess first, don't delete anything yet"
+
 ## When NOT to use
 
 - One specific bug → `sleuth`. Slow → `hotpath`. Missing tests by

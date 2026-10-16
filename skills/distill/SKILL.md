@@ -9,6 +9,12 @@ A great brief removes ambiguity. It does not add volume. Your output should
 be executable by a weaker model without access to this conversation: every
 fact it needs is on the page, and nothing on the page is filler.
 
+## When to use
+
+- "bro add dashboard make it good"
+- "turn this rambling into a proper spec for the agent"
+- "spec this typo fix, and keep it tiny, no enterprise ceremony"
+
 ## When NOT to use
 
 - The user asks whether to pursue an idea or choose between products →
@@ -141,18 +147,9 @@ only requirements, deliver them and stop. Ask only for a load-bearing answer.
 
 ### 6. Run the implementation-readiness review
 
-Read the finished brief as an implementer with no conversation history. Check:
-
-1. The target actor, triggering condition, and desired outcome are clear.
-2. Scope and non-goals prevent the most tempting adjacent work.
-3. Existing paths/commands are observed or visibly provisional.
-4. Every material behavior has a success and relevant failure/edge condition.
-5. Permissions, data effects, compatibility, and irreversible actions are
-   explicitly bounded where applicable.
-6. Acceptance criteria can be proven at the right boundary, not merely
-   acknowledged by a human.
-7. Assumptions have identifiers, are falsifiable, and carry an owner/review
-   trigger when they are material.
+Read the finished brief as an implementer with no conversation history and
+apply the review in `references/brief-template.md` (Implementation-readiness
+review): every item must pass before the brief ships.
 
 If a missing item would change implementation substantially, ask the compact
 question batch or return a conditional brief. Do not conceal ambiguity in

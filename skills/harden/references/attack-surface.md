@@ -1,4 +1,4 @@
-# Attack-surface checklist: OWASP Top 10:2025 baseline, ASVS-depth where needed
+# Attack-surface checklist: OWASP Top 10:2025 baseline, ASVS v5.0.0-depth where needed
 
 Audit order follows the threat model, not this list's order. Each item:
 what to check, and how it's commonly broken.
@@ -13,6 +13,14 @@ what to check, and how it's commonly broken.
 - DB permissions/RLS: app's DB user scoped to what it needs; row-level
   rules where multi-tenancy exists.
 - Webhook/admin callbacks: signature or secret verified before action.
+
+## A02:2025 Security misconfiguration
+
+- Debug/dev modes off in prod; verbose stack traces to clients off.
+- Security headers: CSP (no unsafe-inline), HSTS, X-Content-Type-Options,
+  frame-ancestors; cookies: Secure/HttpOnly/SameSite.
+- Default credentials, sample apps, directory listing, exposed `.git`,
+  `/.env`, admin panels with default passwords (check: it happens).
 
 ## A03:2025 Software supply chain failures
 
@@ -55,15 +63,6 @@ what to check, and how it's commonly broken.
 - File uploads: type/size/content validated server-side, stored outside
   webroot, never executed, names sanitized (path traversal: `../` in
   filenames).
-
-## A02:2025 Security misconfiguration
-
-- Debug/dev modes off in prod; verbose stack traces to clients off.
-- Security headers: CSP (no unsafe-inline), HSTS, X-Content-Type-Options,
-  frame-ancestors; cookies: Secure/HttpOnly/SameSite.
-- Default credentials, sample apps, directory listing, exposed `.git`,
-  `/.env`, admin panels with default passwords (check: it happens).
-
 
 ## A07:2025 Authentication failures
 

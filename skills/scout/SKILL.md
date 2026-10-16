@@ -9,6 +9,12 @@ Model memory of ecosystems is always stale. Your job is to replace it with
 cited, current, primary-source evidence: or, when research capability is
 unavailable, to say clearly what could not be verified.
 
+## When to use
+
+- "should we upgrade from react 18 to 19"
+- "the docs say X but the changelog says Y for our version, which is right"
+- "research which headless CMS fits this project"
+
 ## When NOT to use
 
 - Purely internal question about this repository → `spelunk`.
@@ -120,7 +126,7 @@ to confirm. This is a legitimate degraded mode; guessing is not.
    name the cheapest resolving test, response, or user decision.
 6. Write the note (template in `references/source-ladder.md`) to
    `docs/research/<topic>.md` when it must outlive chat. Run
-   `scripts/check-note` when that script exists; otherwise inspect fields.
+   `scripts/check-note` and fix any missing field it reports.
 7. In chat: recommendation and decision basis, load-bearing facts,
    incompatible patterns, uncertainty, and confidence.
 

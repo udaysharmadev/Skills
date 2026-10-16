@@ -9,6 +9,12 @@ The skill is the boundary choice. A large unit suite can miss a broken
 checkout; focused API tests can catch the actual boundary failure. Test
 count is not the goal, **catching real regressions is**.
 
+## When to use
+
+- "add tests for the checkout flow"
+- "we need regression coverage for that bug you fixed"
+- "just add a regression test for this bug, leave the suite alone"
+
 ## When NOT to use
 
 - The bug isn't understood yet → `sleuth` finds the cause; you lock it

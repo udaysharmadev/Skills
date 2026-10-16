@@ -74,9 +74,9 @@ Title: git-bisect
 
 Author / Organization: Git project
 
-Publication date: 2026
+Publication date: git manual version 2.56.0 (2026-09-28)
 
-Version: Current documentation
+Version: 2.56.0 (checked 2026-10-17)
 
 URL: https://git-scm.com/docs/git-bisect
 

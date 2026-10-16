@@ -11,6 +11,12 @@ console output, network failures, pass/fail per path. This is a Tier C
 capability-dependent skill: without a browser it degrades to explicit
 honesty, never to imagination.
 
+## When to use
+
+- "actually open the browser and test the signup flow"
+- "verify the UI changes in a real browser"
+- "don't unit-test it, actually drive it in the browser"
+
 ## When NOT to use
 
 - Pure logic/data verification → `proof` at the right boundary (faster,

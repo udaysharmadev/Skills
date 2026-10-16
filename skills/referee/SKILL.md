@@ -18,14 +18,18 @@ issue) it claims to satisfy. Recover missing criteria from the user request, iss
 If intent remains unknown, continue a bounded correctness review and name that
 gap; request only the evidence needed for an intent verdict.
 
-## Authority and review modes
+## Authority and review scopes
+
+Review scope (what is under review) and review staffing (who reviews) are
+orthogonal: pick one scope from the table, one staffing from
+[Review staffing](#review-staffing-disclose-which-ran), and disclose both.
 
 Review is evidence and advice; it does not authorize edits, merges, deployments,
 or policy changes. Inspect the relevant repository state, but label source,
 runtime, and test surfaces not examined. A clean diff is not proof that the
 changed behavior was exercised.
 
-| Mode | Use when | Result |
+| Scope | Use when | Result |
 | --- | --- | --- |
 | Diff review | bounded change and criteria available | intent and quality verdict with findings |
 | Change-impact review | public, data, auth, concurrency, or operational surface changed | caller, consumer, migration, and rollback map |
@@ -45,6 +49,12 @@ impactful change, incomplete evidence, or uncertain finding.
 - Neither time nor context for the full pass → decline to skim: state
   the minimum needed (split, brief, criteria) rather than fake depth.
 
+## When to use
+
+- "review my diff before I merge"
+- "check whether this change actually implements the spec"
+- "review this but only flag what truly blocks, skip the nits"
+
 ## When NOT to use
 
 - Mid-slice debugging → `sleuth` owns the live loop; review comes when
@@ -53,7 +63,7 @@ impactful change, incomplete evidence, or uncertain finding.
 - The author is asking questions ("is this approach reasonable?"),
   that's a conversation, not a review; answer it.
 
-## Review modes (disclose which ran)
+## Review staffing (disclose which ran)
 
 **Fresh-context (preferred):** a subagent receives the diff + the
 brief/plan/acceptance criteria: nothing else. No author commentary, no

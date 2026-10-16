@@ -44,6 +44,12 @@ production action, migration, traffic change, or release failure.
 - Nothing runnable → plan-only: platform pick, env list, rollback
   sketch, and the exact access needed; zero deploy claims.
 
+## When to use
+
+- "deploy this to production"
+- "launch the site and verify it works live"
+- "preflight only, don't actually deploy anything"
+
 ## When NOT to use
 
 - "Are we ready to ship?" → `cleared` (you want its verdict first: a

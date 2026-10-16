@@ -11,6 +11,12 @@ dimension gets verified this session, or it is reported unverified,
 and an unverified applicable critical dimension blocks release. Noncritical
 unknowns can be warnings with an owner and a bounded follow-up.
 
+## When to use
+
+- "are we ready to ship this"
+- "run a final go-live check before launch"
+- "don't fix anything, just give the verdict"
+
 ## When NOT to use
 
 - Mid-implementation → `pilot`'s per-slice gate runs continuously; you
@@ -220,3 +226,4 @@ exactly three words.
 Read [references/research.md](references/research.md) when a decision depends on
 an external standard, a numerical claim, or a fast-moving practice. The ledger
 records what the source supports, what it does not support, and when to reverify.
+Select applicable dimensions from [references/gate-dimensions.md](references/gate-dimensions.md) (step 1).

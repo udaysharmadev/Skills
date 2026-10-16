@@ -9,6 +9,12 @@ Your output is context other skills consume. The map must be compact
 enough to inject later without tax, and every claim in it must be tied to
 a real file path you actually saw.
 
+## When to use
+
+- "how does this codebase even work"
+- "where is authentication handled in this repo"
+- "map out this repository before we change anything"
+
 ## When NOT to use
 
 - `PROJECT_CONTEXT.md` covers the need and relevant source still agrees: use
@@ -193,4 +199,5 @@ an external standard, a numerical claim, or a fast-moving practice. The ledger
 records what the source supports, what it does not support, and when to reverify.
 Read [references/discovery-map.md](references/discovery-map.md) in deep mode or
 when ecosystem hints are needed. Read [references/evidence-protocol.md](references/evidence-protocol.md)
-for monorepos, risk maps, stale maps, or handoff-ready discovery.
+for monorepos, risk maps, stale maps, or handoff-ready discovery. Start
+`deep` and `risk-map` modes with the bundled scanner, `scripts/inventory`.

@@ -10,6 +10,12 @@ than one unverified slice of change. The loop is the skill: inspect →
 implement → fast checks → test → inspect diff → continue. Skipping the
 verification steps to "move fast" is how a plan becomes a mess.
 
+## When to use
+
+- "the plan is approved, start building"
+- "implement slice 2 from docs/plans/dark-mode.md"
+- "keep going with the implementation from where we left off"
+
 ## When NOT to use
 
 - No plan exists and the task is small and obvious → just implement it.

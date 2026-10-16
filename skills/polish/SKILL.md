@@ -10,6 +10,12 @@ everything, no hierarchy, decoration instead of intent. You fix it by
 understanding the product first, auditing deliberately, and making a
 small number of strong decisions: not by sprinkling gradients.
 
+## When to use
+
+- "this dashboard looks so generic, fix it"
+- "our app screams AI-generated, help"
+- "just tidy the dashboard a little, small tweaks only"
+
 ## When NOT to use
 
 - Users can't complete tasks → that's usability, `friction`'s job. Fix
@@ -169,10 +175,12 @@ brief you'll verify against.
 - Keyboard pass: focus visible on every interactive element, tab order
   sane.
 - For web: check current Core Web Vitals (LCP, INP, CLS) where
-  measurable: good is LCP 2.5s or less and INP 200ms or less, both at the
-  75th percentile segmented mobile/desktop. Lab INP without real
-  interactions is not evidence, and INP ignores scroll/hover/zoom. Large
-  unoptimized hero images and layout shift are design bugs too.
+  measurable: good is LCP 2.5s or less, INP 200ms or less, and CLS
+  0.1 or less, each at the 75th percentile segmented mobile/desktop
+  (https://web.dev/articles/defining-core-web-vitals-thresholds).
+  Lab INP without real interactions is not evidence, and INP ignores
+  scroll/hover/zoom. Large unoptimized hero images and layout shift
+  are design bugs too.
 - Then hand off: `friction` for usability, `roadtest`
   for browser-flow evidence.
 

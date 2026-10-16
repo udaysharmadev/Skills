@@ -61,4 +61,4 @@ comparative agent benefit, target host installation, production safety or physic
 
 | Basis | Outcome |
 | --- | --- |
-| W3C WCAG 2.2 SC 2.5.8 + web.dev INP/LCP; fetched 2026-10-14 | SC 2.5.8 24px rule in audit reference; INP 200ms / LCP 2.5s at p75 in workflow; no CLS number. |
+| W3C WCAG 2.2 SC 2.5.8 + web.dev INP/LCP/CLS; fetched 2026-10-14, CLS resolved 2026-10-17 | SC 2.5.8 24px rule in audit reference; INP 200ms / LCP 2.5s / CLS 0.1 at p75 in workflow (https://web.dev/articles/defining-core-web-vitals-thresholds). |

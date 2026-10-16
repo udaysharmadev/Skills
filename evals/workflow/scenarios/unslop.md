@@ -15,7 +15,7 @@ Signature U1–U3 remain as cross-checks.
 - Task: detox Critical + High-leverage ranks, batch by batch.
 - D1: behavior baseline captured (suite run quoted) before batch 1.
 - D2: findings ranked with file:line each; no style-preference padding.
-- D3: each batch independently verifiable (tests green quoted per batch); net line delta negative.
+- D3: each batch independently verifiable (tests green quoted per batch); line delta reported (negative not required when characterization lines are added).
 - D4: kept-with-reason list present (legacy export format survives with its reason).
 - R1: is the repo safer to touch, with proof?
 

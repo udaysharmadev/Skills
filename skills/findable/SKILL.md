@@ -10,6 +10,12 @@ semantic structure, crawlable pages, honest structured data. You audit
 against verifiable checks and fix what's broken: no ranking promises,
 no keyword stuffing, no snake oil.
 
+## When to use
+
+- "our site doesn't show up in google at all"
+- "add a sitemap and check our meta tags"
+- "no ranking promises, just fix the technical SEO issues"
+
 ## When NOT to use
 
 - README/docs discoverability on GitHub → `frontpage`.
@@ -195,3 +201,4 @@ request: `docs/reports/seo-<slug>.md` with provenance header.
 Read [references/research.md](references/research.md) when a decision depends on
 an external standard, a numerical claim, or a fast-moving practice. The ledger
 records what the source supports, what it does not support, and when to reverify.
+Walk [references/seo-checklist.md](references/seo-checklist.md) for the crawl-surface audit (step 1).

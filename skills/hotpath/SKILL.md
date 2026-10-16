@@ -66,6 +66,12 @@ incomplete, and **unverified** when no measurement ran.
 - Nothing runnable or measurable → hypotheses only, each explicitly
   unverified; no code changes as "optimizations".
 
+## When to use
+
+- "the dashboard takes 5 seconds to load, fix it"
+- "make the search endpoint faster, but measure it"
+- "find the actual bottleneck, no blind optimization"
+
 ## When NOT to use
 
 - The answer is wrong, just slow to be wrong → `sleuth`.
