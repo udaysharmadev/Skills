@@ -5,6 +5,19 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+### CI hardening and measured install badge (2026-10-17)
+
+- `ci.yml`: default-deny `contents: read` permissions, `concurrency`
+  cancel-in-progress, 30-minute job timeout, SHA-pinned actions
+  (live-verified) with Dependabot keeping the pins fresh.
+- Weekly measured skills.sh install count: `scripts/update-install-badge.py`
+  sums per-skill installs via the public search API (322 across 28 skills on
+  2026-10-16) into `assets/skills-sh-endpoint.json`; the README badge reads
+  it via shields.io endpoint. No hand-typed numbers.
+- New `install-badge` workflow refreshes the count every Monday.
+- Deleted stale local `codex/deep-skills-v2` branch (fully contained in
+  this line; it never existed on the remote).
+
 ### Failure-first implementation upgrade (2026-10-14)
 
 - Preserved the frozen 28 names and historical outcome records. Audited each
