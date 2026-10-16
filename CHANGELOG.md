@@ -5,6 +5,19 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+### Merged PR #2; PR #3 superseded (2026-10-17)
+
+- Merged `mananbharti/fix/regression-test-without-opencode`: stubs the
+  opencode binary in `test-regressions` so the resume-path test asserts
+  exit 2 instead of failing with exit 3 (UNAVAILABLE) on machines without
+  opencode installed. Verified: no-binary → 3, stub → 2, real binary → 2.
+- Did NOT merge PR #3 (`docs/handsfree-research-trace`): its pointer
+  retargeting is superseded by the restored
+  `skills/handsfree/references/antigravity.md` (this changelog's audit
+  batch) which keeps the section granularity and additionally fixes the
+  moved Antigravity URL. Merging it would reintroduce a conflict. The PR
+  should be closed as superseded.
+
 ### 28-skill audit repairs (2026-10-17)
 
 - Added an explicit `When to use` trigger section (3 quoted utterances from
